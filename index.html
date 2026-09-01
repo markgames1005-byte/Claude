@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trady's — Supermercat a Santa Agnès de Malanyanes</title>
+<meta name="description" content="Trady's, supermercado en Carrer Pau Casals, 14, Santa Agnès de Malanyanes (Barcelona). Horarios, teléfono, valoraciones y reseñas.">
+<style>
+  :root{
+    --bg:#ffffff;
+    --surface:#ffffff;
+    --surface-2:#f6f7f8;
+    --border:#e3e6e8;
+    --text:#18201f;
+    --text-2:#5c6b68;
+    --text-3:#8a9a96;
+    --accent:#1f7a5a;
+    --accent-soft:#e8f4ef;
+    --star:#f2a922;
+    --bar:#cfd8d5;
+    --bar-live:#1f7a5a;
+    --shadow:0 1px 2px rgba(24,32,31,.06), 0 8px 24px rgba(24,32,31,.06);
+    --radius:14px;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#0f1413;
+      --surface:#161c1b;
+      --surface-2:#1d2523;
+      --border:#2a3432;
+      --text:#e8eeec;
+      --text-2:#9fb0ac;
+      --text-3:#778783;
+      --accent:#5fd3a6;
+      --accent-soft:#16302a;
+      --star:#f5bf4b;
+      --bar:#33403d;
+      --bar-live:#5fd3a6;
+      --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#0f1413;
+    --surface:#161c1b;
+    --surface-2:#1d2523;
+    --border:#2a3432;
+    --text:#e8eeec;
+    --text-2:#9fb0ac;
+    --text-3:#778783;
+    --accent:#5fd3a6;
+    --accent-soft:#16302a;
+    --star:#f5bf4b;
+    --bar:#33403d;
+    --bar-live:#5fd3a6;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 10px 30px rgba(0,0,0,.35);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font:15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  img{max-width:100%}
+  a{color:inherit}
+  .wrap{max-width:860px;margin:0 auto;padding:0 20px 72px}
+
+  /* ---------- Hero ---------- */
+  .hero{
+    background:linear-gradient(160deg, var(--accent-soft), transparent 70%);
+    border-bottom:1px solid var(--border);
+    padding:40px 0 0;
+  }
+  .hero-inner{max-width:860px;margin:0 auto;padding:0 20px}
+  .kicker{
+    display:inline-block;font-size:12px;letter-spacing:.09em;text-transform:uppercase;
+    color:var(--accent);font-weight:600;margin:0 0 10px;
+  }
+  h1{font-size:clamp(34px,7vw,50px);line-height:1.05;margin:0 0 12px;letter-spacing:-.02em}
+  .rating-line{display:flex;align-items:center;gap:8px;flex-wrap:wrap;color:var(--text-2);font-size:14px}
+  .score{font-size:16px;font-weight:600;color:var(--text)}
+  .stars{display:inline-flex;gap:2px;line-height:0}
+  .stars svg{width:16px;height:16px}
+  .dot{color:var(--text-3)}
+
+  /* ---------- Tabs ---------- */
+  nav.tabs{
+    position:sticky;top:0;z-index:20;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:saturate(180%) blur(10px);
+    border-bottom:1px solid var(--border);
+    margin-top:26px;
+  }
+  .tabs-inner{max-width:860px;margin:0 auto;padding:0 20px;display:flex;gap:24px;overflow-x:auto}
+  .tabs a{
+    padding:14px 2px;font-size:14px;font-weight:500;color:var(--text-2);
+    text-decoration:none;white-space:nowrap;border-bottom:2px solid transparent;
+  }
+  .tabs a:hover{color:var(--text)}
+  .tabs a.is-active{color:var(--accent);border-bottom-color:var(--accent)}
+
+  /* ---------- Actions ---------- */
+  .actions{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));
+    gap:10px;margin:26px 0 8px;
+  }
+  .action{
+    display:flex;flex-direction:column;align-items:center;gap:7px;
+    padding:14px 8px;border:1px solid var(--border);border-radius:var(--radius);
+    background:var(--surface);color:var(--text-2);font-size:12.5px;font-weight:500;
+    text-decoration:none;text-align:center;transition:border-color .15s, color .15s, transform .15s;
+  }
+  .action:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+  .action svg{width:20px;height:20px}
+
+  /* ---------- Sections & cards ---------- */
+  section{scroll-margin-top:64px;padding-top:38px}
+  h2{font-size:19px;margin:0 0 16px;letter-spacing:-.01em}
+  .card{
+    background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius);box-shadow:var(--shadow);
+  }
+
+  .info-list{list-style:none;margin:0;padding:4px 0}
+  .info-list li{
+    display:flex;gap:14px;align-items:flex-start;
+    padding:14px 18px;border-bottom:1px solid var(--border);
+  }
+  .info-list li:last-child{border-bottom:0}
+  .info-list svg{width:18px;height:18px;flex:none;margin-top:2px;color:var(--text-3)}
+  .info-body{min-width:0}
+  .info-body strong{display:block;font-weight:500;word-break:break-word}
+  .info-body span{display:block;color:var(--text-2);font-size:13px;margin-top:2px}
+  .open{color:var(--accent);font-weight:600}
+
+  /* ---------- Hours ---------- */
+  table.hours{width:100%;border-collapse:collapse;font-size:14px}
+  .hours td{padding:9px 18px;border-bottom:1px solid var(--border)}
+  .hours tr:last-child td{border-bottom:0}
+  .hours td:last-child{text-align:right;color:var(--text-2)}
+  .hours tr.today td{background:var(--surface-2);font-weight:600;color:var(--text)}
+
+  /* ---------- Popular times ---------- */
+  .chart-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:16px 18px 4px;flex-wrap:wrap}
+  .chart-head h3{margin:0;font-size:15px;font-weight:600}
+  .live{
+    display:inline-flex;align-items:center;gap:6px;font-size:12.5px;
+    color:var(--accent);font-weight:600;
+  }
+  .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent)}
+  .chart{display:flex;align-items:flex-end;gap:4px;height:130px;padding:16px 18px 6px}
+  .col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;height:100%}
+  .col span{
+    display:block;background:var(--bar);border-radius:4px 4px 2px 2px;
+    transition:background .15s;
+  }
+  .col.now span{background:var(--bar-live)}
+  .col:hover span{background:var(--accent)}
+  .chart-axis{display:flex;gap:4px;padding:0 18px 16px;color:var(--text-3);font-size:11px}
+  .chart-axis div{flex:1;text-align:center}
+  .chart-axis div:empty{visibility:hidden}
+
+  /* ---------- Rating summary ---------- */
+  .summary{display:flex;gap:28px;align-items:center;padding:20px 18px;flex-wrap:wrap}
+  .big-score{text-align:center;min-width:96px}
+  .big-score b{display:block;font-size:46px;line-height:1;font-weight:600;letter-spacing:-.02em}
+  .big-score small{color:var(--text-2);font-size:12.5px}
+  .bars{flex:1;min-width:200px}
+  .bar-row{display:flex;align-items:center;gap:10px;font-size:12px;color:var(--text-2)}
+  .bar-row i{font-style:normal;width:10px;text-align:right}
+  .track{flex:1;height:9px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+  .track b{display:block;height:100%;background:var(--star);border-radius:5px}
+  .bar-row u{text-decoration:none;width:18px;text-align:right;color:var(--text-3)}
+  .disclaimer{padding:0 18px 18px;color:var(--text-3);font-size:12px;margin:0}
+
+  /* ---------- Reviews ---------- */
+  .review{padding:20px 18px;border-bottom:1px solid var(--border)}
+  .review:last-child{border-bottom:0}
+  .review-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  .avatar{
+    width:38px;height:38px;border-radius:50%;flex:none;
+    display:grid;place-items:center;font-weight:600;font-size:14px;
+    background:var(--accent-soft);color:var(--accent);
+  }
+  .review-head b{display:block;font-size:14.5px;font-weight:600}
+  .review-head span{display:block;color:var(--text-3);font-size:12.5px}
+  .review-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-size:12.5px;color:var(--text-3);flex-wrap:wrap}
+  .review p{margin:0;color:var(--text);font-size:14.5px}
+  .translated{margin-top:8px;color:var(--text-3);font-size:12px;font-style:italic}
+  .badge{
+    display:inline-block;padding:2px 8px;border-radius:999px;
+    background:var(--surface-2);color:var(--text-2);font-size:11.5px;font-weight:500;
+  }
+  .more{
+    display:block;padding:15px 18px;text-align:center;color:var(--accent);
+    font-weight:600;font-size:14px;text-decoration:none;
+  }
+  .more:hover{background:var(--surface-2)}
+
+  /* ---------- Nearby ---------- */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px}
+  .place{padding:16px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+  .place b{display:block;font-size:14.5px;font-weight:600;margin-bottom:5px}
+  .place .rating-line{font-size:12.5px}
+  .place em{display:block;font-style:normal;color:var(--text-3);font-size:12.5px;margin-top:5px}
+
+  footer{margin-top:44px;padding-top:20px;border-top:1px solid var(--border);color:var(--text-3);font-size:12.5px}
+  footer p{margin:0 0 6px}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="hero-inner">
+    <p class="kicker">Supermercat</p>
+    <h1>Trady's</h1>
+    <div class="rating-line">
+      <span class="score">4,4</span>
+      <span class="stars" role="img" aria-label="4,4 de 5 estrellas">
+        <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+        <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+        <svg viewBox="0 0 24 24"><defs><linearGradient id="half"><stop offset="45%" stop-color="var(--star)"/><stop offset="45%" stop-color="var(--bar)"/></linearGradient></defs><path fill="url(#half)" d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+      </span>
+      <span>(11 reseñas)</span>
+      <span class="dot">·</span>
+      <span class="open">Abierto</span>
+      <span>· Cierra a las 22:30</span>
+    </div>
+  </div>
+
+  <nav class="tabs">
+    <div class="tabs-inner">
+      <a href="#informacion" class="is-active">Información</a>
+      <a href="#horarios">Horarios</a>
+      <a href="#afluencia">Afluencia</a>
+      <a href="#resenas">Reseñas</a>
+      <a href="#cerca">Cerca de aquí</a>
+    </div>
+  </nav>
+</header>
+
+<main class="wrap">
+
+  <div class="actions">
+    <a class="action" href="https://www.google.com/maps/dir/?api=1&destination=Carrer+Pau+Casals+14,+08430+Santa+Agn%C3%A8s+de+Malanyanes,+Barcelona">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+      Cómo llegar
+    </a>
+    <a class="action" href="tel:+34640080324">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.4 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+      Llamar
+    </a>
+    <a class="action" href="#horarios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+      Horarios
+    </a>
+    <a class="action" href="#resenas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 01-9 8.4 8.6 8.6 0 01-3.8-.9L3 20.5l1.5-5.2a8.6 8.6 0 01-.9-3.8 8.4 8.4 0 018.4-9 8.4 8.4 0 019 9z"/></svg>
+      Reseñas
+    </a>
+    <a class="action" href="#cerca">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      Cerca
+    </a>
+  </div>
+
+  <section id="informacion">
+    <h2>Información</h2>
+    <div class="card">
+      <ul class="info-list">
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          <div class="info-body">
+            <strong>Carrer Pau Casals, 14</strong>
+            <span>08430 Santa Agnès de Malanyanes, Barcelona</span>
+          </div>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 01-2.2 2 19.8 19.8 0 01-8.6-3.1 19.5 19.5 0 01-6-6A19.8 19.8 0 012.1 4.2 2 2 0 014.1 2h3a2 2 0 012 1.7c.1 1 .3 1.9.7 2.8a2 2 0 01-.5 2.1L8.1 9.9a16 16 0 006 6l1.3-1.2a2 2 0 012.1-.5c.9.4 1.8.6 2.8.7a2 2 0 011.7 2z"/></svg>
+          <div class="info-body">
+            <strong><a href="tel:+34640080324">640 08 03 24</a></strong>
+            <span>Teléfono</span>
+          </div>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+          <div class="info-body">
+            <strong>H8WX+W5 Santa Agnès de Malanyanes</strong>
+            <span>Plus Code</span>
+          </div>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+          <div class="info-body">
+            <strong><span class="open">Abierto</span> · Cierra a las 22:30</strong>
+            <span>Ver todos los horarios más abajo</span>
+          </div>
+        </li>
+        <li>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18 15 15 0 010-18z"/></svg>
+          <div class="info-body">
+            <strong>Sitio web no disponible</strong>
+            <span>Esta ficha todavía no tiene web asociada</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="horarios">
+    <h2>Horarios</h2>
+    <div class="card">
+      <table class="hours">
+        <tbody>
+          <tr class="today"><td>Martes (hoy)</td><td>Abierto · cierra 22:30</td></tr>
+          <tr><td>Miércoles</td><td>Consultar</td></tr>
+          <tr><td>Jueves</td><td>Consultar</td></tr>
+          <tr><td>Viernes</td><td>Consultar</td></tr>
+          <tr><td>Sábado</td><td>Consultar</td></tr>
+          <tr><td>Domingo</td><td>Consultar</td></tr>
+          <tr><td>Lunes</td><td>Consultar</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="disclaimer" style="padding-left:0">El único horario conocido es el del día en curso (cierre a las 22:30). Para el resto de días, confirma por teléfono en el <a href="tel:+34640080324">640 08 03 24</a>.</p>
+  </section>
+
+  <section id="afluencia">
+    <h2>Horas de mayor afluencia</h2>
+    <div class="card">
+      <div class="chart-head">
+        <h3>Martes</h3>
+        <span class="live">En directo: tan concurrido como de costumbre</span>
+      </div>
+      <div class="chart" aria-hidden="true">
+        <div class="col"><span style="height:8%"></span></div>
+        <div class="col"><span style="height:14%"></span></div>
+        <div class="col"><span style="height:26%"></span></div>
+        <div class="col"><span style="height:40%"></span></div>
+        <div class="col"><span style="height:52%"></span></div>
+        <div class="col"><span style="height:58%"></span></div>
+        <div class="col"><span style="height:46%"></span></div>
+        <div class="col"><span style="height:38%"></span></div>
+        <div class="col"><span style="height:44%"></span></div>
+        <div class="col now"><span style="height:72%"></span></div>
+        <div class="col"><span style="height:88%"></span></div>
+        <div class="col"><span style="height:100%"></span></div>
+        <div class="col"><span style="height:76%"></span></div>
+        <div class="col"><span style="height:48%"></span></div>
+        <div class="col"><span style="height:22%"></span></div>
+        <div class="col"><span style="height:10%"></span></div>
+      </div>
+      <div class="chart-axis">
+        <div>6</div><div></div><div></div><div>9</div><div></div><div></div><div>12</div><div></div><div></div><div>15</div><div></div><div></div><div>18</div><div></div><div></div><div>21</div>
+      </div>
+      <p class="disclaimer">Estimación orientativa de afluencia por franja horaria.</p>
+    </div>
+  </section>
+
+  <section id="resenas">
+    <h2>Reseñas</h2>
+    <div class="card" style="margin-bottom:16px">
+      <div class="summary">
+        <div class="big-score">
+          <b>4,4</b>
+          <span class="stars" role="img" aria-label="4,4 de 5">
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--bar)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+          </span>
+          <small>11 reseñas</small>
+        </div>
+        <div class="bars">
+          <div class="bar-row"><i>5</i><span class="track"><b style="width:73%"></b></span><u>8</u></div>
+          <div class="bar-row"><i>4</i><span class="track"><b style="width:9%"></b></span><u>1</u></div>
+          <div class="bar-row"><i>3</i><span class="track"><b style="width:0%"></b></span><u>0</u></div>
+          <div class="bar-row"><i>2</i><span class="track"><b style="width:9%"></b></span><u>1</u></div>
+          <div class="bar-row"><i>1</i><span class="track"><b style="width:9%"></b></span><u>1</u></div>
+        </div>
+      </div>
+      <p class="disclaimer">Las reseñas no están verificadas. La distribución por estrellas es una estimación a partir de la media de 4,4 sobre 11 reseñas.</p>
+    </div>
+
+    <div class="card">
+      <article class="review">
+        <div class="review-head">
+          <div class="avatar">QV</div>
+          <div>
+            <b>Qamar Virk</b>
+            <span>1 reseña</span>
+          </div>
+        </div>
+        <div class="review-meta">
+          <span class="stars" role="img" aria-label="5 de 5">
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+          </span>
+          <span class="dot">·</span>
+          <span>hace 2 años</span>
+        </div>
+        <p>Muy bien 👍</p>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <div class="avatar">YR</div>
+          <div>
+            <b>yanibel ramirez</b>
+            <span>5 reseñas</span>
+          </div>
+        </div>
+        <div class="review-meta">
+          <span class="stars" role="img" aria-label="5 de 5">
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+            <svg viewBox="0 0 24 24" fill="var(--star)"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg>
+          </span>
+          <span class="dot">·</span>
+          <span>hace 8 meses</span>
+        </div>
+        <p>«Estoy súper contenta de que tengamos un sitio y de que todo esté al día. También encantada con el horario que tenéis, era lo que hacía falta en Santa Agnès de Malanyanes.»</p>
+        <p class="translated">Traducido por Google · Original en catalán</p>
+      </article>
+
+      <article class="review">
+        <div class="review-head">
+          <div class="avatar">MO</div>
+          <div>
+            <b>Montserrat Olivé Armengol</b>
+            <span>Local Guide · 328 reseñas · 879 fotos</span>
+          </div>
+        </div>
+        <div class="review-meta">
+          <span class="badge">Local Guide</span>
+          <span class="dot">·</span>
+          <span>hace 2 años</span>
+        </div>
+        <p>No me gustan este tipo de supermercados por su horario. Sobre todo tengo que estar pendiente de las fechas de caducidad de los productos.</p>
+        <p class="translated">Traducido por Google · Original en catalán</p>
+      </article>
+
+      <a class="more" href="#resenas">Más reseñas (8)</a>
+    </div>
+  </section>
+
+  <section id="cerca">
+    <h2>La gente también busca</h2>
+    <div class="grid">
+      <div class="place">
+        <b>trady's</b>
+        <div class="rating-line"><span class="score">2,0</span><span>(4)</span></div>
+        <em>Tienda de alimentación</em>
+      </div>
+      <div class="place">
+        <b>Tradys supermercado</b>
+        <div class="rating-line"><span class="score">4,7</span><span>(13)</span></div>
+        <em>Supermercado</em>
+      </div>
+      <div class="place">
+        <b>Trady's Supermercats</b>
+        <div class="rating-line"><span class="score">3,1</span><span>(10)</span></div>
+        <em>Supermercado</em>
+      </div>
+      <div class="place">
+        <b>Trady's supermercats</b>
+        <div class="rating-line"><span class="score">4,9</span><span>(67)</span></div>
+        <em>Tienda de alimentación</em>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Página informativa no oficial. Datos recogidos de una ficha pública de Google Maps; pueden estar desactualizados.</p>
+    <p>Trady's · Carrer Pau Casals, 14, 08430 Santa Agnès de Malanyanes, Barcelona · 640 08 03 24</p>
+  </footer>
+</main>
+
+<script>
+  // Resalta la pestaña de la sección visible.
+  var links = Array.prototype.slice.call(document.querySelectorAll('nav.tabs a'));
+  var sections = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+
+  if ('IntersectionObserver' in window) {
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var i = sections.indexOf(entry.target);
+        if (i < 0) return;
+        links.forEach(function (a) { a.classList.remove('is-active'); });
+        links[i].classList.add('is-active');
+      });
+    }, { rootMargin: '-56px 0px -70% 0px' });
+    sections.forEach(function (s) { if (s) observer.observe(s); });
+  }
+</script>
+</body>
+</html>
