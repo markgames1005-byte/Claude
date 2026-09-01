@@ -49,7 +49,7 @@ const CONFIG = {
 - **`carta`** — afegeix, treu o reordena categories i plats; les pestanyes es
   generen soles. `t:` és una etiqueta opcional.
 - **Colors i tipografies** — variables `:root` a dalt del `<style>`
-  (`--ember` és el color de marca). El mode fosc en deriva sol.
+  (`--brand` és el verd de marca, `--brasa` el vermell del foc). El mode fosc en deriva sol.
 - **Fotografies** — cada marc porta un comentari `<!-- FOTO n -->`. Substitueix
   `<div class="ph">…</div>` per `<img src="img/portada.jpg" alt="…">`. Fes servir
   JPG/WebP d'uns 1600 px d'ample i menys de 300 kB.
