@@ -1,0 +1,390 @@
+<title>Mi plan de exámenes</title>
+<meta charset="utf-8">
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: cuaderno cuadriculado; cabecera con cuenta atrás, fila de exámenes, "hoy" como línea de tiempo y el plan completo por semanas */
+:root{
+  --paper:#f2f4f8; --sheet:#ffffff; --ink:#18203a; --muted:#5a6479; --line:#dbe0ea; --grid:#e6eaf2;
+  --accent:#2b47d6; --accent-ink:#ffffff; --done:#2f9e44;
+  --soc:#d9480f; --cat:#c98a00; --nat:#2f9e44; --cas:#7048e8; --mat:#1c7ed6; --eng:#d6336c; --fix:#8a93a6;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#10131b; --sheet:#181c27; --ink:#e8ebf3; --muted:#9aa3b6; --line:#2a3142; --grid:#161a24;
+  --accent:#8ea2ff; --accent-ink:#10131b; --done:#5fd27a;
+  --soc:#ff8a52; --cat:#ffcc4d; --nat:#5fd27a; --cas:#a98bff; --mat:#5fb2ff; --eng:#ff7aa8; --fix:#6d768a;
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --paper:#10131b; --sheet:#181c27; --ink:#e8ebf3; --muted:#9aa3b6; --line:#2a3142; --grid:#161a24;
+  --accent:#8ea2ff; --accent-ink:#10131b; --done:#5fd27a;
+  --soc:#ff8a52; --cat:#ffcc4d; --nat:#5fd27a; --cas:#a98bff; --mat:#5fb2ff; --eng:#ff7aa8; --fix:#6d768a;
+  color-scheme:dark; }
+
+*{box-sizing:border-box}
+body{
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px, transparent 1px),linear-gradient(90deg,var(--grid) 1px, transparent 1px);
+  background-size:22px 22px;
+  color:var(--ink); font-family:var(--f-body); font-size:16px; line-height:1.5;
+}
+.wrap{max-width:1080px; margin:0 auto; padding-block:24px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px)); padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex; flex-direction:column; gap:28px}
+h1,h2,h3{font-family:var(--f-display); text-wrap:balance; margin:0; letter-spacing:-.01em}
+h2{font-size:1.35rem; font-weight:800}
+.eyebrow{font-family:var(--f-mono); font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; color:var(--muted)}
+.mono{font-family:var(--f-mono); font-variant-numeric:tabular-nums}
+.sheet{background:var(--sheet); border:1px solid var(--line); border-radius:14px; padding:20px}
+
+/* Cabecera */
+.head{display:grid; grid-template-columns:1fr auto; gap:20px; align-items:end}
+.head h1{font-size:clamp(2rem, 6vw, 3.4rem); font-weight:800; line-height:1}
+.head p{margin:8px 0 0; color:var(--muted); max-width:60ch}
+.count{text-align:right}
+.count .num{font-family:var(--f-display); font-weight:800; font-size:clamp(3rem,10vw,5rem); line-height:.9; color:var(--next, var(--accent))}
+.count .lbl{font-size:.95rem; color:var(--muted)}
+.count .lbl b{color:var(--ink)}
+@media (max-width:620px){ .head{grid-template-columns:1fr} .count{text-align:left} }
+
+/* Exámenes */
+.exams{display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); gap:10px}
+@media (max-width:900px){ .exams{grid-template-columns:repeat(3, minmax(0,1fr))} }
+@media (max-width:480px){ .exams{grid-template-columns:repeat(2, minmax(0,1fr))} }
+.exam{background:var(--sheet); border:1px solid var(--line); border-top:5px solid var(--c); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:6px; min-width:0}
+.exam.past{opacity:.55}
+.exam .name{font-family:var(--f-display); font-weight:700; font-size:1.08rem}
+.exam .date{font-size:.85rem; color:var(--muted)}
+.level{display:flex; gap:3px; align-items:center; font-size:.75rem; color:var(--muted)}
+.level i{width:14px; height:6px; border-radius:2px; background:var(--line)}
+.level i.on{background:var(--c)}
+.level span{margin-left:6px}
+.bar{height:6px; border-radius:3px; background:var(--line); overflow:hidden}
+.bar>div{height:100%; background:var(--c); width:0; transition:width .3s}
+.exam .left{font-size:.82rem; display:flex; justify-content:space-between; gap:6px}
+.exam .left b{color:var(--c)}
+
+/* Hoy */
+.today-grid{display:grid; grid-template-columns:minmax(0,1.4fr) minmax(0,1fr); gap:20px; align-items:start}
+@media (max-width:820px){ .today-grid{grid-template-columns:1fr} }
+.today-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px}
+.today-head .sum{font-size:.9rem; color:var(--muted)}
+.tl{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px}
+.tl li{display:grid; grid-template-columns:96px 1fr; gap:12px; align-items:start; padding:8px 10px; border-radius:10px}
+.tl li.fixed{color:var(--muted); font-size:.92rem; padding-block:4px}
+.tl li.fixed .t{color:var(--fix)}
+.tl li.study{background:color-mix(in srgb, var(--c) 10%, var(--sheet)); border-left:4px solid var(--c)}
+.tl li.exam-row{background:var(--c); color:#fff; font-weight:700}
+.tl li.exam-row .t{color:#fff}
+.tl li.now{outline:2px solid var(--accent); outline-offset:1px}
+.tl .t{font-family:var(--f-mono); font-size:.85rem; padding-top:2px; font-variant-numeric:tabular-nums}
+.tag{display:inline-block; font-family:var(--f-mono); font-size:.68rem; letter-spacing:.06em; text-transform:uppercase; padding:1px 7px; border-radius:99px; background:var(--accent); color:var(--accent-ink); margin-left:6px; vertical-align:middle}
+
+.task{display:flex; gap:10px; align-items:flex-start; cursor:pointer}
+.task input{appearance:none; -webkit-appearance:none; flex:none; width:22px; height:22px; margin:1px 0 0; border:2px solid var(--c); border-radius:6px; background:var(--sheet); cursor:pointer; display:grid; place-content:center}
+.task input:checked{background:var(--c)}
+.task input:checked::after{content:""; width:10px; height:6px; border:solid #fff; border-width:0 0 2.5px 2.5px; transform:rotate(-45deg) translate(1px,-1px)}
+.task input:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.task .sub{font-weight:700; color:var(--c)}
+.task .what{display:block}
+.task.is-done .what{text-decoration:line-through; color:var(--muted)}
+.task .dur{font-family:var(--f-mono); font-size:.75rem; color:var(--muted)}
+
+.side{display:flex; flex-direction:column; gap:16px}
+.routine h3{font-size:1rem; margin-bottom:8px}
+.routine table{width:100%; border-collapse:collapse; font-size:.88rem}
+.routine td{padding:4px 0; border-bottom:1px dashed var(--line); vertical-align:top}
+.routine td:first-child{font-family:var(--f-mono); color:var(--muted); width:100px; font-variant-numeric:tabular-nums}
+.tips{margin:0; padding-left:18px; font-size:.9rem; display:flex; flex-direction:column; gap:6px}
+.totals{display:flex; flex-direction:column; gap:8px; font-size:.9rem}
+.totals .row{display:grid; grid-template-columns:92px 1fr 88px; gap:8px; align-items:center}
+.totals .row .bar{height:8px}
+.totals .row span:last-child{text-align:right; font-family:var(--f-mono); font-size:.8rem; color:var(--muted)}
+
+/* Plan completo */
+.plan-head{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{font:inherit; font-size:.85rem; border:1.5px solid var(--c, var(--line)); color:var(--ink); background:var(--sheet); border-radius:99px; padding:4px 12px; cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--c, var(--ink)); color:#fff; border-color:var(--c, var(--ink))}
+.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
+.btn{font:inherit; font-size:.85rem; border:0; background:var(--accent); color:var(--accent-ink); border-radius:99px; padding:6px 14px; cursor:pointer; font-weight:700}
+.week{display:flex; flex-direction:column; gap:8px}
+.week h3{font-size:.95rem; color:var(--muted); font-weight:700; margin-top:10px}
+.day{display:grid; grid-template-columns:150px minmax(0,1fr); gap:16px; background:var(--sheet); border:1px solid var(--line); border-radius:12px; padding:14px 16px; scroll-margin-top:16px}
+.day.is-today{border:2px solid var(--accent)}
+.day.is-past{opacity:.6}
+@media (max-width:620px){ .day{grid-template-columns:1fr; gap:8px} }
+.day .dname{font-family:var(--f-display); font-weight:700; font-size:1.1rem; line-height:1.2}
+.day .dnote{font-size:.8rem; color:var(--muted)}
+.day .blocks{display:flex; flex-direction:column; gap:8px; min-width:0}
+.day .blk{display:grid; grid-template-columns:104px minmax(0,1fr); gap:10px; align-items:start}
+@media (max-width:420px){ .day .blk{grid-template-columns:1fr; gap:2px} }
+.day .blk .t{font-family:var(--f-mono); font-size:.82rem; color:var(--muted); padding-top:2px; font-variant-numeric:tabular-nums}
+.examflag{display:inline-flex; align-items:center; gap:6px; background:var(--c); color:#fff; font-weight:700; border-radius:8px; padding:4px 10px; font-size:.9rem; align-self:flex-start}
+.free{color:var(--muted); font-style:italic; font-size:.92rem}
+footer{font-size:.8rem; color:var(--muted); text-align:center}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important; scroll-behavior:auto!important} }
+</style>
+
+<div class="wrap">
+  <header class="head">
+    <div>
+      <div class="eyebrow">Exámenes · 18 – 26 de noviembre</div>
+      <h1>Mi plan de exámenes</h1>
+      <p>Horario de estudio hecho a medida de tu semana: cole hasta las 17:00, entreno lunes, miércoles y viernes, inglés martes y jueves, cena a las 21:00 y a dormir a las 23:00. Marca cada bloque cuando lo termines.</p>
+    </div>
+    <div class="count" id="count"></div>
+  </header>
+
+  <section aria-labelledby="h-exams">
+    <h2 id="h-exams" class="eyebrow" style="font-family:var(--f-mono);font-size:.72rem;margin-bottom:10px">Exámenes y progreso</h2>
+    <div class="exams" id="exams"></div>
+  </section>
+
+  <section class="today-grid">
+    <div class="sheet">
+      <div class="today-head">
+        <h2 id="today-title">Hoy</h2>
+        <span class="sum" id="today-sum"></span>
+      </div>
+      <ul class="tl" id="today"></ul>
+    </div>
+    <aside class="side">
+      <div class="sheet totals">
+        <h3 style="font-size:1rem">Horas de estudio por asignatura</h3>
+        <div id="totals" class="totals"></div>
+      </div>
+      <div class="sheet routine">
+        <h3>Tu semana normal</h3>
+        <table>
+          <tr><td>08:00–17:00</td><td>Cole</td></tr>
+          <tr><td>17:00–17:30</td><td>Merienda + repaso corto (20 min)</td></tr>
+          <tr><td>L · X · V</td><td>Entreno 17:30, vuelves a las 20:00</td></tr>
+          <tr><td>M · J</td><td>Inglés 17:50, vuelves a las 19:45</td></tr>
+          <tr><td>20:00–21:00</td><td>Bloque de estudio 1</td></tr>
+          <tr><td>21:00–21:30</td><td>Cena</td></tr>
+          <tr><td>21:30–22:30</td><td>Bloque de estudio 2</td></tr>
+          <tr><td>22:30–23:00</td><td>Desconectar, sin pantallas</td></tr>
+        </table>
+      </div>
+      <div class="sheet">
+        <h3 style="font-size:1rem;margin-bottom:8px">Cómo estudiar mejor</h3>
+        <ul class="tips">
+          <li>Móvil en otra habitación mientras estudias.</li>
+          <li>Pregúntate sin mirar los apuntes: recuerdas mucho más que releyendo.</li>
+          <li>La noche antes del examen solo repaso, y a dormir a tu hora.</li>
+          <li>Sociales es el más difícil: por eso empieza hoy y tiene más horas.</li>
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <section class="sheet" style="display:flex;flex-direction:column;gap:12px" aria-labelledby="h-plan">
+    <div class="plan-head">
+      <h2 id="h-plan">Plan completo</h2>
+      <button class="btn" id="goto" type="button">Ir a hoy</button>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filtrar por asignatura"></div>
+    <div id="plan"></div>
+  </section>
+
+  <footer>Tus marcas se guardan en este dispositivo y navegador.</footer>
+</div>
+
+<script>
+const S = {
+  soc:{n:"Sociales", lvl:4, l:"Difícil"},
+  cat:{n:"Catalán", lvl:2, l:"Medio"},
+  nat:{n:"Naturales", lvl:3, l:"Medio-alto"},
+  cas:{n:"Castellano", lvl:1, l:"Fácil"},
+  mat:{n:"Mates", lvl:2, l:"Medio"},
+  eng:{n:"Inglés", lvl:1, l:"Fácil"}
+};
+const EXAMS = [
+  ["2026-11-18","soc"],["2026-11-20","cat"],["2026-11-23","nat"],
+  ["2026-11-24","cas"],["2026-11-25","mat"],["2026-11-26","eng"]
+];
+// [inicio, fin, asignatura, tarea]
+const PLAN = {
+ "2026-11-07":[["17:00","18:00","soc","Reúne libro, apuntes y fichas. Haz la lista de temas que entran"],["18:15","19:15","soc","Esquema del tema 1 con las ideas clave"],["19:30","20:15","cat","Lista de lo que entra y repaso de la teoría de gramática"]],
+ "2026-11-08":[["10:30","12:00","soc","Esquema del tema 2 y fichas de fechas y personajes"],["12:15","13:00","mat","Repasa la teoría y haz 5 ejercicios"],["17:00","18:00","nat","Lee el primer tema, subraya y apunta los conceptos clave"],["18:15","19:00","cat","Teoría y un ejercicio de cada tipo"]],
+ "2026-11-09":[["17:05","17:25","soc","Repaso rápido con las fichas de fechas"],["20:15","21:00","soc","Esquema del tema 3"],["21:30","22:30","cat","Ejercicios de ortografía y gramática"]],
+ "2026-11-10":[["17:10","17:40","soc","Fichas de conceptos y vocabulario"],["20:00","21:00","soc","Mapas y línea del tiempo"],["21:30","22:30","nat","Resumen del primer tema"]],
+ "2026-11-11":[["17:05","17:25","cat","Vocabulario y una lectura corta"],["20:15","21:00","soc","Explica en voz alta los temas 1 y 2, sin mirar"],["21:30","22:30","mat","Ejercicios tipo examen: empieza por los que más te cuestan"]],
+ "2026-11-12":[["17:10","17:40","soc","Fichas de fechas y conceptos"],["20:00","21:00","cat","Redacción o comprensión lectora"],["21:30","22:30","soc","Esquema del último tema"]],
+ "2026-11-13":[["17:05","17:25","soc","Fichas"],["20:15","21:00","nat","Resumen del segundo tema"],["21:30","22:15","soc","Repaso ligero: lee tus esquemas"]],
+ "2026-11-14":[["10:00","11:30","soc","Simulacro: responde preguntas de examen sin mirar"],["11:45","12:45","cat","Repaso de teoría y ejercicios"],["17:00","18:00","nat","Esquemas y dibujos de los procesos"],["18:15","19:00","mat","Ejercicios variados de todo el temario"]],
+ "2026-11-15":[["10:00","11:30","soc","Corrige el simulacro y repasa lo que fallaste"],["11:45","12:45","soc","Escribe 2 preguntas largas como en el examen"],["17:00","18:00","cat","Ejercicios del libro o de exámenes anteriores"],["18:15","19:00","nat","Repasa los resúmenes de los temas 1 y 2"]],
+ "2026-11-16":[["17:05","17:25","soc","Fichas"],["20:15","21:00","soc","Repaso tema por tema: céntrate en tus puntos débiles"],["21:30","22:30","soc","Preguntas largas en voz alta"]],
+ "2026-11-17":[["17:10","17:40","soc","Fichas, por última vez"],["20:00","21:00","soc","Repaso final de todos los esquemas"],["21:30","22:15","soc","Repaso exprés y prepara el material. A dormir a tu hora"]],
+ "2026-11-18":[["20:15","21:00","cat","Repaso de la teoría"],["21:30","22:30","cat","Ejercicios de todo lo que entra"]],
+ "2026-11-19":[["17:10","17:40","cat","Vocabulario y ortografía"],["20:00","21:00","cat","Simulacro corto"],["21:30","22:15","cat","Repaso final"]],
+ "2026-11-20":[["20:15","21:00","nat","Repaso suave del primer tema. Después, descanso"]],
+ "2026-11-21":[["10:00","11:30","nat","Esquemas completos de todos los temas"],["11:45","12:45","mat","Ejercicios tipo examen"],["17:00","18:00","nat","Preguntas de examen sin mirar"],["18:15","19:00","cas","Teoría de lo que entra y ejercicios"]],
+ "2026-11-22":[["10:00","11:30","nat","Simulacro y corrige los fallos"],["11:45","12:30","cas","Ejercicios de gramática y análisis"],["17:00","18:00","mat","Ejercicios de todo el temario"],["18:15","19:00","nat","Repaso final de esquemas"]],
+ "2026-11-23":[["17:05","17:25","cas","Repasa la teoría"],["20:15","21:00","cas","Ejercicios y repaso final"],["21:30","22:30","mat","Rehaz los ejercicios que fallaste"]],
+ "2026-11-24":[["17:10","17:40","mat","Fórmulas y pasos clave de cada tipo de problema"],["20:00","21:00","mat","Simulacro de examen con tiempo"],["21:30","22:15","mat","Corrige y repasa los fallos"]],
+ "2026-11-25":[["17:05","17:25","eng","Verbos irregulares y vocabulario"],["20:15","21:00","eng","Gramática que entra y ejercicios"],["21:30","22:00","eng","Repaso rápido"]],
+ "2026-11-26":[]
+};
+const DAYS = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
+const MONTHS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const KEY = "plan-examenes-2026";
+
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch(e) { done = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {} };
+
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const iso = d => d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+const mins = t => { const [h,m] = t.split(":").map(Number); return h*60+m; };
+const dur = (a,b) => mins(b)-mins(a);
+const fmtH = m => { const h = Math.floor(m/60), r = m%60; return h ? (r ? h+" h "+r+" min" : h+" h") : r+" min"; };
+const hh = m => (Math.round(m/60*10)/10).toLocaleString("es-ES");
+const cap = s => s[0].toUpperCase()+s.slice(1);
+const longDate = d => cap(DAYS[d.getDay()])+" "+d.getDate()+" de "+MONTHS[d.getMonth()];
+const examOn = ds => EXAMS.find(e => e[0] === ds);
+const today0 = () => { const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate()); };
+const id = (ds,i) => ds+"#"+i;
+
+function fixedFor(d){
+  const w = d.getDay();
+  if (w === 1 || w === 3 || w === 5) return [["08:00","17:00","Cole"],["17:30","20:00","Entreno"],["21:00","21:30","Cena"],["22:30","23:00","Desconectar"],["23:00","","A dormir"]];
+  if (w === 2 || w === 4) return [["08:00","17:00","Cole"],["17:50","19:45","Clase de inglés"],["21:00","21:30","Cena"],["22:30","23:00","Desconectar"],["23:00","","A dormir"]];
+  return [["14:00","15:00","Comida"],["21:00","21:30","Cena"],["23:00","","A dormir"]];
+}
+function noteFor(d){
+  const w = d.getDay();
+  if (w === 1 || w === 3 || w === 5) return "Entreno · vuelves 20:00";
+  if (w === 2 || w === 4) return "Inglés · vuelves 19:45";
+  return "Fin de semana";
+}
+
+function taskHTML(ds, i, b){
+  const k = id(ds,i), c = done[k] ? " is-done" : "";
+  return `<label class="task${c}" style="--c:var(--${b[2]})">
+    <input type="checkbox" data-k="${k}" ${done[k]?"checked":""} aria-label="${S[b[2]].n}: ${b[3]}">
+    <span><span class="sub">${S[b[2]].n}</span> <span class="dur">· ${fmtH(dur(b[0],b[1]))}</span><span class="what">${b[3]}</span></span>
+  </label>`;
+}
+
+function subjectStats(){
+  const st = {}; Object.keys(S).forEach(k => st[k] = {tot:0, dn:0, n:0, nd:0});
+  for (const ds in PLAN) PLAN[ds].forEach((b,i) => {
+    const m = dur(b[0],b[1]), s = st[b[2]];
+    s.tot += m; s.n++; if (done[id(ds,i)]) { s.dn += m; s.nd++; }
+  });
+  return st;
+}
+
+function renderHeader(){
+  const t = today0(), next = EXAMS.find(e => parse(e[0]) >= t), el = document.getElementById("count");
+  if (!next){ el.innerHTML = `<div class="num">0</div><div class="lbl"><b>¡Exámenes terminados!</b></div>`; return; }
+  const days = Math.round((parse(next[0]) - t)/864e5);
+  el.style.setProperty("--next", `var(--${next[1]})`);
+  el.innerHTML = days === 0
+    ? `<div class="num">HOY</div><div class="lbl">examen de <b>${S[next[1]].n}</b>. ¡Tú puedes!</div>`
+    : `<div class="num mono">${days}</div><div class="lbl">${days===1?"día":"días"} para <b>${S[next[1]].n}</b> · ${longDate(parse(next[0])).toLowerCase()}</div>`;
+}
+
+function renderExams(st){
+  const t = today0();
+  document.getElementById("exams").innerHTML = EXAMS.map(([ds,k]) => {
+    const d = parse(ds), days = Math.round((d - t)/864e5), s = S[k], p = st[k].n ? Math.round(st[k].nd/st[k].n*100) : 0;
+    const left = days > 1 ? `faltan <b>${days} días</b>` : days === 1 ? `<b>mañana</b>` : days === 0 ? `<b>hoy</b>` : `hecho`;
+    return `<article class="exam${days<0?" past":""}" style="--c:var(--${k})">
+      <div class="name">${s.n}</div>
+      <div class="date">${cap(DAYS[d.getDay()])} ${d.getDate()} nov</div>
+      <div class="level" aria-label="Dificultad ${s.l}">${[1,2,3,4].map(n=>`<i class="${n<=s.lvl?"on":""}"></i>`).join("")}<span>${s.l}</span></div>
+      <div class="bar" aria-hidden="true"><div style="width:${p}%"></div></div>
+      <div class="left"><span>${left}</span><span class="mono">${p}%</span></div>
+    </article>`;
+  }).join("");
+}
+
+function renderTotals(st){
+  const max = Math.max(...Object.values(st).map(s => s.tot));
+  document.getElementById("totals").innerHTML = Object.keys(S).map(k => `
+    <div class="row" style="--c:var(--${k})"><span>${S[k].n}</span>
+    <div class="bar" style="position:relative"><div style="position:absolute;inset:0 auto 0 0;width:${st[k].tot/max*100}%;opacity:.3"></div><div style="position:absolute;inset:0 auto 0 0;width:${st[k].dn/max*100}%"></div></div>
+    <span>${hh(st[k].dn)} / ${hh(st[k].tot)} h</span></div>`).join("");
+}
+
+function renderToday(){
+  const t = today0(); let ds = iso(t);
+  const first = Object.keys(PLAN)[0], last = Object.keys(PLAN).at(-1);
+  let preview = false;
+  if (ds < first){ ds = first; preview = true; }
+  const d = parse(ds), title = document.getElementById("today-title"), sum = document.getElementById("today-sum"), ul = document.getElementById("today");
+  if (ds > last){ title.textContent = "Hoy"; sum.textContent = ""; ul.innerHTML = `<li class="fixed"><span class="t">—</span><span>Ya has terminado todos los exámenes. ¡Enhorabuena!</span></li>`; return; }
+  title.textContent = preview ? longDate(d) : "Hoy · " + longDate(d).toLowerCase();
+  const blocks = PLAN[ds] || [], tot = blocks.reduce((a,b) => a + dur(b[0],b[1]), 0), nd = blocks.filter((b,i) => done[id(ds,i)]).length;
+  sum.textContent = blocks.length ? `${fmtH(tot)} de estudio · ${nd}/${blocks.length} hechos` : "Sin estudio";
+  const now = new Date(), nm = now.getHours()*60 + now.getMinutes(), isToday = iso(now) === ds;
+  const rows = [];
+  const ex = examOn(ds);
+  if (ex) rows.push({s:"08:00", h:`<li class="exam-row" style="--c:var(--${ex[1]})"><span class="t">En el cole</span><span>Examen de ${S[ex[1]].n}</span></li>`});
+  fixedFor(d).forEach(f => rows.push({s:f[0], h:`<li class="fixed"><span class="t">${f[0]}${f[1]?"–"+f[1]:""}</span><span>${f[2]}</span></li>`}));
+  let nextMarked = false;
+  blocks.forEach((b,i) => {
+    let cls = "study";
+    if (isToday && !nextMarked && nm < mins(b[1]) && !done[id(ds,i)]) { cls += " now"; nextMarked = true; }
+    const lbl = cls.includes("now") ? (nm >= mins(b[0]) ? `<span class="tag">Ahora</span>` : `<span class="tag">Siguiente</span>`) : "";
+    rows.push({s:b[0], h:`<li class="${cls}" style="--c:var(--${b[2]})"><span class="t">${b[0]}–${b[1]}${lbl}</span>${taskHTML(ds,i,b)}</li>`});
+  });
+  rows.sort((a,b) => mins(a.s) - mins(b.s));
+  ul.innerHTML = (preview ? `<li class="fixed"><span class="t">Aviso</span><span>El plan empieza el ${longDate(d).toLowerCase()}.</span></li>` : "") + rows.map(r => r.h).join("");
+}
+
+let filter = null;
+function renderChips(){
+  document.getElementById("chips").innerHTML =
+    `<button class="chip" type="button" data-f="" aria-pressed="${!filter}">Todas</button>` +
+    Object.keys(S).map(k => `<button class="chip" type="button" data-f="${k}" style="--c:var(--${k})" aria-pressed="${filter===k}">${S[k].n}</button>`).join("");
+}
+
+function renderPlan(){
+  const t = iso(today0()), weeks = [];
+  Object.keys(PLAN).forEach(ds => {
+    const d = parse(ds), mon = new Date(d); mon.setDate(d.getDate() - ((d.getDay()+6)%7));
+    const wk = iso(mon); let w = weeks.find(x => x.k === wk);
+    if (!w) weeks.push(w = {k:wk, days:[]});
+    w.days.push(ds);
+  });
+  const label = ["Arranque: empieza Sociales","Semana fuerte de Sociales","Exámenes de Sociales y Catalán","Semana final"];
+  document.getElementById("plan").innerHTML = weeks.map((w,wi) => {
+    const daysHTML = w.days.map(ds => {
+      const d = parse(ds), ex = examOn(ds);
+      const items = (PLAN[ds] || []).map((b,i) => ({b,i})).filter(x => !filter || x.b[2] === filter);
+      if (filter && !items.length && !(ex && ex[1] === filter)) return "";
+      const cls = ds === t ? " is-today" : ds < t ? " is-past" : "";
+      const flag = ex && (!filter || ex[1] === filter) ? `<span class="examflag" style="--c:var(--${ex[1]})">Examen de ${S[ex[1]].n}</span>` : "";
+      const body = items.length ? items.map(({b,i}) => `<div class="blk"><span class="t">${b[0]}–${b[1]}</span>${taskHTML(ds,i,b)}</div>`).join("")
+        : (ds === "2026-11-26" ? `<span class="free">Último examen. ¡Lo has conseguido!</span>` : `<span class="free">Descanso</span>`);
+      return `<div class="day${cls}" id="d-${ds}"><div><div class="dname">${longDate(d)}</div><div class="dnote">${noteFor(d)}</div></div><div class="blocks">${flag}${body}</div></div>`;
+    }).join("");
+    return daysHTML ? `<div class="week"><h3>${label[wi] || "Semana"}</h3>${daysHTML}</div>` : "";
+  }).join("");
+}
+
+function renderAll(){ const st = subjectStats(); renderHeader(); renderExams(st); renderTotals(st); renderToday(); renderChips(); renderPlan(); }
+
+document.addEventListener("change", e => {
+  const k = e.target.dataset && e.target.dataset.k; if (!k) return;
+  if (e.target.checked) done[k] = 1; else delete done[k];
+  save(); renderAll();
+});
+document.getElementById("chips").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  filter = b.dataset.f || null; renderChips(); renderPlan();
+});
+document.getElementById("goto").addEventListener("click", () => {
+  const el = document.getElementById("d-" + iso(today0())) || document.querySelector(".day:not(.is-past)");
+  if (el) el.scrollIntoView({behavior:"smooth", block:"start"});
+});
+renderAll();
+setInterval(() => { renderHeader(); renderToday(); }, 60000);
+</script>
