@@ -45,6 +45,11 @@ label{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase
 .ask-row{display:flex;gap:8px;flex-wrap:wrap}
 .ask-row input{flex:1 1 260px;font-size:17px;padding:12px 14px}
 .ask-hint{font-size:13px;color:var(--muted)}
+.mic{width:52px;height:52px;padding:0;display:inline-flex;align-items:center;justify-content:center;background:var(--accent-soft);border-color:var(--accent);color:var(--accent);flex:none}
+.mic svg{width:24px;height:24px}
+.mic.on{background:var(--warn);border-color:var(--warn);color:var(--accent-ink)}
+@media (prefers-reduced-motion:no-preference){.mic.on{animation:pulse 1.2s ease-in-out infinite}}
+@keyframes pulse{50%{box-shadow:0 0 0 8px var(--warn-soft)}}
 .ask-hint code{font-family:var(--f-mono);font-size:12px;background:var(--accent-soft);padding:1px 6px;border-radius:6px}
 .preview{border:1px dashed var(--accent);border-radius:12px;padding:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;align-items:end}
 .preview .full{grid-column:1/-1}
@@ -124,10 +129,11 @@ details[open] summary{margin-bottom:12px}
 
   <section class="ask" aria-label="Apuntar algo">
     <form class="ask-row" id="askForm">
-      <input id="askInput" type="text" autocomplete="off" placeholder="Dime lo que sea: el jueves examen de historia a las 9" aria-label="Qué quieres apuntar">
+      <button class="mic" type="button" id="micBtn" aria-label="Decirlo con la voz" title="Decirlo con la voz"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg></button>
+      <input id="askInput" type="text" autocomplete="off" enterkeyhint="done" placeholder="Habla o escribe: el jueves examen todo el día" aria-label="Qué quieres apuntar">
       <button class="primary" type="submit" id="askBtn">Apuntar</button>
     </form>
-    <div class="ask-hint">Ejemplos: <code>mañana entrega del trabajo de física</code> <code>sábado 15 partido a las 18:30</code> <code>20/11 examen de mates</code></div>
+    <div class="ask-hint">Toca el micrófono y di lo que quieres apuntar; Claude lo entiende aquí mismo, sin cambiar de app. Ejemplos: <code>mañana entrega del trabajo de física</code> <code>sábado 15 partido a las 18:30</code> <code>20/11 examen de mates</code></div>
     <div id="preview" class="preview" hidden></div>
     <div class="msg" id="askMsg" role="status"></div>
   </section>
@@ -315,7 +321,7 @@ async function aiParse(text){
   const prompt=`Eres el asistente de una agenda personal en español. Hoy es ${longDate(today)} (${today}).
 Convierte la frase del usuario en un evento. Categorías disponibles (usa el id exacto o "" si ninguna encaja): ${JSON.stringify(S.cats.map(c=>({id:c.id,name:c.name})))}.
 Responde SOLO con JSON: {"title": string corto sin la fecha ni la hora, empezando en mayúscula, "date": "YYYY-MM-DD", "time": "HH:MM" o "", "category": id o "", "notes": string o "", "remindDays": número de días de antelación para avisar (examen 2, entrega 1, partido 0, por defecto 1)}.
-Si dice un día de la semana, es el próximo. Si no da fecha, usa hoy.
+Si dice un día de la semana, es el próximo. Si no da fecha, usa hoy. "Todo el día" o sin hora = time "". El texto puede venir dictado por voz: corrige errores obvios de transcripción.
 Frase: ${JSON.stringify(text)}`;
   const r=await S.sample.json(prompt,{modelTier:"quick",cache:false});
   if(!r||!/^\d{4}-\d{2}-\d{2}$/.test(r.date||"")||!r.title)throw new Error("bad");
@@ -349,6 +355,30 @@ $("preview").addEventListener("click",async e=>{
     if(await saveEvent(ev)){$("preview").hidden=true;$("askInput").value="";msg("Apuntado: "+ev.title+", "+longDate(ev.date)+".")}else e.target.disabled=false;
   }
 });
+
+/* ---------- voz ---------- */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+let rec=null,listening=false;
+function micFallback(){
+  $("askInput").focus();
+  msg("Aquí no puedo usar el micrófono directamente. Toca el micro del teclado del móvil (o Win+H en Windows) y dicta.");
+}
+$("micBtn").addEventListener("click",()=>{
+  if(listening&&rec){rec.stop();return}
+  if(!SR){micFallback();return}
+  try{
+    rec=new SR();rec.lang="es-ES";rec.interimResults=true;rec.maxAlternatives=1;
+    let finalText="";
+    rec.onstart=()=>{listening=true;$("micBtn").classList.add("on");msg("Te escucho…")};
+    rec.onresult=ev=>{let t="";for(const r of ev.results){t+=r[0].transcript;if(r.isFinal)finalText=t}$("askInput").value=t};
+    rec.onerror=ev=>{listening=false;$("micBtn").classList.remove("on");if(ev.error==="no-speech")msg("No te he oído. Prueba otra vez.");else micFallback()};
+    rec.onend=()=>{listening=false;$("micBtn").classList.remove("on");const v=$("askInput").value.trim();if(v&&(finalText||v))$("askForm").requestSubmit();else if(!$("askMsg").textContent.startsWith("Aquí"))msg("")};
+    rec.start();
+  }catch(err){listening=false;micFallback()}
+});
+/* acceso directo: el enlace con #apuntar abre listo para escribir/dictar */
+function focusIfShortcut(){if(location.hash==="#apuntar"){$("askInput").focus();msg("Toca el micrófono o escribe lo que quieres apuntar.")}}
+window.addEventListener("hashchange",focusIfShortcut);focusIfShortcut();
 
 /* ---------- manual form ---------- */
 function fillForm(ev){
