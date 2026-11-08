@@ -1,8 +1,31 @@
-# Life Reset 66 — tu vida como un videojuego
+# 66 Days to Live Your Life — tu vida como un videojuego
 
-App web de un solo archivo (`index.html`) para hacer un reto de 66 días como si fuera un juego.
-Abre `index.html` en el navegador (móvil o PC). No necesita instalación ni internet; todo se guarda
-en el propio navegador (localStorage). Puedes exportar/importar tu partida desde «Personaje».
+App web instalable (PWA) para hacer un reto de 66 días como si fuera un juego.
+
+## Instalarla en el móvil
+
+La app tiene que estar publicada en una dirección `https://` para poder instalarse. La forma más fácil
+es GitHub Pages (gratis):
+
+1. Une esta rama a `main` en GitHub.
+2. En el repositorio: **Settings → Pages → Source: Deploy from a branch → `main` / `(root)` → Save**.
+3. Al cabo de un minuto la app estará en `https://<tu-usuario>.github.io/<repo>/life-reset/`.
+4. Abre ese enlace en el móvil:
+   - **iPhone (Safari):** Compartir ⬆️ → *Añadir a pantalla de inicio*.
+   - **Android (Chrome):** menú ⋮ → *Instalar aplicación*.
+
+Desde ese momento tendrás el icono **66 Days** en tu pantalla de inicio: se abre a pantalla completa,
+directamente en tu panel, y funciona sin conexión.
+
+## Guardar el progreso
+
+- Se guarda **solo** en el dispositivo cada vez que marcas algo (la app pide al navegador que no borre sus datos).
+- En **Personaje → Guardar mi progreso** puedes:
+  - **Descargar copia**: un archivo `.json` con tu partida.
+  - **Copiar código**: un texto (`D66:...`) con toda tu partida para pegar en tus notas o enviarte por WhatsApp/email.
+  - **Restaurar archivo / Pegar código**: recupera la partida en otro móvil o tras borrar el navegador.
+    También se puede hacer desde la pantalla de bienvenida.
+- La app avisa si llevas más de 7 días sin hacer una copia.
 
 ## Qué incluye
 
@@ -13,7 +36,7 @@ en el propio navegador (localStorage). Puedes exportar/importar tu partida desde
 - **Recomendaciones** para tus 3 habilidades más débiles, con consejos y hábitos que puedes añadir con un toque.
 - **Hábitos buenos (+XP)** y **hábitos malos (−XP)**. Cada hábito sube o baja su habilidad.
 - **Racha**: multiplicador de XP hasta x1,5. **Día perfecto** (todos los buenos y ningún malo): +50 XP.
-- **10 rangos** con 3 divisiones cada uno (III → II → I). Puedes bajar de rango.
+- **9 rangos** con 3 divisiones cada uno (III → II → I). Puedes bajar de rango.
 
   | Rango | XP |
   |---|---|
@@ -25,8 +48,7 @@ en el propio navegador (localStorage). Puedes exportar/importar tu partida desde
   | ♦️ Rubí | 5.000 |
   | 🏆 Campeón | 7.000 |
   | 👑 Gran Campeón | 9.500 |
-  | ⚡ Supercampeón | 12.500 |
-  | 🌟 Dios | 16.000 |
+  | 🌟 Dios | 13.500 |
 
 - **Liga** contra 11 rivales simulados que avanzan cada día.
 - **Personaje personalizable**: piel, peinado, color de pelo, ropa y accesorios que se

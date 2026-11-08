@@ -4,7 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0d0f1a">
-<title>Life Reset 66</title>
+<title>66 Days to Live Your Life</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="66 Days">
 <meta name="description" content="Convierte tu vida en un videojuego: reto de 66 días, hábitos con experiencia, rangos de Madera a Dios, rivales y gráfico de habilidades.">
 <style>
   :root{
@@ -55,6 +62,7 @@
   .btn.danger{background:#7f1d1d}
   .btn.sm{padding:7px 12px;font-size:.85rem;border-radius:10px;white-space:nowrap;flex:none}
   .rec-h > span:last-child{white-space:nowrap}
+  .two .btn.sm{white-space:normal;padding:9px 8px}
   .btn.block{width:100%}
   .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--card-2);border:1px solid var(--border);font-size:.8rem;font-weight:600}
 
@@ -179,7 +187,7 @@
 
 <script>
 /* =========================================================
-   LIFE RESET 66 — tu vida como un videojuego
+   66 DAYS TO LIVE YOUR LIFE — tu vida como un videojuego
    Todo se guarda en el navegador (localStorage).
    ========================================================= */
 
@@ -192,8 +200,7 @@ const RANKS = [
   {n:'Rubí',         min:5000,  c:'#f43f72', i:'♦️'},
   {n:'Campeón',      min:7000,  c:'#fb923c', i:'🏆'},
   {n:'Gran Campeón', min:9500,  c:'#c084fc', i:'👑'},
-  {n:'Supercampeón', min:12500, c:'#38bdf8', i:'⚡'},
-  {n:'Dios',         min:16000, c:'#fff3b0', i:'🌟'},
+  {n:'Dios',         min:13500, c:'#fff3b0', i:'🌟'},
 ];
 
 const SKILLS = {
@@ -257,7 +264,7 @@ const AV = {
   hairColors:['#1b1b1b','#5a3a22','#a0642d','#e0b44c','#d9d9d9','#e2463c','#5b6cff','#29c48a'],
   shirts:['#7c5cff','#22d3ee','#ef4444','#22c55e','#f59e0b','#111827','#f9fafb','#ec4899'],
   hairs:[['corto','Corto'],['largo','Largo'],['pinchos','Pinchos'],['mono','Moño'],['rapado','Rapado']],
-  accs:[['none','Nada',0],['gafas','Gafas',0],['cinta','Cinta',1],['gorra','Gorra',2],['auris','Cascos',4],['halo','Halo',7],['corona','Corona',9]],
+  accs:[['none','Nada',0],['gafas','Gafas',0],['cinta','Cinta',1],['gorra','Gorra',2],['auris','Cascos',4],['halo','Halo',7],['corona','Corona',8]],
 };
 
 /* ---------------- Estado ---------------- */
@@ -505,11 +512,16 @@ function renderOnboarding(){
   const rng=(k,label,min,max,step,unit='')=>`<div class="field"><label>${label}</label><div class="range"><input type="range" min="${min}" max="${max}" step="${step}" value="${d[k]}" oninput="ob.d.${k}=+this.value;this.nextElementSibling.textContent=this.value+'${unit}'"><b>${d[k]}${unit}</b></div></div>`;
   let body='';
   if(s===0) body=`
-    <div class="logo">LIFE RESET · 66 DÍAS</div>
+    <div class="logo">66 DAYS TO LIVE YOUR LIFE</div>
     <h1>Tu vida es el juego.<br>Tú eres el personaje.</h1>
     <p class="muted" style="margin:10px 0 22px">Durante 66 días ganarás experiencia con cada buen hábito y la perderás con los malos. Sube de <b style="color:#a0703c">Madera</b> a <b style="color:#fff3b0">Dios</b> y supera a tus rivales.</p>
     <div class="card" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">${RANKS.map(r=>`<span class="pill" style="border-color:${r.c}">${r.i} ${r.n}</span>`).join('')}</div>
-    <button class="btn block" onclick="obNext()">Crear mi personaje ▶</button>`;
+    <button class="btn block" onclick="obNext()">Crear mi personaje ▶</button>
+    <div class="row" style="margin-top:12px;gap:8px">
+      <button class="btn ghost sm grow" onclick="pasteCode()">🔑 Tengo un código</button>
+      <button class="btn ghost sm grow" onclick="document.getElementById('imp0').click()">📂 Restaurar archivo</button>
+    </div>
+    <input id="imp0" type="file" accept="application/json,.json" class="hidden" onchange="importData(this)">`;
   if(s===1) body=`
     <h2 style="font-size:1.4rem">¿Quién eres?</h2>
     <p class="muted small" style="margin-bottom:16px">Con estos datos calculamos tus estadísticas iniciales.</p>
@@ -636,7 +648,7 @@ function viewHoy(){
   <div class="card row">
     ${ring(Math.min(D,66)/66,'var(--accent-2)')}
     <div class="grow">
-      <div class="small muted">RETO LIFE RESET</div>
+      <div class="small muted">66 DAYS TO LIVE YOUR LIFE</div>
       <div style="font-size:1.4rem;font-weight:800">${finished?'¡Reto completado! 🎉':`Día ${D} de 66`}</div>
       <div class="small muted">${finished?'Puedes seguir jugando y subiendo de rango.':`Quedan ${66-D} días para que tus hábitos sean automáticos.`}</div>
     </div>
@@ -711,7 +723,7 @@ function viewRank(){
   const above=players[pos-2];
   return `
   <div class="card">
-    <h2>⚔️ Liga Life Reset</h2>
+    <h2>⚔️ Liga 66 Days</h2>
     <p class="small muted" style="margin-bottom:10px">Compites contra otros jugadores que empezaron el reto el mismo día que tú. ${pos===1?'<b style="color:var(--gold)">¡Vas primero! 👑</b>':`Vas <b>#${pos}</b>. Para pasar a <b>${esc(above.name)}</b> te faltan <b>${fmt(above.xp-S.xp+1)} XP</b>.`}</p>
     ${players.map((p,i)=>`<div class="lb ${p.me?'me':''}"><span class="pos">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span class="dot" style="background:${p.color}"></span>
       <span class="grow" style="font-weight:${p.me?800:500};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}${p.me?' (tú)':''}</span>
@@ -728,7 +740,7 @@ function viewRank(){
 }
 
 function viewPerfil(){
-  const a=S.avatar, ri=rankInfo(S.xp), best=Math.max(S.best||0,ri.i), p=S.profile;
+  const a=S.avatar, ri=rankInfo(S.xp), best=Math.min(RANKS.length-1,Math.max(S.best||0,ri.i)), p=S.profile;
   const sw=(list,key)=>`<div class="opts">${list.map(c=>`<button class="sw ${a[key]===c?'on':''}" style="background:${c}" onclick="setAv('${key}','${c}')" aria-label="${c}"></button>`).join('')}</div>`;
   return `
   <div class="card" style="text-align:center">
@@ -756,12 +768,78 @@ function viewPerfil(){
     </div>
     <div class="row" style="margin-top:12px;flex-wrap:wrap;gap:8px">
       <button class="btn ghost sm" onclick="updWeight()">⚖️ Actualizar peso</button>
-      <button class="btn ghost sm" onclick="exportData()">💾 Exportar</button>
-      <button class="btn ghost sm" onclick="document.getElementById('imp').click()">📂 Importar</button>
-      <input id="imp" type="file" accept="application/json" class="hidden" onchange="importData(this)">
       <button class="btn danger sm" onclick="resetAll()">↺ Reiniciar</button>
     </div>
+  </div>
+  ${saveCard()}`;
+}
+
+function saveCard(){
+  const last=S.lastBackup?new Date(S.lastBackup).toLocaleDateString('es-ES'):null;
+  const old=!S.lastBackup || (Date.now()-S.lastBackup)>7*864e5;
+  return `<div class="card" id="guardar">
+    <h2>💾 Guardar mi progreso</h2>
+    <p class="small muted" style="margin-bottom:10px">Tu progreso se guarda <b>automáticamente</b> en este dispositivo cada vez que marcas algo.
+    Haz una copia de seguridad para no perderlo si cambias de móvil o borras el navegador.</p>
+    <p class="small" style="margin-bottom:12px;color:${old?'var(--gold)':'var(--good)'}">${last?`Última copia: <b>${last}</b>`:'Aún no has hecho ninguna copia'}${old?' · ¡Haz una ahora!':' ✓'}</p>
+    <div class="two">
+      <button class="btn sm" onclick="exportData()">⬇️ Descargar copia</button>
+      <button class="btn ghost sm" onclick="document.getElementById('imp').click()">📂 Restaurar archivo</button>
+      <button class="btn ghost sm" onclick="copyCode()">📋 Copiar código</button>
+      <button class="btn ghost sm" onclick="pasteCode()">🔑 Pegar código</button>
+    </div>
+    <input id="imp" type="file" accept="application/json,.json" class="hidden" onchange="importData(this)">
+    <p class="small muted" style="margin-top:10px">El <b>código de guardado</b> es un texto con toda tu partida: pégalo en tus notas o envíatelo por WhatsApp/email y úsalo en otro móvil con «Pegar código».</p>
+  </div>
+  <div class="card">
+    <h2>📲 Instalar como app</h2>
+    ${isStandalone()?'<p class="small" style="color:var(--good)">✓ Ya estás usando la app instalada.</p>':`
+    <p class="small muted" style="margin-bottom:10px">Instálala para abrirla desde un icono en tu pantalla de inicio, a pantalla completa y sin conexión.</p>
+    ${installEvt?'<button class="btn block" onclick="installApp()">📲 Instalar 66 Days</button>':`
+    <div class="small" style="line-height:1.7">
+      <b>iPhone (Safari):</b> pulsa <b>Compartir</b> ⬆️ → <b>Añadir a pantalla de inicio</b>.<br>
+      <b>Android (Chrome):</b> menú <b>⋮</b> → <b>Instalar aplicación</b> (o «Añadir a pantalla de inicio»).
+    </div>`}`}
   </div>`;
+}
+
+/* ---------------- Guardado / app instalable ---------------- */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; if(S&&tab==='perfil') render() });
+window.addEventListener('appinstalled',()=>{ installEvt=null; toast('¡App instalada! 📲','gold'); if(S) render() });
+function isStandalone(){ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true }
+function installApp(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; render() }) }
+function markBackup(){ S.lastBackup=Date.now(); save(); render() }
+function encodeSave(){ return 'D66:'+btoa(unescape(encodeURIComponent(JSON.stringify(S)))) }
+function decodeSave(t){ t=t.trim().replace(/^D66:/,''); return JSON.parse(decodeURIComponent(escape(atob(t)))) }
+function copyCode(){
+  S.lastBackup=Date.now(); save();
+  const code=encodeSave();
+  const done=()=>{ toast('Código copiado ✅ Guárdalo en tus notas','good'); render() };
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(code).then(done,()=>showCode(code));
+  else showCode(code);
+}
+function showCode(code){
+  openModal(`<h2>📋 Tu código de guardado</h2><p class="small muted" style="margin-bottom:8px">Mantén pulsado para copiarlo todo.</p>
+  <textarea readonly style="width:100%;height:160px;background:var(--bg-2);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:.7rem" onclick="this.select()">${code}</textarea>
+  <button class="btn block" style="margin-top:10px" onclick="closeModal();render()">Hecho</button>`);
+}
+function pasteCode(){
+  openModal(`<h2>🔑 Restaurar con código</h2><p class="small muted" style="margin-bottom:8px">Pega aquí tu código de guardado. <b>Se reemplazará la partida actual.</b></p>
+  <textarea id="codeIn" placeholder="D66:..." style="width:100%;height:140px;background:var(--bg-2);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:.75rem"></textarea>
+  <div class="row" style="margin-top:10px"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="applyCode()">Restaurar</button></div>`);
+}
+function applyCode(){
+  try{ const s=decodeSave(document.getElementById('codeIn').value); restore(s); closeModal() }
+  catch(e){ toast('Código no válido','bad') }
+}
+function restore(s){
+  if(!s||!s.habits||!s.base||!s.start) throw new Error('bad');
+  S=s; S.best=Math.min(RANKS.length-1,S.best||0); save(); tab='hoy'; render(); toast('Partida restaurada ✅','good');
+}
+if(navigator.storage&&navigator.storage.persist){ navigator.storage.persist().catch(()=>{}) }
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
 }
 
 function render(){
@@ -809,11 +887,13 @@ function updWeight(){
 }
 function exportData(){
   const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
-  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='life-reset-66.json'; a.click();
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='66-days-'+today()+'.json'; a.click();
+  markBackup(); toast('Copia descargada ✅','good');
 }
 function importData(inp){
   const f=inp.files[0]; if(!f) return;
-  f.text().then(t=>{ try{ const s=JSON.parse(t); if(!s.habits||!s.base) throw 0; S=s; save(); render(); toast('Partida importada','good') }catch(e){ toast('Archivo no válido','bad') } });
+  f.text().then(t=>{ try{ restore(JSON.parse(t)) }catch(e){ toast('Archivo no válido','bad') } });
+  inp.value='';
 }
 function resetAll(){
   if(!confirm('¿Seguro? Se borrará todo tu progreso y empezarás de cero.')) return;
