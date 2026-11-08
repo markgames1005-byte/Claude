@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d0f1a">
+<title>66 Days to Live Your Life</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="66 Days">
+<meta name="description" content="Convierte tu vida en un videojuego: reto de 66 días, hábitos con experiencia, cofres diarios, misiones, rangos de Madera a Dios y rivales.">
+<style>
+  :root{
+    --bg:#0d0f1a; --bg-2:#141728; --card:#1a1e33; --card-2:#222742; --border:#2e3456;
+    --text:#eef0ff; --text-2:#a8aed6; --text-3:#6f76a3;
+    --accent:#7c5cff; --accent-2:#22d3ee; --good:#34d399; --bad:#f87171; --gold:#fbbf24; --curse:#a855f7;
+    --rank:#a0703c; --radius:16px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text)}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 10% -10%, rgba(124,92,255,.18), transparent 60%),
+      radial-gradient(700px 400px at 110% 10%, rgba(34,211,238,.12), transparent 60%),
+      var(--bg);
+    background-attachment:fixed;-webkit-font-smoothing:antialiased;padding-bottom:90px;
+    -webkit-tap-highlight-color:transparent;
+  }
+  body.cursed{background:radial-gradient(900px 500px at 50% -10%, rgba(168,85,247,.22), transparent 60%),radial-gradient(600px 400px at 100% 100%, rgba(127,29,29,.25), transparent 60%),var(--bg);background-attachment:fixed}
+  button{font:inherit;color:inherit;cursor:pointer;border:none;background:none}
+  input,select,textarea{font:inherit;color:var(--text)}
+  .wrap{max-width:720px;margin:0 auto;padding:16px}
+  h1,h2,h3{line-height:1.2}
+  h2{font-size:1.1rem;margin-bottom:12px;letter-spacing:.02em}
+  .muted{color:var(--text-2)} .small{font-size:.82rem}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:14px}
+  .row{display:flex;align-items:center;gap:12px} .between{justify-content:space-between} .grow{flex:1;min-width:0}
+  .btn{background:var(--accent);color:#fff;padding:12px 18px;border-radius:12px;font-weight:700;letter-spacing:.02em;transition:transform .1s,filter .15s}
+  .btn:hover{filter:brightness(1.1)} .btn:active{transform:scale(.96)}
+  .btn.ghost{background:var(--card-2);color:var(--text);border:1px solid var(--border)}
+  .btn.danger{background:#7f1d1d} .btn.gold{background:linear-gradient(135deg,#fbbf24,#f59e0b);color:#2a1b00}
+  .btn.sm{padding:7px 12px;font-size:.85rem;border-radius:10px;white-space:nowrap;flex:none}
+  .btn.block{width:100%}
+  .two .btn.sm{white-space:normal;padding:9px 8px}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;background:var(--card-2);border:1px solid var(--border);font-size:.8rem;font-weight:600}
+
+  /* Header */
+  header.top{position:sticky;top:0;z-index:20;background:rgba(13,15,26,.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding-top:env(safe-area-inset-top)}
+  header.top .wrap{padding:10px 16px}
+  .hdr-avatar{width:48px;height:48px;flex:none}
+  .rank-badge{display:inline-flex;align-items:center;gap:6px;font-weight:800;font-size:.85rem;padding:3px 10px;border-radius:999px;color:#111;background:var(--rank);box-shadow:0 0 14px color-mix(in srgb,var(--rank) 60%,transparent);white-space:nowrap}
+  .xpbar{height:8px;background:var(--card-2);border-radius:99px;overflow:hidden;margin-top:6px}
+  .xpbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-2));border-radius:99px;transition:width .6s cubic-bezier(.2,.9,.3,1.2);position:relative}
+  .xpbar > i::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.45),transparent);transform:translateX(-100%);animation:shine 2.8s infinite}
+  @keyframes shine{60%,100%{transform:translateX(100%)}}
+  .hdr-chips{display:flex;gap:6px;margin-top:4px}
+  .hdr-chips span{font-size:.75rem;font-weight:700;color:var(--text-2)}
+  .bump{animation:bump .45s}
+  @keyframes bump{30%{transform:scale(1.15)}}
+
+  /* Nav */
+  nav.tabs{position:fixed;bottom:0;left:0;right:0;z-index:30;background:rgba(20,23,40,.95);backdrop-filter:blur(12px);border-top:1px solid var(--border);padding-bottom:env(safe-area-inset-bottom)}
+  nav.tabs .wrap{display:flex;padding:6px 8px}
+  nav.tabs button{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 2px;border-radius:12px;font-size:.66rem;color:var(--text-3);font-weight:600;position:relative}
+  nav.tabs button span{font-size:1.35rem;line-height:1}
+  nav.tabs button.on{color:var(--text);background:var(--card-2)}
+  nav.tabs .dot{position:absolute;top:6px;right:calc(50% - 18px);width:9px;height:9px;border-radius:50%;background:var(--bad);box-shadow:0 0 8px var(--bad)}
+
+  /* Hero */
+  .hero{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(124,92,255,.22),rgba(34,211,238,.08));border-color:rgba(124,92,255,.45)}
+  .bigring{width:96px;height:96px;flex:none;position:relative}
+  .bigring b{position:absolute;inset:0;display:grid;place-items:center;font-size:1.3rem;font-weight:900}
+  .stat3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+  .stat3 div{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:center}
+  .stat3 b{display:block;font-size:1.2rem}
+
+  /* Chest */
+  .chest{display:flex;align-items:center;gap:14px;cursor:pointer;background:linear-gradient(135deg,rgba(251,191,36,.25),rgba(245,158,11,.08));border-color:rgba(251,191,36,.6);animation:glow 1.8s ease-in-out infinite}
+  @keyframes glow{50%{box-shadow:0 0 26px rgba(251,191,36,.35)}}
+  .chest .ce{font-size:2.6rem;animation:wiggle 1.4s ease-in-out infinite}
+  @keyframes wiggle{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(-12deg)}80%{transform:rotate(12deg)}90%{transform:rotate(-6deg)}}
+  .chest-open .big{font-size:5rem;display:inline-block;animation:shake .7s}
+  @keyframes shake{0%,100%{transform:none}20%{transform:rotate(-15deg) scale(1.1)}40%{transform:rotate(15deg) scale(1.15)}60%{transform:rotate(-10deg) scale(1.2)}80%{transform:rotate(8deg) scale(1.1)}}
+
+  /* Missions */
+  .mis{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px dashed var(--border)}
+  .mis:first-of-type{border-top:none}
+  .mis .mk{width:24px;height:24px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center;font-size:.8rem;flex:none}
+  .mis.ok .mk{background:var(--gold);border-color:var(--gold);color:#2a1b00}
+  .mis.ok .mt{text-decoration:line-through;color:var(--text-2)}
+  .mis .mx{font-weight:800;font-size:.8rem;color:var(--gold);white-space:nowrap}
+
+  /* Curse */
+  .curse{background:linear-gradient(160deg,rgba(88,28,135,.55),rgba(127,29,29,.35));border:1px solid var(--curse);box-shadow:0 0 30px rgba(168,85,247,.25)}
+  .curse h2{color:#e9d5ff}
+  .ctask{display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;background:rgba(0,0,0,.25);margin-top:8px;cursor:pointer}
+  .ctask .check{border-color:#7e22ce}
+  .ctask.done .check{background:var(--curse);border-color:var(--curse);color:#fff}
+  .ctask.done span{text-decoration:line-through;opacity:.7}
+  .skull{font-size:4rem;animation:float 2.5s ease-in-out infinite}
+  @keyframes float{50%{transform:translateY(-8px)}}
+  .cursed-av{filter:grayscale(.85) brightness(.85)}
+
+  /* Habits */
+  .habit{display:flex;align-items:center;gap:10px;padding:12px;border-radius:14px;background:var(--card-2);border:1px solid var(--border);margin-bottom:8px;transition:background .2s,border-color .2s,transform .15s}
+  .habit .ic{font-size:1.4rem;width:38px;height:38px;display:grid;place-items:center;border-radius:10px;background:var(--bg-2);flex:none}
+  .habit .nm{font-weight:600;overflow-wrap:anywhere}
+  .habit .xp{font-weight:800;font-size:.85rem;white-space:nowrap}
+  .habit.good .xp{color:var(--good)} .habit.bad .xp{color:var(--bad)}
+  .check{width:38px;height:38px;border-radius:11px;border:2px solid var(--border);display:grid;place-items:center;flex:none;font-size:1.1rem;font-weight:900;transition:all .15s}
+  .minib{height:38px;padding:0 8px;border-radius:11px;border:1px dashed var(--border);font-size:.72rem;font-weight:700;color:var(--text-2);flex:none;line-height:1.1}
+  .habit.good.done{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.5)}
+  .habit.good.done .check{background:var(--good);border-color:var(--good);color:#06281b;animation:pop .35s}
+  .habit.good.done.mini .check{background:rgba(52,211,153,.45)}
+  .habit.bad.done{background:rgba(248,113,113,.12);border-color:rgba(248,113,113,.5)}
+  .habit.bad.done .check{background:var(--bad);border-color:var(--bad);color:#3b0909}
+  .habit .del{color:var(--text-3);font-size:1.1rem;padding:4px 8px;display:none}
+  .editing .habit .del{display:block}
+  .editing .habit .check,.editing .habit .minib{display:none}
+  .lvlup{font-size:.72rem;font-weight:800;color:var(--gold);background:rgba(251,191,36,.12);border:1px solid rgba(251,191,36,.5);padding:2px 8px;border-radius:99px;margin-top:4px;display:inline-block}
+  .mini-txt{font-size:.75rem;color:var(--text-3);margin-top:2px}
+
+  /* Day grid */
+  .grid66{display:grid;grid-template-columns:repeat(11,1fr);gap:5px}
+  .grid66 div{aspect-ratio:1;border-radius:6px;background:var(--card-2);display:grid;place-items:center;font-size:.62rem;color:var(--text-3);position:relative}
+  .grid66 .partial{background:rgba(124,92,255,.35);color:var(--text)}
+  .grid66 .done{background:rgba(52,211,153,.55);color:#04140d}
+  .grid66 .perfect{background:var(--gold);color:#2a1b00;font-weight:800}
+  .grid66 .shield{background:rgba(56,189,248,.45);color:#031c2b}
+  .grid66 .miss{background:rgba(248,113,113,.18)}
+  .grid66 .ms{box-shadow:inset 0 0 0 2px rgba(251,191,36,.6)}
+  .grid66 .today{outline:2px solid var(--accent-2);outline-offset:1px;color:var(--text)}
+  .grid66 .badmark::after{content:"";position:absolute;top:2px;right:2px;width:5px;height:5px;border-radius:50%;background:var(--bad)}
+
+  /* Coach */
+  .coach{display:flex;gap:12px;align-items:flex-start}
+  .coach .bot{font-size:1.8rem;flex:none}
+
+  /* Stats */
+  .radar-box{position:relative;width:100%;max-width:420px;margin:0 auto}
+  canvas{display:block;width:100%;height:auto}
+  .skill-row{display:grid;grid-template-columns:28px 1fr 44px;align-items:center;gap:10px;margin-bottom:9px}
+  .skill-row .bar{height:9px;border-radius:99px;background:var(--card-2);overflow:hidden}
+  .skill-row .bar i{display:block;height:100%;border-radius:99px}
+  .rec{border-left:3px solid var(--accent);padding:10px 12px;background:var(--card-2);border-radius:0 12px 12px 0;margin-bottom:10px}
+  .rec-h{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 0;border-top:1px dashed var(--border);font-size:.9rem}
+  .rec-h:first-of-type{border-top:none}
+  .rec-h > span:last-child{white-space:nowrap}
+
+  /* Ranking */
+  .ladder{display:flex;flex-direction:column-reverse;gap:6px}
+  .ladder .lv{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:12px;background:var(--card-2);border:1px solid var(--border);opacity:.55}
+  .ladder .lv.got{opacity:1}
+  .ladder .lv.cur{border-color:var(--c);box-shadow:0 0 0 1px var(--c),0 0 18px color-mix(in srgb,var(--c) 40%,transparent);opacity:1}
+  .ladder .em{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:1.1rem;background:var(--c);flex:none}
+  .lb{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:12px;margin-bottom:6px;background:var(--card-2)}
+  .lb.me{background:linear-gradient(90deg,rgba(124,92,255,.35),rgba(34,211,238,.15));border:1px solid var(--accent)}
+  .lb .pos{width:26px;text-align:center;font-weight:800;color:var(--text-2)}
+  .lb .dot{width:12px;height:12px;border-radius:50%;flex:none}
+  .achs{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+  .ach{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px 6px;text-align:center;font-size:.72rem}
+  .ach .ae{font-size:1.7rem;display:block;margin-bottom:4px}
+  .ach b{display:block;font-size:.78rem;margin-bottom:2px}
+  .ach.lock{opacity:.4} .ach.lock .ae{filter:grayscale(1)}
+  .ach.got{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.08)}
+
+  /* Avatar editor */
+  .opts{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 14px}
+  .opt{padding:7px 12px;border-radius:10px;background:var(--card-2);border:2px solid var(--border);font-size:.85rem;font-weight:600}
+  .opt.on{border-color:var(--accent);background:rgba(124,92,255,.2)}
+  .opt.locked{opacity:.4;cursor:not-allowed}
+  .sw{width:34px;height:34px;border-radius:50%;border:3px solid var(--border)}
+  .sw.on{border-color:#fff;box-shadow:0 0 0 2px var(--accent)}
+  .avatar-big{width:180px;height:220px;margin:0 auto;display:block}
+
+  /* Onboarding */
+  .ob{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding-bottom:0}
+  .ob h1{font-size:1.8rem;margin-bottom:6px}
+  .ob .logo{font-size:.8rem;letter-spacing:.3em;color:var(--accent-2);font-weight:800;margin-bottom:10px}
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:.85rem;color:var(--text-2);margin-bottom:6px;font-weight:600}
+  .field input[type=text],.field input[type=number],.field select{width:100%;padding:12px 14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border);outline:none}
+  .field input:focus,.field select:focus{border-color:var(--accent)}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .range{display:flex;align-items:center;gap:12px}
+  .range input{flex:1;accent-color:var(--accent)}
+  .range b{min-width:42px;text-align:right}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{padding:9px 14px;border-radius:999px;background:var(--bg-2);border:2px solid var(--border);font-weight:600;font-size:.9rem}
+  .chip.on{border-color:var(--accent);background:rgba(124,92,255,.25)}
+  .steps{display:flex;gap:6px;margin-bottom:22px}
+  .steps i{flex:1;height:5px;border-radius:9px;background:var(--card-2)}
+  .steps i.on{background:linear-gradient(90deg,var(--accent),var(--accent-2))}
+  .howto li{margin:0 0 6px 18px}
+
+  /* Modal & toast */
+  .modal{position:fixed;inset:0;z-index:50;background:rgba(5,6,12,.75);backdrop-filter:blur(4px);display:none;align-items:flex-end;justify-content:center;padding:16px}
+  .modal.show{display:flex}
+  .modal .sheet{width:100%;max-width:520px;background:var(--bg-2);border:1px solid var(--border);border-radius:20px;padding:20px;max-height:90vh;overflow:auto;animation:up .25s ease-out}
+  @keyframes up{from{transform:translateY(30px);opacity:0}}
+  @media(min-width:600px){.modal{align-items:center}}
+  .toasts{position:fixed;top:calc(80px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);z-index:60;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:calc(100% - 32px);max-width:400px}
+  .toast{padding:10px 16px;border-radius:12px;font-weight:800;background:var(--card);border:1px solid var(--border);box-shadow:0 10px 30px rgba(0,0,0,.4);animation:tin .25s ease-out;text-align:center}
+  .toast.good{color:var(--good)} .toast.bad{color:var(--bad)} .toast.gold{color:var(--gold)} .toast.curse{color:#d8b4fe;border-color:var(--curse)}
+  @keyframes tin{from{opacity:0;transform:translateY(-10px) scale(.95)}to{opacity:1;transform:none}}
+  .center{text-align:center}
+  .bigemoji{font-size:4rem;animation:pop .6s cubic-bezier(.2,1.6,.4,1)}
+  @keyframes pop{from{transform:scale(.2) rotate(-20deg);opacity:0}to{transform:none;opacity:1}}
+  .ring{width:64px;height:64px;flex:none}
+  #fx{position:fixed;inset:0;pointer-events:none;z-index:70}
+  .hidden{display:none!important}
+  .stat4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+  .stat4 div{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:9px 4px;text-align:center}
+  .stat4 b{display:block;font-size:1.05rem}
+  .stat4 span{font-size:.7rem}
+  .grid66 .rest{background:rgba(148,163,184,.22)}
+  .dchips{display:flex;gap:6px;flex-wrap:wrap}
+  .dchip{width:38px;height:38px;border-radius:50%;background:var(--bg-2);border:2px solid var(--border);font-weight:800;font-size:.85rem}
+  .dchip.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .qd{font-size:.75rem;padding:5px 10px;border-radius:99px;background:var(--card-2);border:1px solid var(--border);font-weight:700}
+  .hint{font-size:.78rem;color:var(--text-2);margin-top:6px;line-height:1.4}
+  .habit .ed{color:var(--text-3);font-size:1.05rem;padding:4px 6px;display:none}
+  .editing .habit .ed{display:block}
+  .days-tag{font-size:.7rem;font-weight:700;color:var(--accent-2)}
+  /* Chat */
+  .chat{display:flex;flex-direction:column;gap:10px;padding-bottom:8px}
+  .msg{max-width:86%;padding:10px 13px;border-radius:16px;font-size:.92rem;line-height:1.45;overflow-wrap:anywhere}
+  .msg.a{align-self:flex-start;background:var(--card);border:1px solid var(--border);border-bottom-left-radius:4px}
+  .msg.u{align-self:flex-end;background:var(--accent);color:#fff;border-bottom-right-radius:4px}
+  .msg.t{opacity:.7;font-style:italic}
+  .chatbar{position:sticky;bottom:78px;display:flex;gap:8px;background:var(--bg);padding:8px 0}
+  .chatbar textarea{flex:1;resize:none;height:46px;max-height:120px;padding:12px;border-radius:14px;background:var(--bg-2);border:1px solid var(--border);outline:none}
+  .sugg{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+  .sugg button{font-size:.78rem;padding:6px 10px;border-radius:99px;background:var(--card-2);border:1px solid var(--border)}
+  /* Weekly report */
+  .wbars{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;align-items:end;height:90px;margin:8px 0 4px}
+  .wbars div{background:linear-gradient(180deg,var(--accent-2),var(--accent));border-radius:6px 6px 2px 2px;min-height:3px}
+  .wlab{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;font-size:.7rem;color:var(--text-3)}
+  .cmp{display:grid;grid-template-columns:1fr auto auto;gap:4px 10px;font-size:.85rem;align-items:center}
+  .up{color:var(--good);font-weight:800} .down{color:var(--bad);font-weight:800}
+  .switch{width:52px;height:30px;border-radius:99px;background:var(--card-2);border:1px solid var(--border);position:relative;flex:none}
+  .switch::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on{background:var(--good)} .switch.on::after{left:25px}
+  .remrow{padding:10px;border-radius:12px;background:var(--card-2);margin-bottom:8px}
+  .remrow input[type=time]{background:var(--bg-2);border:1px solid var(--border);border-radius:10px;padding:8px;color:var(--text)}
+  .shop{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .shop button{background:var(--card-2);border:1px solid var(--border);border-radius:12px;padding:10px;text-align:left}
+  .shop b{display:block}
+  @media (prefers-reduced-motion: reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div id="app"></div>
+<div class="toasts" id="toasts"></div>
+<div class="modal" id="modal"><div class="sheet" id="sheet"></div></div>
+
+<script>
+/* =========================================================
+   66 DAYS TO LIVE YOUR LIFE — tu vida como un videojuego
+   Todo se guarda en el navegador (localStorage).
+   ========================================================= */
+
+/* Umbrales calibrados para un reto de 66 días: el primer rango cae en 1-2 días,
+   y Dios exige constancia (~100 XP diarios) pero es alcanzable. */
+const RANKS = [
+  {n:'Madera',       min:0,    c:'#a0703c', i:'🪵'},
+  {n:'Bronce',       min:150,  c:'#cd7f32', i:'🥉'},
+  {n:'Plata',        min:400,  c:'#c3cad6', i:'🥈'},
+  {n:'Oro',          min:800,  c:'#fbbf24', i:'🥇'},
+  {n:'Platino',      min:1400, c:'#5eead4', i:'💠'},
+  {n:'Rubí',         min:2200, c:'#f43f72', i:'♦️'},
+  {n:'Campeón',      min:3200, c:'#fb923c', i:'🏆'},
+  {n:'Gran Campeón', min:4500, c:'#c084fc', i:'👑'},
+  {n:'Dios',         min:6500, c:'#fff3b0', i:'🌟'},
+];
+
+const SKILLS = {
+  fuerza:     {n:'Fuerza',      e:'💪', c:'#f87171'},
+  resistencia:{n:'Resistencia', e:'🏃', c:'#fb923c'},
+  nutricion:  {n:'Nutrición',   e:'🥗', c:'#34d399'},
+  sueno:      {n:'Sueño',       e:'😴', c:'#818cf8'},
+  mente:      {n:'Mente',       e:'🧘', c:'#c084fc'},
+  intelecto:  {n:'Intelecto',   e:'📚', c:'#22d3ee'},
+  social:     {n:'Social',      e:'🤝', c:'#f472b6'},
+  finanzas:   {n:'Finanzas',    e:'💰', c:'#fbbf24'},
+};
+const SK = Object.keys(SKILLS);
+
+/* Cada hábito tiene 3 niveles:
+   n = normal, e = fácil (para quien empieza), m = versión mínima ("nunca cero", media XP) */
+const RECS = {
+  fuerza:{
+    tips:['Entrena fuerza 3-4 días por semana con progresión (más peso o repeticiones cada semana).','Prioriza básicos: sentadilla, peso muerto, press y dominadas.','Come suficiente proteína (aprox. 1,6-2 g por kg de peso).'],
+    good:[
+      {n:'Entreno de fuerza 45 min',e:'Entreno de fuerza 20 min en casa',m:'10 sentadillas',xp:30,ic:'🏋️'},
+      {n:'50 flexiones repartidas en el día',e:'15 flexiones (vale con rodillas)',m:'3 flexiones',xp:15,ic:'💪'},
+      {n:'Escaleras en vez de ascensor',e:'Subir 2 pisos por escaleras',m:'Un tramo de escaleras',xp:8,ic:'🪜'}],
+    bad:[{n:'Saltarme el entreno planificado',xp:20,ic:'🛋️'}]},
+  resistencia:{
+    tips:['Empieza con 20-30 min de cardio suave (puedes hablar mientras lo haces).','Sube el volumen un 10% por semana como máximo.','Caminar cuenta: apunta a 8.000-10.000 pasos diarios.'],
+    good:[
+      {n:'Correr / bici / nadar 30 min',e:'Caminar rápido 20 min',m:'Caminar 5 min',xp:25,ic:'🏃'},
+      {n:'10.000 pasos',e:'6.000 pasos',m:'Un paseo de 5 min',xp:20,ic:'👟'},
+      {n:'HIIT o comba 10 min',e:'5 min de comba o saltos',m:'1 min de saltos',xp:12,ic:'⏱️'}],
+    bad:[{n:'Más de 8 h sentado sin moverme',xp:10,ic:'🪑'}]},
+  nutricion:{
+    tips:['Llena medio plato con verdura en cada comida principal.','Bebe agua antes de cada comida; 2 L al día es un buen objetivo.','Planifica y cocina tus comidas: reduce ultraprocesados.'],
+    good:[
+      {n:'3 raciones de fruta/verdura',e:'1 ración extra de fruta o verdura',m:'Comer una pieza de fruta',xp:15,ic:'🥦'},
+      {n:'Beber 2 L de agua',e:'Beber 1,5 L de agua',m:'Un vaso de agua al despertar',xp:10,ic:'💧'},
+      {n:'Cocinar todas mis comidas',e:'Cocinar una comida en casa',m:'Prepararme un snack sano',xp:15,ic:'🍳'},
+      {n:'Proteína en cada comida',e:'Proteína en 2 comidas',m:'Añadir un huevo o yogur',xp:10,ic:'🥚'}],
+    bad:[{n:'Comida basura / ultraprocesados',xp:25,ic:'🍔'},{n:'Refrescos azucarados',xp:15,ic:'🥤'},{n:'Picar entre horas por ansiedad',xp:10,ic:'🍫'}]},
+  sueno:{
+    tips:['Duerme 7-9 h y acuéstate siempre a la misma hora.','Nada de pantallas 1 h antes de dormir; habitación oscura y fresca.','Evita la cafeína a partir de las 15:00.'],
+    good:[
+      {n:'Dormir 7-9 horas',e:'Dormir al menos 7 horas',m:'Acostarme 15 min antes',xp:20,ic:'😴'},
+      {n:'Sin pantallas 1 h antes de dormir',e:'Sin pantallas 30 min antes de dormir',m:'Móvil fuera de la cama',xp:15,ic:'📵'},
+      {n:'Acostarme antes de las 23:00',e:'Acostarme antes de las 00:00',m:'Poner alarma para ir a dormir',xp:10,ic:'🌙'}],
+    bad:[{n:'Trasnochar sin motivo',xp:20,ic:'🦉'},{n:'Café después de las 17:00',xp:8,ic:'☕'}]},
+  mente:{
+    tips:['Medita unos minutos al día (respiración, apps o en silencio).','Escribe 3 cosas por las que estás agradecido cada noche.','Haz primero la tarea más difícil del día.'],
+    good:[
+      {n:'Meditar 15 min',e:'Meditar 5 min',m:'5 respiraciones profundas',xp:15,ic:'🧘'},
+      {n:'Escribir en mi diario',e:'Escribir 3 cosas buenas del día',m:'Escribir 1 frase',xp:10,ic:'📓'},
+      {n:'Ducha fría 2 min',e:'30 s de agua fría al final',m:'10 s de agua fría',xp:15,ic:'🚿'},
+      {n:'Hacer la tarea difícil primero',e:'25 min de foco sin móvil',m:'Empezar la tarea 2 min',xp:15,ic:'🎯'}],
+    bad:[{n:'Procrastinar algo importante',xp:15,ic:'⏳'},{n:'Pensamientos negativos sin frenar',xp:8,ic:'🌧️'}]},
+  intelecto:{
+    tips:['Lee 10-20 páginas al día: son miles al año.','Aprende algo concreto: un idioma, un curso, una habilidad.','Sustituye scroll por podcasts o audiolibros.'],
+    good:[
+      {n:'Leer 20 páginas',e:'Leer 10 páginas',m:'Leer 1 página',xp:20,ic:'📖'},
+      {n:'Estudiar / curso 45 min',e:'Estudiar 20 min',m:'Abrir el curso 2 min',xp:20,ic:'🧠'},
+      {n:'Idioma 20 min',e:'Idioma 10 min',m:'Aprender 3 palabras',xp:12,ic:'🗣️'}],
+    bad:[{n:'Más de 3 h en redes sociales',xp:25,ic:'📱'},{n:'Maratón de series sin control',xp:15,ic:'📺'}]},
+  social:{
+    tips:['Habla cada día con alguien importante para ti (no solo por chat).','Haz un plan semanal con amigos o familia.','Ayuda a alguien o haz un cumplido sincero.'],
+    good:[
+      {n:'Ver a un amigo o familiar',e:'Llamar a un amigo o familiar',m:'Enviar un mensaje a alguien',xp:12,ic:'📞'},
+      {n:'Ayudar a alguien',e:'Hacer un cumplido sincero',m:'Dar las gracias a alguien',xp:10,ic:'🫶'},
+      {n:'Plan social sin móvil',e:'Comer con alguien sin móvil',m:'Una conversación sin mirar el móvil',xp:15,ic:'🎉'}],
+    bad:[{n:'Discutir / tratar mal a alguien',xp:15,ic:'💢'},{n:'Aislarme todo el día',xp:10,ic:'🚪'}]},
+  finanzas:{
+    tips:['Apunta todos tus gastos durante el reto.','Ahorra automáticamente un % de lo que ganas al cobrar.','Regla de las 48 h: espera 2 días antes de cualquier compra no esencial.'],
+    good:[
+      {n:'Registrar todos mis gastos',e:'Apuntar los gastos de hoy',m:'Mirar el saldo de la cuenta',xp:10,ic:'🧾'},
+      {n:'Día sin gastos innecesarios',e:'Evitar un gasto innecesario',m:'Esperar 24 h antes de comprar algo',xp:15,ic:'🔒'},
+      {n:'Aprender sobre finanzas 20 min',e:'Leer un artículo de finanzas',m:'Leer 1 consejo de ahorro',xp:10,ic:'📈'}],
+    bad:[{n:'Compra impulsiva',xp:20,ic:'🛍️'},{n:'Apuestas',xp:30,ic:'🎰'}]},
+};
+
+/* Tarea de la misión de redención según la habilidad más débil */
+const REDEEM = {
+  fuerza:'Entreno de fuerza completo: 4 ejercicios × 3 series',
+  resistencia:'Caminar o correr 40 min seguidos',
+  nutricion:'Un día entero sin ultraprocesados ni azúcar añadido',
+  sueno:'Dos noches seguidas en la cama antes de las 23:30, sin móvil',
+  mente:'Meditar 15 min y escribir qué falló y cómo lo evitarás',
+  intelecto:'Leer 30 páginas (o 45 min de un curso)',
+  social:'Ver en persona o llamar 20 min a alguien importante',
+  finanzas:'48 h sin gastos no esenciales y revisar tus gastos del mes',
+};
+
+const GOALS = [
+  ['fuerza','💪 Ganar músculo'],['resistencia','🏃 Mejorar cardio'],['nutricion','🥗 Perder grasa / comer mejor'],
+  ['sueno','😴 Dormir mejor'],['mente','🧘 Disciplina y mente'],['intelecto','📚 Aprender / leer más'],
+  ['social','🤝 Vida social'],['finanzas','💰 Ahorrar dinero'],
+];
+
+const RIVAL_NAMES = ['Lucía_Fit','Dani_Beast','Sara.Runner','ElTitán','Marta_Zen','Hugo_Grind','Nora_Lift','Iker66','Valeria_Pro','Pablo_Discipl','Alex_Monk'];
+
+const AV = {
+  skins:['#f5d0b5','#e8b48f','#c98c62','#a0673f','#6e4426','#45291a'],
+  hairColors:['#1b1b1b','#5a3a22','#a0642d','#e0b44c','#d9d9d9','#e2463c','#5b6cff','#29c48a'],
+  shirts:['#7c5cff','#22d3ee','#ef4444','#22c55e','#f59e0b','#111827','#f9fafb','#ec4899'],
+  hairs:[['corto','Corto'],['largo','Largo'],['pinchos','Pinchos'],['mono','Moño'],['rapado','Rapado']],
+  // [id, nombre, rango que lo desbloquea, precio en gemas (opcional)]
+  accs:[['none','Nada',0],['gafas','Gafas',0],['cinta','Cinta',1],['gorra','Gorra',2],['auris','Cascos',4],['halo','Halo',7],['corona','Corona',8],['sol','Gafas de sol',0,5],['pajarita','Pajarita',0,4]],
+};
+
+const MILESTONES = {7:50,14:75,21:100,33:150,50:200,66:500};
+
+/* Días de la semana (getDay: 0 = domingo). Se muestran empezando en lunes. */
+const WD=[1,2,3,4,5,6,0];
+const WDN={0:'D',1:'L',2:'M',3:'X',4:'J',5:'V',6:'S'};
+const WDL={0:'Domingo',1:'Lunes',2:'Martes',3:'Miércoles',4:'Jueves',5:'Viernes',6:'Sábado'};
+
+/* Gemas: cada hábito completado vale 0,25 💎 (versión mínima 0,125). Se cobran al cerrar la semana. */
+const GEM_FULL=0.25, GEM_MINI=0.125;
+const SHOP=[
+  {id:'shield',e:'🛡️',n:'Escudo de racha',p:3},
+  {id:'chest', e:'🎁',n:'Cofre extra',p:2},
+  {id:'time',  e:'⏳',n:'+24 h de redención',p:4},
+];
+
+
+/* ---------------- Estado ---------------- */
+const KEY='lifereset66.v1';
+let S = load();
+let tab = 'hoy';
+let editing = false;
+let ob = {step:0, d:{name:'',age:'',sex:'h',weight:'',height:'',goals:[],sleep:7,gym:0,cardio:0,veg:2,fast:2,water:1.5,stress:3,phone:4,read:10,social:3,money:3}};
+
+function load(){ try{ const s=localStorage.getItem(KEY); return s?JSON.parse(s):null }catch(e){ return null } }
+let syncT;
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)) }catch(e){} clearTimeout(syncT); syncT=setTimeout(()=>{ if(typeof syncRem==='function') syncRem() },500) }
+
+const pad=n=>String(n).padStart(2,'0');
+const dkey=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+const today=()=>dkey(new Date());
+const parseKey=k=>{const [y,m,d]=k.split('-').map(Number);return new Date(y,m-1,d)};
+const addDays=(k,n)=>{const d=parseKey(k); d.setDate(d.getDate()+n); return dkey(d)};
+const daysBetween=(a,b)=>Math.round((parseKey(b)-parseKey(a))/864e5);
+const dayIndex=()=>daysBetween(S.start,today())+1;
+const clamp=(v,a=5,b=100)=>Math.max(a,Math.min(b,Math.round(v)));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const uid=()=>Math.random().toString(36).slice(2,9);
+const fmt=n=>Math.round(n).toLocaleString('es-ES');
+const isSched=(h,k=today())=>!h.days||!h.days.length||h.days.length===7||h.days.includes(parseKey(k).getDay());
+const goods=(k=today())=>S.habits.filter(h=>h.type==='good'&&isSched(h,k));
+const mondayOf=k=>addDays(k,-((parseKey(k).getDay()+6)%7));
+const fmtGem=n=>(Math.round(n*1000)/1000).toLocaleString('es-ES',{maximumFractionDigits:3});
+function daysLabel(days){
+  if(!days||!days.length||days.length===7) return 'Todos los días';
+  const s=[...days].sort().join();
+  if(s==='1,2,3,4,5') return 'Lunes a viernes';
+  if(s==='0,6') return 'Fin de semana';
+  return WD.filter(d=>days.includes(d)).map(d=>WDN[d]).join(' · ');
+}
+const bmiOf=p=>p&&p.weight&&p.height ? p.weight/Math.pow(p.height/100,2) : 22;
+function hash(str){ let h=2166136261; for(const c of str){ h^=c.charCodeAt(0); h=Math.imul(h,16777619) } return h>>>0 }
+function rng(seed){ return function(){ seed|=0; seed=seed+0x6D2B79F5|0; let t=Math.imul(seed^seed>>>15,1|seed); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296 } }
+
+/* Migra partidas antiguas al formato actual */
+function migrate(){
+  if(!S) return;
+  S.habits.forEach(h=>{ if(h.type==='good' && !h.mini) h.mini='Versión mínima (2 min)'; h.count=h.count||0 });
+  S.stats=Object.assign({good:0,chests:0,perfect:0,mini:0,lvlup:0,skills:{},redeemed:0,missions:0},S.stats||{});
+  S.ach=S.ach||{}; S.shields=S.shields||0;
+  S.gems=S.gems||0; S.weeks=S.weeks||[]; S.owned=S.owned||{}; S.chat=S.chat||[];
+  delete S.ai; // la IA de pago se ha quitado: se borra cualquier clave guardada
+  S.rem=S.rem||{on:false,list:[{id:'r1',t:'09:00',days:[0,1,2,3,4,5,6]},{id:'r2',t:'21:00',days:[0,1,2,3,4,5,6]}]};
+  if(!S.lastWeek) S.lastWeek=addDays(mondayOf(S.start),-7);
+  if(S.sound===undefined) S.sound=true;
+  if(!S.lastProcessed) S.lastProcessed=addDays(today(),-1) > addDays(S.start,-1) ? addDays(today(),-1) : addDays(S.start,-1);
+  S.best=Math.min(RANKS.length-1,Math.max(S.best||0,rankOf(S.xp)));
+  S.v=2;
+}
+
+function rankOf(xp){ let i=0; RANKS.forEach((r,k)=>{ if(xp>=r.min) i=k }); return i }
+function rankInfo(xp){
+  const i=rankOf(xp), r=RANKS[i], next=RANKS[i+1];
+  if(!next) return {i,r,div:'',dn:3,pct:100,toNext:0,next:null};
+  const span=next.min-r.min, into=xp-r.min, dn=Math.min(2,Math.floor(into/(span/3)));
+  return {i,r,div:['III','II','I'][dn],dn,pct:into/span*100,toNext:next.min-xp,next};
+}
+function skillVal(k){ return clamp(S.base[k]+(S.delta[k]||0),0,100) }
+function bumpSkill(k,v){ const b=S.base[k]; S.delta[k]=Math.max(-b,Math.min(100-b,(S.delta[k]||0)+v)) }
+function weakest(){ return [...SK].sort((a,b)=>skillVal(a)-skillVal(b))[0] }
+function getDay(k=today()){ return S.days[k] || (S.days[k]={done:{},mini:{},bonus:0,mis:{}}) }
+
+/* Nivel físico del jugador según perfil: 0 principiante, 1 intermedio, 2 avanzado */
+function fitTier(){
+  const p=S.profile, f=(skillVal('fuerza')+skillVal('resistencia'))/2;
+  let t=f<40?0:f<70?1:2;
+  if((+p.age||0)>=55 || bmiOf(p)>=30) t=Math.max(0,t-1);
+  return t;
+}
+/* ¿Le damos la versión fácil del hábito? */
+function easyFor(skill, base=S.base, p=S.profile){
+  const phys = skill==='fuerza'||skill==='resistencia';
+  if(phys && ((+p.age||0)>=55 || bmiOf(p)>=30)) return true;
+  return (base[skill]??50) < 50;
+}
+function makeHabit(skill, rec, type, base, p){
+  if(type==='bad') return {id:uid(),name:rec.n,type:'bad',xp:rec.xp,skill,icon:rec.ic,count:0};
+  const easy=easyFor(skill,base,p);
+  return {id:uid(),name:easy?rec.e:rec.n,normal:rec.n,mini:rec.m,lvl:easy?'easy':'normal',type:'good',xp:rec.xp,skill,icon:rec.ic,count:0};
+}
+
+/* Estado de un día: perfecto / cumplido (≥50 %) / parcial / escudo */
+function dayStatus(k){
+  const d=S.days[k];
+  if(d&&d.shield) return {cls:'shield',bad:0,r:1,g:0};
+  // nº de hábitos que tocaban ese día (guardado al marcar; si no, según el calendario actual)
+  const tot = (k===today()||!d||d.g===undefined) ? goods(k).length : d.g;
+  const vals=d?Object.values(d.done):[];
+  const g=vals.filter(v=>v>0).length, bad=vals.filter(v=>v<0).length;
+  if(!tot) return {cls:'rest',bad,r:1,g};   // día de descanso: no toca ningún hábito
+  if(!d) return {cls:'',bad:0,r:0,g:0};
+  const r=Math.min(1,g/tot);
+  const cls = r===0?'':(r>=1&&!bad)?'perfect':r>=.5?'done':'partial';
+  return {cls,bad,r,g};
+}
+const okDay=c=>c==='done'||c==='perfect'||c==='shield'||c==='rest';
+function streak(){
+  let n=0, k=today();
+  if(okDay(dayStatus(k).cls)) n++;
+  k=addDays(k,-1);
+  while(daysBetween(S.start,k)>=0 && okDay(dayStatus(k).cls)){ n++; k=addDays(k,-1) }
+  return n;
+}
+function mult(){ return 1+Math.min(streak(),10)*.05 }
+
+/* ---------------- Rivales simulados ---------------- */
+function rivals(){
+  const D=dayIndex(), hourFrac=Math.max(.1,new Date().getHours()/24);
+  return RIVAL_NAMES.map((name,i)=>{
+    const r=rng(S.seed+i*977);
+    const rate=35+r()*95, flake=.1+r()*.3;
+    let xp=0;
+    for(let d=0; d<D; d++){
+      let gain = r()<flake ? -rate*.3*r() : rate*(.6+r()*.8);
+      if(d===D-1) gain*=hourFrac;
+      xp=Math.max(0,xp+gain);
+    }
+    return {name,xp:Math.round(xp),color:RANKS[rankOf(xp)].c};
+  });
+}
+function league(){ return [...rivals(),{name:S.profile.name,xp:S.xp,me:true,color:RANKS[rankOf(S.xp)].c}].sort((a,b)=>b.xp-a.xp) }
+
+/* ---------------- Sonido, vibración y confeti ---------------- */
+let actx=null;
+function sfx(type){
+  if(!S||!S.sound) return;
+  try{
+    actx=actx||new (window.AudioContext||window.webkitAudioContext)();
+    const seq={good:[660,880],mini:[520,660],bad:[300,200],rank:[523,659,784,1047],chest:[784,988,1175,1568],curse:[220,185,147],ach:[880,1175,1568],div:[660,990]}[type]||[600];
+    seq.forEach((f,i)=>{
+      const o=actx.createOscillator(), g=actx.createGain(), t=actx.currentTime+i*.09;
+      o.type=type==='bad'||type==='curse'?'sawtooth':'triangle'; o.frequency.value=f;
+      g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(.12,t+.02); g.gain.exponentialRampToValueAtTime(.0001,t+.22);
+      o.connect(g).connect(actx.destination); o.start(t); o.stop(t+.25);
+    });
+  }catch(e){}
+  try{ navigator.vibrate && navigator.vibrate(type==='bad'||type==='curse'?[60,40,60]:type==='rank'||type==='chest'?[30,30,30,30,80]:15) }catch(e){}
+}
+function confetti(n=90, colors){
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const c=document.createElement('canvas'); c.id='fx'; document.body.appendChild(c);
+  const W=c.width=innerWidth, H=c.height=innerHeight, x=c.getContext('2d');
+  const cols=colors||['#7c5cff','#22d3ee','#34d399','#fbbf24','#f472b6','#fff'];
+  const ps=Array.from({length:n},()=>({x:W/2+(Math.random()-.5)*80,y:H*.35,vx:(Math.random()-.5)*14,vy:-Math.random()*14-4,s:4+Math.random()*6,r:Math.random()*6,vr:(Math.random()-.5)*.4,c:cols[Math.random()*cols.length|0]}));
+  let f=0;
+  (function tick(){
+    x.clearRect(0,0,W,H);
+    ps.forEach(p=>{ p.vy+=.35; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.fillStyle=p.c; x.globalAlpha=Math.max(0,1-f/110); x.fillRect(-p.s/2,-p.s/2,p.s,p.s*.6); x.restore() });
+    if(++f<110) requestAnimationFrame(tick); else c.remove();
+  })();
+}
+
+/* ---------------- Coach ---------------- */
+function coach(){
+  const h=new Date().getHours(), st=dayStatus(today()), d=getDay(), G=goods();
+  const done=G.filter(x=>d.done[x.id]!==undefined).length;
+  const w=weakest(), ri=rankInfo(S.xp), sk=streak(), name=esc(S.profile.name||'jugador');
+  const lines=[];
+  if(S.curse) lines.push(`Estás maldito, ${name}. Completa la misión de redención antes de que se acabe el tiempo: es dura, pero está hecha a tu medida.`);
+  else if(st.bad) lines.push(`Has marcado un hábito malo. Un mal momento no define tu partida: compénsalo ahora con un hábito bueno.`);
+  else if(done===0 && h<12) lines.push(`Buenos días, ${name}. Empieza por el hábito más fácil. ¿No tienes ganas? Haz solo la <b>versión mínima</b>: lo importante es no hacer cero.`);
+  else if(done===0) lines.push(`Aún no has sumado XP hoy. Elige UN hábito y haz al menos su versión mínima en los próximos 10 minutos.`);
+  else if(st.cls==='perfect') lines.push(`¡Día perfecto! 🔥 Mañana te espera otro cofre.`);
+  else if(st.r<.5) lines.push(`Llevas ${done}/${G.length}. Con ${Math.ceil(G.length/2)-done} más el día cuenta para la racha.`);
+  else lines.push(`Día asegurado para la racha ✅ ${G.length-done} más y es día perfecto (+50 XP).`);
+  if(ri.next && ri.toNext<=60) lines.push(`¡Solo ${fmt(ri.toNext)} XP para ${ri.next.i} ${ri.next.n}!`);
+  else if(sk>=2) lines.push(`Racha de ${sk} días → tus hábitos dan x${mult().toFixed(2)} XP.`);
+  else lines.push(`Consejo para ${SKILLS[w].e} ${SKILLS[w].n}: ${RECS[w].tips[dayIndex()%RECS[w].tips.length]}`);
+  return lines;
+}
+
+/* ---------------- Avatar ---------------- */
+function avatarSVG(a, color, cls='', glow=true){
+  const hc=a.hairColor, sk=a.skin, cursed=S&&S.curse;
+  if(cursed) color='#7e22ce';
+  const hair={
+    corto:`<path d="M33 54 Q31 24 60 23 Q89 24 87 54 Q82 37 60 37 Q38 37 33 54Z" fill="${hc}"/>`,
+    largo:`<path d="M31 52 Q29 21 60 21 Q91 21 89 52 L92 92 Q84 88 83 62 Q79 37 60 37 Q41 37 37 62 Q36 88 28 92 Z" fill="${hc}"/>`,
+    pinchos:`<polygon points="33,54 34,30 43,36 46,17 55,31 61,12 67,31 76,18 78,35 87,29 87,54 80,38 40,38" fill="${hc}"/>`,
+    mono:`<circle cx="60" cy="19" r="10" fill="${hc}"/><path d="M33 54 Q31 24 60 23 Q89 24 87 54 Q82 37 60 37 Q38 37 33 54Z" fill="${hc}"/>`,
+    rapado:`<path d="M35 46 Q36 27 60 27 Q84 27 85 46 Q78 35 60 35 Q42 35 35 46Z" fill="${hc}" opacity=".55"/>`,
+  }[a.hair]||'';
+  const acc={
+    none:'',
+    gafas:`<g fill="none" stroke="#111" stroke-width="2.5"><circle cx="50" cy="57" r="7"/><circle cx="70" cy="57" r="7"/><path d="M57 57h6M43 56l-9-3M77 56l9-3"/></g>`,
+    cinta:`<rect x="33" y="40" width="54" height="7" rx="3" fill="#ef4444"/><path d="M86 43 l10 -4 l-3 8 z" fill="#ef4444"/>`,
+    gorra:`<path d="M32 47 Q33 21 60 21 Q87 21 88 47 Z" fill="${a.shirt}"/><path d="M60 44 Q85 43 101 49 Q85 51 60 49Z" fill="${a.shirt}" stroke="rgba(0,0,0,.3)"/>`,
+    auris:`<path d="M31 56 Q31 18 60 18 Q89 18 89 56" fill="none" stroke="#111" stroke-width="5"/><rect x="25" y="50" width="11" height="17" rx="5" fill="#ef4444"/><rect x="84" y="50" width="11" height="17" rx="5" fill="#ef4444"/>`,
+    halo:`<ellipse cx="60" cy="13" rx="20" ry="5" fill="none" stroke="#fde68a" stroke-width="4"/>`,
+    corona:`<polygon points="40,28 44,8 52,20 60,4 68,20 76,8 80,28" fill="#fbbf24" stroke="#b45309" stroke-width="1.5"/><circle cx="60" cy="18" r="3" fill="#ef4444"/>`,
+  }[a.acc]||'';
+  const mouth = cursed ? `<path d="M51 72 Q60 66 69 72" stroke="#7a3b2e" stroke-width="2.6" fill="none" stroke-linecap="round"/>` : `<path d="M51 68 Q60 75 69 68" stroke="#7a3b2e" stroke-width="2.6" fill="none" stroke-linecap="round"/>`;
+  return `<svg class="${cls} ${cursed?'cursed-av':''}" viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><radialGradient id="aura${cls}" cx="50%" cy="50%" r="50%"><stop offset="0" stop-color="${color}" stop-opacity=".55"/><stop offset="1" stop-color="${color}" stop-opacity="0"/></radialGradient></defs>
+    ${glow?`<circle cx="60" cy="78" r="60" fill="url(#aura${cls})"/>`:''}
+    <path d="M22 150 Q22 98 60 94 Q98 98 98 150 Z" fill="${a.shirt}"/>
+    <path d="M48 95 Q60 106 72 95" fill="none" stroke="rgba(0,0,0,.25)" stroke-width="3"/>
+    <rect x="52" y="78" width="16" height="18" rx="5" fill="${sk}"/>
+    <circle cx="60" cy="56" r="27" fill="${sk}"/>
+    <circle cx="33" cy="58" r="5" fill="${sk}"/><circle cx="87" cy="58" r="5" fill="${sk}"/>
+    ${a.acc==='gorra'?'':hair}
+    <circle cx="50" cy="57" r="3.2" fill="#1a1a1a"/><circle cx="70" cy="57" r="3.2" fill="#1a1a1a"/>
+    <path d="M45 49 Q50 46 55 49 M65 49 Q70 46 75 49" stroke="${hc}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+    ${mouth}${acc}
+  </svg>`;
+}
+function charClass(){
+  const top=[...SK].sort((a,b)=>skillVal(b)-skillVal(a))[0];
+  return {fuerza:'Guerrero',resistencia:'Atleta',nutricion:'Alquimista',sueno:'Guardián del Sueño',mente:'Monje',intelecto:'Sabio',social:'Líder',finanzas:'Mercader'}[top];
+}
+
+/* ---------------- XP, rangos y logros ---------------- */
+let pending=[]; // modales en cola
+function addXp(n, src=''){
+  const b=rankInfo(S.xp);
+  S.xp=Math.max(0,S.xp+n);
+  const a=rankInfo(S.xp);
+  if(a.i>b.i){
+    S.best=Math.max(S.best||0,a.i);
+    pending.push(()=>rankModal(a.i,true));
+  }else if(a.i<b.i && src!=='undo'){
+    pending.push(()=>rankModal(a.i,false));
+  }else if(a.i===b.i && a.dn>b.dn && src!=='undo'){
+    setTimeout(()=>{ toast(`⬆️ ¡Subes a ${a.r.n} ${a.div}!`,'gold'); sfx('div') },400);
+  }
+  bumpHeader=true;
+}
+function flush(){
+  if(pending.length && !document.getElementById('modal').classList.contains('show')){
+    const f=pending.shift(); setTimeout(f,350);
+  }
+}
+
+const ACH=[
+  {id:'first', e:'👣',n:'Primer paso',   d:'Completa tu primer hábito',       xp:10, c:()=>S.stats.good>=1},
+  {id:'chest1',e:'🎁',n:'Curioso',       d:'Abre tu primer cofre',             xp:5,  c:()=>S.stats.chests>=1},
+  {id:'mini5', e:'🌱',n:'Nunca cero',    d:'Usa 5 veces la versión mínima',    xp:20, c:()=>S.stats.mini>=5},
+  {id:'s3',    e:'🔥',n:'En llamas',     d:'Racha de 3 días',                  xp:25, c:()=>streak()>=3},
+  {id:'p1',    e:'✨',n:'Perfecto',      d:'Tu primer día perfecto',           xp:20, c:()=>S.stats.perfect>=1},
+  {id:'s7',    e:'📅',n:'Una semana',    d:'Racha de 7 días',                  xp:60, c:()=>streak()>=7},
+  {id:'mis10', e:'📜',n:'Cumplidor',     d:'Completa 10 misiones diarias',     xp:40, c:()=>S.stats.missions>=10},
+  {id:'skills5',e:'🎨',n:'Polivalente',  d:'Hábitos de 5 habilidades distintas',xp:40,c:()=>Object.keys(S.stats.skills).length>=5},
+  {id:'lvlup', e:'⬆️',n:'Subir el listón',d:'Sube de nivel un hábito',         xp:30, c:()=>S.stats.lvlup>=1},
+  {id:'p5',    e:'💎',n:'Perfeccionista',d:'5 días perfectos',                 xp:60, c:()=>S.stats.perfect>=5},
+  {id:'s14',   e:'⚔️',n:'Imparable',     d:'Racha de 14 días',                 xp:100,c:()=>streak()>=14},
+  {id:'phoenix',e:'🦅',n:'Fénix',        d:'Supera una maldición',             xp:80, c:()=>S.stats.redeemed>=1},
+  {id:'top3',  e:'🏅',n:'Podio',         d:'Top 3 de la liga (desde el día 7)',     xp:50, c:()=>dayIndex()>=7&&league().findIndex(p=>p.me)<3},
+  {id:'s21',   e:'🧱',n:'Hábito formado',d:'Racha de 21 días',                 xp:150,c:()=>streak()>=21},
+  {id:'top1',  e:'👑',n:'Número 1',      d:'Lidera la liga (desde el día 14)',                   xp:100,c:()=>dayIndex()>=14&&league()[0].me},
+  {id:'s33',   e:'⚙️',n:'Medio camino',  d:'Racha de 33 días',                 xp:200,c:()=>streak()>=33},
+  {id:'s66',   e:'🌟',n:'66 días',       d:'Racha de 66 días',                 xp:500,c:()=>streak()>=66},
+];
+function checkAch(){
+  ACH.forEach(a=>{
+    if(S.ach[a.id]) return;
+    let ok=false; try{ ok=a.c() }catch(e){}
+    if(ok){ S.ach[a.id]=today(); addXp(a.xp,'ach'); setTimeout(()=>{ toast(`🏅 Logro: ${a.n} +${a.xp} XP`,'gold'); sfx('ach') },700) }
+  });
+}
+
+/* ---------------- Misiones diarias ---------------- */
+const MIS={
+  chest:{t:()=>'Abre tu cofre diario',xp:5,c:d=>!!d.chest},
+  stats:{t:()=>'Revisa tu gráfico de habilidades',xp:5,c:d=>!!d.sawStats},
+  early:{t:()=>'Completa un hábito antes de las 12:00',xp:15,c:d=>!!d.early},
+  three:{t:()=>`Completa ${Math.min(3,goods().length)} hábitos`,xp:20,c:d=>gdone(d)>=Math.min(3,goods().length)&&goods().length>0},
+  weak:{t:d=>`Completa un hábito de ${SKILLS[d.mw].e} ${SKILLS[d.mw].n}`,xp:15,c:d=>S.habits.some(h=>h.type==='good'&&h.skill===d.mw&&d.done[h.id]>0)},
+  full2:{t:()=>'Completa 2 hábitos en versión completa (no mínima)',xp:15,c:d=>Object.entries(d.done).filter(([id,v])=>v>0&&!d.mini[id]).length>=2},
+  half:{t:()=>'Asegura el día: completa la mitad de tus hábitos',xp:15,c:d=>goods().length>0&&gdone(d)/goods().length>=.5},
+};
+const gdone=d=>Object.values(d.done).filter(v=>v>0).length;
+function todaysMissions(){
+  const d=getDay();
+  if(!d.ms){
+    const r=rng(hash(today())+S.seed);
+    const pool=['three','weak','full2','half']; if(new Date().getHours()<11) pool.push('early','early');
+    const pick=[r()<.5?'chest':'stats'];
+    while(pick.length<3){ const m=pool[r()*pool.length|0]; if(!pick.includes(m)) pick.push(m) }
+    d.ms=pick;
+    const hasWeak=S.habits.filter(h=>h.type==='good').map(h=>h.skill);
+    d.mw=[...SK].sort((a,b)=>skillVal(a)-skillVal(b)).find(k=>hasWeak.includes(k))||weakest();
+    save();
+  }
+  return d.ms;
+}
+function evalMissions(){
+  const d=getDay(); d.mis=d.mis||{};
+  todaysMissions().forEach(id=>{
+    const m=MIS[id], ok=m.c(d);
+    if(ok && d.mis[id]===undefined){ d.mis[id]=m.xp; S.stats.missions++; addXp(m.xp,'mis'); setTimeout(()=>{ toast(`📜 Misión cumplida +${m.xp} XP`,'gold'); sfx('ach') },500) }
+    else if(!ok && d.mis[id]!==undefined){ addXp(-d.mis[id],'undo'); delete d.mis[id]; S.stats.missions-- }
+  });
+}
+
+/* ---------------- Cofre diario (recompensa variable) ---------------- */
+function openChest(extra=false){
+  const d=getDay(); if(d.chest && !extra) return;
+  const sk=streak(), x=Math.random();
+  let rew;
+  if(x<.08) rew={type:'xp',xp:75,label:'¡JACKPOT!',e:'💰'};
+  else if(x<.2 && S.shields<3) rew={type:'shield',label:'Escudo de racha',e:'🛡️'};
+  else if(x<.45) rew={type:'xp',xp:25+(Math.random()*15|0),label:'Cofre raro',e:'💎'};
+  else rew={type:'xp',xp:10+(Math.random()*10|0),label:'Cofre común',e:'🪙'};
+  const bonus=Math.min(20,sk*2);
+  if(rew.type==='xp') rew.xp+=bonus;
+  openModal(`<div class="center chest-open"><span class="big">🎁</span><p class="muted" style="margin-top:10px">Abriendo…</p></div>`);
+  sfx('chest');
+  setTimeout(()=>{
+    if(!extra) d.chest=rew;
+    S.stats.chests++;
+    if(rew.type==='xp'){ addXp(rew.xp,'chest'); if(extra) d.extraXp=(d.extraXp||0)+rew.xp } else S.shields++;
+    evalMissions(); checkAch(); save();
+    openModal(`<div class="center"><div class="bigemoji">${rew.e}</div>
+      <h2 style="font-size:1.4rem;margin:8px 0 4px">${rew.label}</h2>
+      <p style="font-size:1.6rem;font-weight:900;color:var(--gold);margin-bottom:6px">${rew.type==='xp'?`+${rew.xp} XP`:'+1 🛡️'}</p>
+      <p class="small muted" style="margin-bottom:16px">${rew.type==='shield'?'Si un día fallas, el escudo protege tu racha y te libra del castigo.':bonus?`Incluye +${bonus} XP por tu racha de ${sk} días. Cuanto más larga la racha, mejores cofres.`:'Vuelve mañana: con racha, los cofres dan más.'}</p>
+      <button class="btn block gold" onclick="closeModal()">¡Genial!</button></div>`);
+    confetti(70); render();
+  },900);
+}
+
+/* ---------------- Castigo: maldición y misión de redención ---------------- */
+function genRedemption(reason, badName){
+  const p=S.profile, t=fitTier(), age=+p.age||0;
+  const phys=[
+    '25 sentadillas + 10 flexiones (con rodillas vale) + caminar 20 min',
+    '60 sentadillas + 30 flexiones + 30 min de cardio',
+    '100 sentadillas + 50 flexiones + correr 5 km'][t].replace('correr 5 km', age>=50?'caminar 60 min':'correr 5 km');
+  // habilidad débil no física, para no repetir la tarea de ejercicio
+  const w=[...SK].sort((a,b)=>skillVal(a)-skillVal(b)).find(k=>k!=='fuerza'&&k!=='resistencia');
+  const tasks=[{t:'💪 '+phys,done:false},{t:`${SKILLS[w].e} ${REDEEM[w]}`,done:false}];
+  if(reason==='bad' && badName) tasks.push({t:`🚫 48 h sin: ${badName}`,done:false});
+  else tasks.push({t:'✅ Un día completo con todos tus hábitos (vale la versión mínima)',done:false});
+  return tasks;
+}
+function startCurse(reason, badName){
+  const lost=Math.min(S.xp, Math.max(60, Math.round(S.xp*.08)));
+  addXp(-lost,'penalty');
+  S.curse={reason,lost,since:Date.now(),deadline:Date.now()+48*3600e3,tasks:genRedemption(reason,badName),fails:0};
+  const why = reason==='bad' ? 'Has caído en hábitos malos demasiadas veces seguidas.' : 'Has fallado tus hábitos varios días seguidos.';
+  pending.push(()=>{
+    sfx('curse');
+    openModal(`<div class="center"><div class="skull">💀</div>
+    <h2 style="font-size:1.5rem;margin:8px 0 6px;color:#e9d5ff">HAS SIDO MALDITO</h2>
+    <p class="muted" style="margin-bottom:10px">${why}</p>
+    <div class="card curse" style="text-align:left">
+      <p class="small">❌ Pierdes <b>${lost} XP</b>.</p>
+      <p class="small">🐌 Mientras dure la maldición, tus hábitos dan <b>la mitad de XP</b>.</p>
+      <p class="small">⏳ Tienes <b>48 horas</b> para completar tu <b>misión de redención</b> (adaptada a tu nivel). Si lo logras, recuperas la mitad de lo perdido.</p>
+      <p class="small">☠️ Si no, pierdes más XP y el plazo vuelve a empezar.</p>
+    </div>
+    <button class="btn block" style="background:var(--curse)" onclick="closeModal()">Acepto el reto</button></div>`);
+  });
+}
+function toggleCurseTask(i){
+  const c=S.curse; if(!c) return;
+  c.tasks[i].done=!c.tasks[i].done;
+  if(c.tasks.every(t=>t.done)){
+    const back=Math.round(c.lost*.5);
+    S.curse=null; S.stats.redeemed++; addXp(back,'redeem'); checkAch(); save();
+    sfx('rank'); confetti(120,['#fbbf24','#f97316','#ef4444','#fff']);
+    openModal(`<div class="center"><div class="bigemoji">🔥</div>
+      <h2 style="font-size:1.5rem;margin:8px 0 6px">¡HAS RENACIDO!</h2>
+      <p class="muted" style="margin-bottom:6px">Maldición rota. Recuperas <b style="color:var(--gold)">+${back} XP</b> y tus hábitos vuelven a dar XP completa.</p>
+      <p class="small muted" style="margin-bottom:16px">Caer está permitido. Quedarse en el suelo, no.</p>
+      <button class="btn block gold" onclick="closeModal()">Seguir</button></div>`);
+  } else { sfx(c.tasks[i].done?'good':'mini'); save() }
+  render();
+}
+function hoursLeft(){ return Math.max(0,Math.ceil((S.curse.deadline-Date.now())/36e5)) }
+
+/* Procesa los días cerrados desde la última vez: castigos, escudos e hitos */
+function processDays(){
+  if(!S) return;
+  const y=addDays(today(),-1);
+  let k=addDays(S.lastProcessed,1), missedPen=0, missedDays=0, shieldsUsed=0, trigger=null, badName=null;
+  while(daysBetween(k,y)>=0 && daysBetween(S.start,k)>=0){
+    const day=S.days[k], st=dayStatus(k);
+    const badCount=st.bad, ok=okDay(st.cls) && badCount<3;
+    if(!ok && S.shields>0 && badCount<3){
+      S.shields--; shieldsUsed++; (S.days[k]=S.days[k]||{done:{},mini:{},bonus:0,mis:{}}).shield=true; S.missRun=0;
+    } else if(!ok){
+      S.missRun=(S.missRun||0)+1;
+      if(st.g===0){ missedPen+=15; missedDays++ }
+    } else S.missRun=0;
+    S.badRun = badCount>0 ? (S.badRun||0)+1 : 0;
+    if(badCount>0 && day){ const ids=Object.entries(day.done).filter(([,v])=>v<0).map(([id])=>id); const h=S.habits.find(x=>x.id===ids[0]); if(h) badName=h.name }
+    if(!S.curse && !trigger){
+      if(S.badRun>=3 || badCount>=3) trigger='bad';
+      else if(S.missRun>=2) trigger='miss';
+    }
+    k=addDays(k,1);
+  }
+  S.lastProcessed=y;
+  missedPen=Math.min(missedPen,150);
+  if(missedPen){ addXp(-missedPen,'penalty'); setTimeout(()=>toast(`💤 ${missedDays} día(s) sin hábitos: −${missedPen} XP`,'bad'),600) }
+  if(shieldsUsed) setTimeout(()=>toast(`🛡️ Tu escudo protegió tu racha (${shieldsUsed})`,'good'),900);
+  if(trigger){ S.missRun=0; S.badRun=0; startCurse(trigger,badName) }
+  if(S.curse && Date.now()>S.curse.deadline){
+    const extra=Math.min(S.xp,Math.max(40,Math.round(S.xp*.05)));
+    addXp(-extra,'penalty'); S.curse.lost+=extra; S.curse.fails++; S.curse.deadline=Date.now()+48*3600e3;
+    pending.push(()=>{ sfx('curse'); openModal(`<div class="center"><div class="skull">⌛</div><h2 style="margin:8px 0">Se acabó el tiempo</h2>
+      <p class="muted" style="margin-bottom:14px">No completaste la redención: pierdes <b>${extra} XP</b> más. Tienes otras 48 h. Tú puedes.</p>
+      <button class="btn block" style="background:var(--curse)" onclick="closeModal()">Esta vez sí</button></div>`) });
+  }
+  processWeeks();
+  // hitos del reto
+  const D=dayIndex();
+  Object.entries(MILESTONES).forEach(([m,xp])=>{
+    if(D>=+m && !S.ach['m'+m]){ S.ach['m'+m]=today(); addXp(xp,'ms'); setTimeout(()=>{ toast(`🏁 ¡Día ${m} del reto! +${xp} XP`,'gold'); confetti(60) },1200) }
+  });
+  save();
+}
+
+/* ---------------- Semanas: gemas y recuento ---------------- */
+function dayXp(d){ if(!d) return 0; return Object.values(d.done).reduce((a,b)=>a+b,0)+(d.bonus||0)+Object.values(d.mis||{}).reduce((a,b)=>a+b,0)+(d.chest&&d.chest.xp||0) }
+function dayGems(d){ if(!d) return 0; let g=0; Object.entries(d.done).forEach(([id,v])=>{ if(v>0) g+= d.mini&&d.mini[id]?GEM_MINI:GEM_FULL }); return g }
+function weekGemsSoFar(){ let g=0; for(let i=0;i<7;i++){ const k=addDays(mondayOf(today()),i); if(daysBetween(k,today())<0) break; g+=dayGems(S.days[k]) } return g }
+function curSkills(){ const o={}; SK.forEach(k=>o[k]=skillVal(k)); return o }
+
+function weekReport(mon){
+  const days=[], per={};
+  let sched=0, full=0, mini=0, xp=0, bad=0, ok=0, perfect=0, gems=0;
+  for(let i=0;i<7;i++){
+    const k=addDays(mon,i);
+    if(daysBetween(S.start,k)<0 || daysBetween(k,today())<=0){ days.push(null); continue }
+    const d=S.days[k], st=dayStatus(k);
+    const tot=(!d||d.g===undefined)?goods(k).length:d.g;
+    sched+=tot; xp+=dayXp(d); gems+=dayGems(d); bad+=st.bad;
+    if(okDay(st.cls)) ok++; if(st.cls==='perfect') perfect++;
+    goods(k).forEach(h=>{ (per[h.id]=per[h.id]||{s:0,d:0}).s++ });
+    if(d) Object.entries(d.done).forEach(([id,v])=>{ if(v>0){ (d.mini&&d.mini[id])?mini++:full++; (per[id]=per[id]||{s:0,d:0}).d++ } });
+    days.push({xp:dayXp(d),cls:st.cls});
+  }
+  const habits=Object.entries(per).map(([id,v])=>{const h=S.habits.find(x=>x.id===id);return h?{n:h.name,i:h.icon||SKILLS[h.skill].e,d:v.d,s:v.s}:null}).filter(Boolean).sort((a,b)=>(b.d/(b.s||1))-(a.d/(a.s||1)));
+  const done=full+mini;
+  return {mon, sun:addDays(mon,6), sched, full, mini, done, pct:sched?Math.min(100,Math.round(done/sched*100)):0,
+    xp, bad, ok, perfect, gems:Math.round(gems*1000)/1000, days, habits,
+    skPrev:S.skillSnap||Object.fromEntries(SK.map(k=>[k,clamp(S.base[k],0,100)])), skNow:curSkills()};
+}
+function processWeeks(){
+  let w=addDays(S.lastWeek,7), fresh=[];
+  while(daysBetween(addDays(w,6),today())>=1){
+    if(daysBetween(S.start,addDays(w,6))>=0){
+      const rep=weekReport(w);
+      S.gems=Math.round((S.gems+rep.gems)*1000)/1000;
+      S.skillSnap=rep.skNow;
+      S.weeks.push(rep); fresh.push(rep);
+    }
+    S.lastWeek=w; w=addDays(w,7);
+  }
+  if(S.weeks.length>20) S.weeks=S.weeks.slice(-20);
+  if(fresh.length){
+    const last=fresh[fresh.length-1], total=fresh.reduce((a,r)=>a+r.gems,0);
+    pending.push(()=>weekModal(S.weeks.length-1, fresh.length>1?total:null));
+  }
+}
+const arrow=(a,b,inv)=>{ if(b===undefined||b===null||a===b) return '<span class="muted">=</span>'; const up=a>b; return `<span class="${up!==!!inv?'up':'down'}">${up?'▲':'▼'} ${fmt(Math.abs(a-b))}</span>` };
+function weekModal(i, totalGems){
+  const r=S.weeks[i], prev=S.weeks[i-1];
+  const fd=k=>parseKey(k).toLocaleDateString('es-ES',{day:'numeric',month:'short'});
+  const maxXp=Math.max(10,...r.days.map(d=>d?d.xp:0));
+  let score=0; if(prev){ score+=Math.sign(r.pct-prev.pct)+Math.sign(r.xp-prev.xp)+Math.sign(prev.bad-r.bad) }
+  const verdict = !prev ? (r.pct>=70?'¡Gran primera semana! 🚀':r.pct>=40?'Buen comienzo. La próxima, a por más. 💪':'Empezar cuesta. Esta semana, prueba con la versión mínima. 🌱')
+    : score>=2?'¡Has mejorado mucho respecto a la semana pasada! 🔥':score>=1?'Vas a mejor. Sigue así. 📈':score===0?'Semana parecida a la anterior. Un pequeño empujón y despegas. ⚖️':'Esta semana ha ido peor. No pasa nada: hoy empieza otra. 💪';
+  const skDiff=SK.map(k=>[k,r.skNow[k]-r.skPrev[k]]).filter(([,v])=>v!==0).sort((a,b)=>b[1]-a[1]);
+  sfx('chest'); if(r.gems>0) confetti(80,['#22d3ee','#a78bfa','#fff']);
+  openModal(`<div class="center"><div class="bigemoji">📊</div>
+    <h2 style="font-size:1.4rem;margin:6px 0 2px">Recuento de la semana</h2>
+    <p class="small muted">${fd(r.mon)} – ${fd(r.sun)}</p></div>
+    <div class="card" style="margin-top:12px;text-align:center;background:linear-gradient(135deg,rgba(34,211,238,.18),rgba(124,92,255,.18))">
+      <div style="font-size:2rem;font-weight:900">+${fmtGem(totalGems??r.gems)} 💎</div>
+      <div class="small muted">${totalGems!=null?'gemas de las últimas semanas':'gemas ganadas'} · total: ${fmtGem(S.gems)} 💎</div>
+    </div>
+    <p style="font-weight:700;margin-bottom:10px">${verdict}</p>
+    <div class="wbars">${r.days.map(d=>`<div style="height:${d?Math.max(3,d.xp/maxXp*100):0}%;${d&&d.cls==='perfect'?'background:var(--gold)':''}"></div>`).join('')}</div>
+    <div class="wlab">${WD.map(d=>`<span>${WDN[d]}</span>`).join('')}</div>
+    <div class="card" style="margin-top:12px"><div class="cmp">
+      <span>✅ Hábitos completados</span><b>${r.done}/${r.sched} (${r.pct}%)</b>${arrow(r.pct,prev&&prev.pct)}
+      <span>⚡ XP ganada</span><b>${fmt(r.xp)}</b>${arrow(r.xp,prev&&prev.xp)}
+      <span>📅 Días cumplidos</span><b>${r.ok}</b>${arrow(r.ok,prev&&prev.ok)}
+      <span>✨ Días perfectos</span><b>${r.perfect}</b>${arrow(r.perfect,prev&&prev.perfect)}
+      <span>⚠️ Hábitos malos</span><b>${r.bad}</b>${arrow(r.bad,prev&&prev.bad,true)}
+    </div>${prev?'<p class="small muted" style="margin-top:6px">Flechas: comparado con la semana anterior.</p>':''}</div>
+    ${skDiff.length?`<div class="card"><b>🕸️ Tus habilidades</b><div class="cmp" style="margin-top:8px">${skDiff.map(([k,v])=>`<span>${SKILLS[k].e} ${SKILLS[k].n}</span><b>${r.skNow[k]}</b><span class="${v>0?'up':'down'}">${v>0?'▲':'▼'} ${Math.abs(v)}</span>`).join('')}</div></div>`:''}
+    ${r.habits.length?`<div class="card"><b>📋 Hábito a hábito</b>${r.habits.map(h=>`<div class="row between small" style="margin-top:6px"><span>${esc(h.i)} ${esc(h.n)}</span><b style="color:${h.d>=h.s?'var(--good)':h.d===0?'var(--bad)':'var(--text)'}">${h.d}/${h.s}</b></div>`).join('')}
+      ${r.habits.length>1?`<p class="small muted" style="margin-top:8px">⭐ Mejor: ${esc(r.habits[0].n)} · 🎯 A mejorar: ${esc(r.habits[r.habits.length-1].n)}</p>`:''}</div>`:''}
+    <button class="btn block gold" onclick="closeModal()">¡A por la siguiente semana!</button>`);
+}
+
+/* ---------------- Tienda de gemas ---------------- */
+function buy(id){
+  const it=SHOP.find(x=>x.id===id)||(()=>{const a=AV.accs.find(x=>x[0]===id);return a&&{id,e:'🎨',n:a[1],p:a[3],acc:true}})();
+  if(!it) return;
+  if(S.gems<it.p){ toast(`Te faltan ${fmtGem(it.p-S.gems)} 💎`,'bad'); return }
+  if(id==='time' && !S.curse){ toast('No tienes ninguna maldición activa','bad'); return }
+  if(id==='shield' && S.shields>=5){ toast('Máximo 5 escudos','bad'); return }
+  askConfirm(`¿Comprar ${it.e} ${it.n} por ${it.p} 💎?`, ()=>doBuy(id,it), 'Comprar');
+}
+function doBuy(id,it){
+  S.gems=Math.round((S.gems-it.p)*1000)/1000;
+  if(id==='shield') S.shields++;
+  else if(id==='time') S.curse.deadline+=24*3600e3;
+  else if(it.acc){ S.owned[id]=true; S.avatar.acc=id }
+  save();
+  if(id==='chest'){ openChest(true); return }
+  sfx('ach'); toast(`${it.e} ${it.n} conseguido`,'gold'); render();
+}
+
+/* ---------------- Marcar hábitos ---------------- */
+function toggleHabit(id, mini=false){
+  const h=S.habits.find(x=>x.id===id); if(!h) return;
+  const d=getDay(); d.mini=d.mini||{};
+  if(d.done[id]!==undefined){
+    addXp(-d.done[id],'undo');
+    if(h.type==='good'){ bumpSkill(h.skill,d.mini[id]?-.5:-1); S.stats.good--; h.count=Math.max(0,(h.count||0)-1); if(d.mini[id]) S.stats.mini-- }
+    else bumpSkill(h.skill,1.5);
+    delete d.done[id]; delete d.mini[id];
+    toast('Deshecho ↩','');
+  }else{
+    let amt;
+    if(h.type==='good'){
+      amt=Math.max(1,Math.round(h.xp*mult()*(mini?.5:1)*(S.curse?.5:1)));
+      bumpSkill(h.skill,mini?.5:1); S.stats.good++; S.stats.skills[h.skill]=1; h.count=(h.count||0)+1;
+      if(mini){ d.mini[id]=true; S.stats.mini++ }
+      if(!d.firstAt){ d.firstAt=Date.now(); if(new Date().getHours()<12) d.early=true }
+      sfx(mini?'mini':'good');
+    } else { amt=-h.xp; bumpSkill(h.skill,-1.5); sfx('bad') }
+    d.done[id]=amt; addXp(amt, h.type==='bad'?'bad':'good');
+    toast(`${amt>0?'+':''}${amt} XP · ${SKILLS[h.skill].e} ${SKILLS[h.skill].n} ${amt>0?'▲':'▼'}${S.curse&&amt>0?' (maldito ½)':''}`, amt>0?'good':'bad');
+  }
+  d.g=goods().length;
+  const st=dayStatus(today());
+  if(st.cls==='perfect' && !d.bonus){ d.bonus=50; S.stats.perfect++; addXp(50,'bonus'); setTimeout(()=>{ toast('🔥 ¡DÍA PERFECTO! +50 XP','gold'); confetti(); sfx('rank') },250) }
+  else if(st.cls!=='perfect' && d.bonus){ addXp(-d.bonus,'undo'); d.bonus=0; S.stats.perfect-- }
+  evalMissions(); checkAch(); save(); render();
+}
+function levelUpHabit(id){
+  const h=S.habits.find(x=>x.id===id); if(!h||h.lvl!=='easy') return;
+  const old=h.name; h.name=h.normal; h.lvl='normal'; h.xp=Math.round(h.xp*1.3); h.count=0; S.stats.lvlup++;
+  checkAch(); save(); sfx('div'); confetti(50); render();
+  toast(`⬆️ «${old}» → «${h.name}» (+30 % XP)`,'gold');
+}
+
+/* ---------------- UI helpers ---------------- */
+let bumpHeader=false;
+function toast(msg,cls){
+  if(!msg) return;
+  const box=document.getElementById('toasts');
+  const t=document.createElement('div'); t.className='toast '+cls; t.textContent=msg;
+  box.appendChild(t);
+  while(box.children.length>3) box.firstChild.remove();
+  setTimeout(()=>t.remove(),2400);
+}
+/* Ventanas propias de confirmar / preguntar: confirm() y prompt() del navegador
+   pueden estar bloqueados (vistas previas, algunas apps) y devolver "no" sin mostrarse. */
+let askCb=null;
+function askConfirm(msg, onYes, yes='Sí', danger=false){
+  askCb=onYes;
+  openModal(`<p style="font-size:1.05rem;font-weight:700;margin-bottom:16px">${msg}</p>
+  <div class="row"><button class="btn ghost grow" onclick="closeModal()">Cancelar</button><button class="btn grow ${danger?'danger':''}" onclick="const f=askCb;askCb=null;closeModal();f&&f()">${yes}</button></div>`);
+}
+function askInput(msg, value, onOk, type='text'){
+  askCb=onOk;
+  openModal(`<div class="field"><label style="font-size:1rem;color:var(--text)">${msg}</label><input id="askIn" type="${type}" value="${esc(value)}" style="width:100%;padding:12px 14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border);outline:none"></div>
+  <div class="row"><button class="btn ghost grow" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="const v=document.getElementById('askIn').value,f=askCb;askCb=null;closeModal();f&&f(v)">Aceptar</button></div>`);
+  setTimeout(()=>{const i=document.getElementById('askIn'); if(i) i.focus()},50);
+}
+function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('modal').classList.add('show') }
+function closeModal(){ document.getElementById('modal').classList.remove('show'); flush() }
+document.getElementById('modal').addEventListener('click',e=>{ if(e.target.id==='modal') closeModal() });
+
+function rankModal(i,up){
+  const r=RANKS[i], unlock=AV.accs.find(a=>a[2]===i&&i>0);
+  if(up){ sfx('rank'); confetti(140,[r.c,'#fff','#fbbf24']) } else sfx('bad');
+  openModal(`<div class="center">
+    <div class="bigemoji">${up?r.i:'📉'}</div>
+    <h2 style="font-size:1.5rem;margin:10px 0 4px">${up?'¡SUBES DE RANGO!':'Has bajado de rango'}</h2>
+    <p class="muted" style="margin-bottom:14px">${up?'Ahora eres':'Vuelves a'} <b style="color:${r.c}">${r.n}</b>${up&&unlock?` · Desbloqueado: <b>${unlock[1]}</b> para tu personaje`:''}</p>
+    <p class="small muted" style="margin-bottom:18px">${up?(RANKS[i+1]?`Siguiente: ${RANKS[i+1].i} ${RANKS[i+1].n} (${fmt(RANKS[i+1].min)} XP)`:'Has llegado a lo más alto. Eres leyenda.'):'Los hábitos malos y los castigos restan XP. Recupera el rango con un buen día.'}</p>
+    <button class="btn block ${up?'gold':''}" onclick="closeModal()">${up?'¡Vamos!':'Entendido'}</button></div>`);
+}
+function ring(pct,color,cls='ring',r=26,w=7,label=''){
+  const size=r*2+w*2, c=2*Math.PI*r;
+  return `<div class="${cls}"><svg viewBox="0 0 ${size} ${size}" width="100%" height="100%"><circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="var(--card-2)" stroke-width="${w}"/>
+  <circle cx="${size/2}" cy="${size/2}" r="${r}" fill="none" stroke="${color}" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*(1-Math.min(1,pct))}" transform="rotate(-90 ${size/2} ${size/2})" style="transition:stroke-dashoffset .6s"/></svg>${label?`<b>${label}</b>`:''}</div>`;
+}
+
+/* ---------------- Radar (gráfico de telaraña) ---------------- */
+function drawRadar(canvas, now, initial){
+  if(!canvas) return;
+  const dpr=window.devicePixelRatio||1, W=canvas.clientWidth||360, H=W;
+  canvas.width=W*dpr; canvas.height=H*dpr;
+  const ctx=canvas.getContext('2d'); ctx.scale(dpr,dpr);
+  const cx=W/2, cy=H/2, R=W*.31, n=SK.length;
+  const pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n; return [cx+Math.cos(a)*R*v/100, cy+Math.sin(a)*R*v/100]};
+  ctx.clearRect(0,0,W,H);
+  for(let l=1;l<=5;l++){
+    ctx.beginPath(); SK.forEach((k,i)=>{const [x,y]=pt(i,l*20); i?ctx.lineTo(x,y):ctx.moveTo(x,y)}); ctx.closePath();
+    ctx.strokeStyle='rgba(168,174,214,.18)'; ctx.lineWidth=1; ctx.stroke();
+  }
+  SK.forEach((k,i)=>{const [x,y]=pt(i,100); ctx.beginPath(); ctx.moveTo(cx,cy); ctx.lineTo(x,y); ctx.strokeStyle='rgba(168,174,214,.14)'; ctx.stroke()});
+  const poly=(vals,fill,stroke,dash)=>{
+    ctx.beginPath(); SK.forEach((k,i)=>{const [x,y]=pt(i,vals[k]); i?ctx.lineTo(x,y):ctx.moveTo(x,y)}); ctx.closePath();
+    if(fill){ctx.fillStyle=fill; ctx.fill()}
+    ctx.setLineDash(dash||[]); ctx.strokeStyle=stroke; ctx.lineWidth=2.2; ctx.stroke(); ctx.setLineDash([]);
+  };
+  if(initial) poly(initial,null,'rgba(168,174,214,.55)',[5,5]);
+  poly(now,'rgba(124,92,255,.32)','#8b6cff');
+  SK.forEach((k,i)=>{const [x,y]=pt(i,now[k]); ctx.beginPath(); ctx.arc(x,y,4,0,7); ctx.fillStyle=SKILLS[k].c; ctx.fill()});
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  const fs=Math.max(11,W*.034);
+  SK.forEach((k,i)=>{
+    const [x,y]=pt(i,128);
+    ctx.font=`${fs*1.3}px system-ui`; ctx.fillStyle='#000'; ctx.fillText(SKILLS[k].e,x,y-fs*1.1);
+    ctx.font=`600 ${fs}px system-ui`; ctx.fillStyle='#a8aed6'; ctx.fillText(SKILLS[k].n,x,y+fs*.2);
+    ctx.font=`800 ${fs}px system-ui`; ctx.fillStyle='#eef0ff'; ctx.fillText(now[k],x,y+fs*1.3);
+  });
+}
+
+/* =========================================================
+   ONBOARDING
+   ========================================================= */
+function computeBase(d){
+  const bmi = d.weight&&d.height ? d.weight/Math.pow(d.height/100,2) : 22;
+  const bmiPen = bmi<18.5||bmi>=25 ? (bmi>=30?14:7) : 0;
+  const sleepMap={4:22,5:35,6:55,7:78,8:92,9:86,10:70};
+  return {
+    fuerza: clamp(14+d.gym*13),
+    resistencia: clamp(14+d.cardio*13-(bmi>=30?10:0)),
+    nutricion: clamp(32+d.veg*10-d.fast*6+d.water*6-bmiPen),
+    sueno: clamp(sleepMap[d.sleep]??50),
+    mente: clamp(100-(d.stress-1)*18-Math.max(0,d.phone-3)*4),
+    intelecto: clamp(18+d.read*1.1-Math.max(0,d.phone-4)*3),
+    social: clamp(d.social*19),
+    finanzas: clamp(d.money*19),
+    bmi
+  };
+}
+
+function renderOnboarding(){
+  document.body.classList.remove('cursed');
+  const d=ob.d, s=ob.step, N=5;
+  const steps=`<div class="steps">${Array.from({length:N},(_,i)=>`<i class="${i<=s?'on':''}"></i>`).join('')}</div>`;
+  const rg=(k,label,min,max,step,unit='')=>`<div class="field"><label>${label}</label><div class="range"><input type="range" min="${min}" max="${max}" step="${step}" value="${d[k]}" oninput="ob.d.${k}=+this.value;this.nextElementSibling.textContent=this.value+'${unit}'"><b>${d[k]}${unit}</b></div></div>`;
+  let body='';
+  if(s===0) body=`
+    <div class="logo">66 DAYS TO LIVE YOUR LIFE</div>
+    <h1>Tu vida es el juego.<br>Tú eres el personaje.</h1>
+    <p class="muted" style="margin:10px 0 22px">Durante 66 días ganarás experiencia con cada buen hábito y la perderás con los malos. Cofres diarios, misiones, logros y rivales. Sube de <b style="color:#a0703c">Madera</b> a <b style="color:#fff3b0">Dios</b>.</p>
+    <div class="card" style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center">${RANKS.map(r=>`<span class="pill" style="border-color:${r.c}">${r.i} ${r.n}</span>`).join('')}</div>
+    <button class="btn block" onclick="obNext()">Crear mi personaje ▶</button>
+    <div class="row" style="margin-top:12px;gap:8px">
+      <button class="btn ghost sm grow" onclick="pasteCode()">🔑 Tengo un código</button>
+      <button class="btn ghost sm grow" onclick="document.getElementById('imp0').click()">📂 Restaurar archivo</button>
+    </div>
+    <input id="imp0" type="file" accept="application/json,.json" class="hidden" onchange="importData(this)">`;
+  if(s===1) body=`
+    <h2 style="font-size:1.4rem">¿Quién eres?</h2>
+    <p class="muted small" style="margin-bottom:16px">Con estos datos adaptamos los hábitos y los retos a tu nivel.</p>
+    <div class="field"><label>Nombre de jugador</label><input type="text" maxlength="20" value="${esc(d.name)}" oninput="ob.d.name=this.value" placeholder="Ej: Marc"></div>
+    <div class="two">
+      <div class="field"><label>Edad</label><input type="number" min="10" max="100" value="${d.age}" oninput="ob.d.age=+this.value" placeholder="25"></div>
+      <div class="field"><label>Sexo</label><select onchange="ob.d.sex=this.value"><option value="h" ${d.sex==='h'?'selected':''}>Hombre</option><option value="m" ${d.sex==='m'?'selected':''}>Mujer</option><option value="o" ${d.sex==='o'?'selected':''}>Otro</option></select></div>
+      <div class="field"><label>Peso (kg)</label><input type="number" min="30" max="250" value="${d.weight}" oninput="ob.d.weight=+this.value" placeholder="75"></div>
+      <div class="field"><label>Altura (cm)</label><input type="number" min="120" max="230" value="${d.height}" oninput="ob.d.height=+this.value" placeholder="178"></div>
+    </div>
+    <div class="field"><label>¿Qué quieres mejorar? (elige 1-3)</label><div class="chips">${GOALS.map(([k,l])=>`<button class="chip ${d.goals.includes(k)?'on':''}" onclick="obGoal('${k}')">${l}</button>`).join('')}</div></div>`;
+  if(s===2) body=`
+    <h2 style="font-size:1.4rem">Tu cuerpo ahora mismo</h2>
+    <p class="muted small" style="margin-bottom:16px">Sé sincero: el juego es contra ti mismo.</p>
+    ${rg('gym','🏋️ Días de entreno de fuerza por semana',0,7,1,'')}
+    ${rg('cardio','🏃 Días de cardio / deporte por semana',0,7,1,'')}
+    ${rg('sleep','😴 Horas que duermes normalmente',4,10,1,' h')}
+    ${rg('veg','🥦 Raciones de fruta/verdura al día',0,6,1,'')}
+    ${rg('fast','🍔 Comidas rápidas / ultraprocesados por semana',0,10,1,'')}
+    ${rg('water','💧 Litros de agua al día',0,4,.5,' L')}`;
+  if(s===3) body=`
+    <h2 style="font-size:1.4rem">Tu mente y tu vida</h2>
+    <p class="muted small" style="margin-bottom:16px">1 = muy bajo · 5 = muy alto</p>
+    ${rg('stress','😣 Nivel de estrés',1,5,1,'')}
+    ${rg('phone','📱 Horas de móvil al día (ocio)',0,12,1,' h')}
+    ${rg('read','📖 Minutos de lectura / estudio al día',0,60,5,' min')}
+    ${rg('social','🤝 ¿Cómo de satisfecho estás con tu vida social?',1,5,1,'')}
+    ${rg('money','💰 ¿Controlas y ahorras tu dinero?',1,5,1,'')}`;
+  if(s===4){
+    const b=computeBase(d);
+    const weak=[...SK].sort((x,y)=>b[x]-b[y]).slice(0,3);
+    body=`
+    <h2 style="font-size:1.4rem">Tus estadísticas iniciales</h2>
+    <p class="muted small" style="margin-bottom:6px">Tu gráfico de telaraña. Cuanto más grande el área, más completo eres.${d.weight&&d.height?` IMC: <b>${b.bmi.toFixed(1)}</b>.`:''}</p>
+    <div class="radar-box"><canvas id="obRadar"></canvas></div>
+    <div class="card" style="margin-top:8px"><b>A mejorar primero:</b> ${weak.map(k=>`${SKILLS[k].e} ${SKILLS[k].n} (${b[k]})`).join(' · ')}
+    <p class="small muted" style="margin-top:6px">Empezarás con pocos hábitos y adaptados a tu nivel. Cuando los domines, podrás subirlos de nivel.</p></div>
+    <div class="card small"><b>Cómo se juega</b>
+      <ul class="howto muted" style="margin-top:8px">
+        <li>🎁 Cada día te espera un <b>cofre</b> con XP o escudos.</li>
+        <li>📜 3 <b>misiones diarias</b> fáciles con XP extra.</li>
+        <li>🌱 ¿Día malo? Haz la <b>versión mínima</b> del hábito: media XP, pero no rompes la racha.</li>
+        <li>🔥 Con la <b>mitad</b> de tus hábitos el día cuenta para la racha.</li>
+        <li>💀 Fallar muchos días seguidos o caer en hábitos malos trae una <b>maldición</b>.</li>
+      </ul></div>`;
+  }
+  const nav = s>0 ? `<div class="row" style="margin-top:18px">
+      <button class="btn ghost" onclick="ob.step--;renderOnboarding()">◀</button>
+      <button class="btn grow" onclick="${s===4?'obFinish()':'obNext()'}">${s===4?'🎮 Empezar el reto de 66 días':'Siguiente ▶'}</button></div>`:'';
+  document.getElementById('app').innerHTML=`<div class="wrap ob">${steps}${body}${nav}</div>`;
+  if(s===4){ const b=computeBase(d); requestAnimationFrame(()=>drawRadar(document.getElementById('obRadar'),b)) }
+}
+function obGoal(k){ const g=ob.d.goals; if(g.includes(k)) g.splice(g.indexOf(k),1); else { if(g.length>=3) g.shift(); g.push(k) } renderOnboarding() }
+function obNext(){
+  if(ob.step===1 && !ob.d.name.trim()){ toast('Escribe tu nombre de jugador','bad'); return }
+  ob.step++; renderOnboarding(); window.scrollTo(0,0);
+}
+function obFinish(){
+  const d=ob.d, b=computeBase(d); delete b.bmi;
+  const p={name:d.name.trim(),age:d.age,sex:d.sex,weight:d.weight,height:d.height,goals:d.goals,answers:{...d}};
+  const weak=[...SK].sort((x,y)=>b[x]-b[y]);
+  // Pocos hábitos al principio (4): objetivos elegidos + puntos más débiles
+  const focus=[...new Set([...d.goals,...weak])].slice(0,4);
+  const habits=focus.map(k=>{
+    const recs=RECS[k].good;
+    // el hábito más accesible primero: el de menos XP para quien empieza, el principal para el resto
+    const rec = easyFor(k,b,p) ? [...recs].sort((x,y)=>x.xp-y.xp)[0] : recs[0];
+    return makeHabit(k,rec,'good',b,p);
+  });
+  const bads=[];
+  if(d.fast>=2) bads.push(['nutricion',0]);
+  if(d.phone>=3) bads.push(['intelecto',0]);
+  if(d.sleep<=6) bads.push(['sueno',0]);
+  if(d.money<=2) bads.push(['finanzas',0]);
+  if(bads.length<2) bads.push(['mente',0]);
+  bads.slice(0,2).forEach(([k,i])=>habits.push(makeHabit(k,RECS[k].bad[i],'bad')));
+  S={
+    v:2, profile:p, base:b, delta:{}, start:today(), lastProcessed:addDays(today(),-1), xp:0, best:0, habits, days:{},
+    avatar:{skin:AV.skins[1],hair:d.sex==='m'?'largo':'corto',hairColor:AV.hairColors[1],shirt:AV.shirts[0],acc:'none'},
+    seed:Math.floor(Math.random()*1e9), shields:1, sound:true, ach:{}, gems:0, weeks:[], owned:{}, chat:[],
+    rem:{on:false,list:[{id:'r1',t:'09:00',days:[0,1,2,3,4,5,6]},{id:'r2',t:'21:00',days:[0,1,2,3,4,5,6]}]},
+    lastWeek:addDays(mondayOf(today()),-7),
+    stats:{good:0,chests:0,perfect:0,mini:0,lvlup:0,skills:{},redeemed:0,missions:0}
+  };
+  save(); tab='perfil'; render();
+  setTimeout(()=>toast('Personaliza tu personaje 🎨 · Te regalamos 1 🛡️','gold'),300);
+}
+
+/* =========================================================
+   APP
+   ========================================================= */
+function header(){
+  const ri=rankInfo(S.xp);
+  document.documentElement.style.setProperty('--rank',ri.r.c);
+  const b=bumpHeader; bumpHeader=false;
+  return `<header class="top"><div class="wrap row">
+    <div class="hdr-avatar">${avatarSVG(S.avatar,ri.r.c,'h')}</div>
+    <div class="grow">
+      <div class="row between"><b style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(S.profile.name)}</b>
+      <span class="rank-badge ${b?'bump':''}">${S.curse?'💀 ':''}${ri.r.i} ${ri.r.n} ${ri.div}</span></div>
+      <div class="xpbar"><i style="width:${ri.pct}%"></i></div>
+      <div class="row between small muted" style="margin-top:3px"><span class="${b?'bump':''}" style="display:inline-block">${fmt(S.xp)} XP</span><span>${ri.next?`${fmt(ri.toNext)} para ${ri.next.n}`:'Rango máximo'}</span></div>
+      <div class="hdr-chips"><span>🔥 ${streak()}</span><span>🛡️ ${S.shields}</span><span>💎 ${fmtGem(S.gems)}</span><span>x${mult().toFixed(2)}</span></div>
+    </div></div></header>`;
+}
+function navbar(){
+  const d=getDay(), chestDot=!d.chest;
+  const t=[['hoy','🎯','Hoy',chestDot||S.curse],['coach','🤖','Coach',false],['stats','🕸️','Stats',false],['rank','🏆','Ranking',false],['perfil','🧍','Personaje',false],['opciones','⚙️','Opciones',false]];
+  return `<nav class="tabs"><div class="wrap">${t.map(([k,e,l,dot])=>`<button class="${tab===k?'on':''}" onclick="go('${k}')"><span>${e}</span>${l}${dot&&tab!==k?'<i class="dot"></i>':''}</button>`).join('')}</div></nav>`;
+}
+function go(t){
+  tab=t; editing=false;
+  if(t==='stats'){ const d=getDay(); if(!d.sawStats){ d.sawStats=true; evalMissions(); checkAch(); save() } }
+  render(); window.scrollTo(0,0);
+}
+
+function habitCard(h,d){
+  const on=d.done[h.id]!==undefined, isMini=on&&d.mini&&d.mini[h.id];
+  const m=mult()*(S.curse?.5:1);
+  const xp = on ? d.done[h.id] : (h.type==='good'?Math.max(1,Math.round(h.xp*m)):-h.xp);
+  const canLvl = h.type==='good' && h.lvl==='easy' && (h.count||0)>=10;
+  return `<div class="habit ${h.type} ${on?'done':''} ${isMini?'mini':''}">
+    <div class="ic">${esc(h.icon||SKILLS[h.skill].e)}</div>
+    <div class="grow"><div class="nm">${esc(h.name)}</div>
+      <div class="small muted">${SKILLS[h.skill].e} ${SKILLS[h.skill].n}${h.type==='good'&&h.count?` · ${h.count}✓`:''}${h.type==='good'&&h.days&&h.days.length&&h.days.length<7?` · <span class="days-tag">${daysLabel(h.days)}</span>`:''}</div>
+      ${h.type==='good'&&h.mini&&!on?`<div class="mini-txt">🌱 Mínimo: ${esc(h.mini)}</div>`:''}
+      ${canLvl?`<button class="lvlup" onclick="levelUpHabit('${h.id}')">⬆️ Dominado: subir a «${esc(h.normal)}»</button>`:''}
+    </div>
+    <div class="xp">${xp>0?'+':''}${xp}</div>
+    ${h.type==='good'&&!on?`<button class="minib" onclick="toggleHabit('${h.id}',true)" title="Versión mínima: media XP">🌱<br>½</button>`:''}
+    <button class="check" onclick="toggleHabit('${h.id}')" aria-label="${on?'Desmarcar':'Marcar'} ${esc(h.name)}">${on?(h.type==='good'?(isMini?'🌱':'✓'):'✗'):''}</button>
+    <button class="ed" onclick="habitForm('${h.type}','${h.id}')" aria-label="Editar">✏️</button>
+    <button class="del" onclick="delHabit('${h.id}')" aria-label="Borrar">🗑️</button>
+  </div>`;
+}
+
+function curseCard(){
+  const c=S.curse; if(!c) return '';
+  return `<div class="card curse">
+    <div class="row between"><h2 style="margin:0">💀 Maldición activa</h2><span class="pill" style="border-color:var(--curse)">⏳ ${hoursLeft()} h</span></div>
+    <p class="small" style="margin-top:6px;color:#e9d5ff">Tus hábitos dan la mitad de XP. Completa la <b>misión de redención</b> para romperla y recuperar <b>${Math.round(c.lost*.5)} XP</b>.${c.fails?` Fallos: ${c.fails}.`:''}</p>
+    ${c.tasks.map((t,i)=>`<div class="ctask ${t.done?'done':''}" onclick="toggleCurseTask(${i})"><div class="check">${t.done?'✓':''}</div><span class="small">${esc(t.t)}</span></div>`).join('')}
+    <p class="small muted" style="margin-top:8px">Adaptada a tu nivel (${['principiante','intermedio','avanzado'][fitTier()]}). Sé honesto: el único que pierde si haces trampa eres tú.</p>
+  </div>`;
+}
+
+function viewHoy(){
+  const D=dayIndex(), d=getDay(), G=goods(), B=S.habits.filter(h=>h.type==='bad');
+  const off=S.habits.filter(h=>h.type==='good'&&!isSched(h));
+  const st=dayStatus(today());
+  const gDone=G.filter(h=>d.done[h.id]!==undefined).length;
+  const todayXp=dayXp(d)+(d.extraXp||0);
+  const ms=todaysMissions();
+  let grid='';
+  for(let i=1;i<=66;i++){
+    const k=addDays(S.start,i-1);
+    const s2= i<=D ? dayStatus(k) : {cls:'',bad:0};
+    const cls=[s2.cls|| (i<D?'miss':''), i===D?'today':'', s2.bad?'badmark':'', MILESTONES[i]?'ms':''].join(' ');
+    grid+=`<div class="${cls}" title="Día ${i}">${MILESTONES[i]&&i>D?'🏁':i}</div>`;
+  }
+  const finished = D>66;
+  const pct=G.length?Math.min(1,gDone/G.length):1;
+  const label = st.cls==='perfect'?'🔥':st.cls==='rest'?'💤':Math.round(pct*100)+'%';
+  return `
+  ${curseCard()}
+  <div class="card hero">
+    ${ring(pct,st.cls==='perfect'?'var(--gold)':pct>=.5?'var(--good)':'var(--accent-2)','bigring',40,9,label)}
+    <div class="grow">
+      <div class="small muted" style="letter-spacing:.08em">66 DAYS TO LIVE YOUR LIFE</div>
+      <div style="font-size:1.45rem;font-weight:900">${finished?'¡Reto completado! 🎉':`Día ${D} de 66`}</div>
+      <div class="small muted">${st.cls==='rest'?'💤 Hoy no toca ningún hábito: día de descanso (no rompe la racha).':st.cls==='perfect'?'Día perfecto conseguido.':pct>=.5?'✅ Día asegurado para la racha.':`Completa ${Math.max(0,Math.ceil(G.length/2)-gDone)} hábito(s) más para asegurar el día.`}</div>
+    </div>
+  </div>
+  <div class="stat4"><div><b style="color:var(--good)">${todayXp>=0?'+':''}${todayXp}</b><span class="muted">XP hoy</span></div><div><b>🔥 ${streak()}</b><span class="muted">racha</span></div><div><b>🛡️ ${S.shields}</b><span class="muted">escudos</span></div><div onclick="gemInfo()" style="cursor:pointer"><b style="color:var(--accent-2)">+${fmtGem(weekGemsSoFar())}</b><span class="muted">💎 semana</span></div></div>
+
+  ${!d.chest?`<div class="card chest" onclick="openChest()"><span class="ce">🎁</span><div class="grow"><b>Tu cofre diario te espera</b><div class="small muted">Tócalo para abrirlo. ${streak()>=1?`Bonus de racha: +${Math.min(20,streak()*2)} XP`:'Con racha, mejores premios.'}</div></div><span class="pill" style="border-color:var(--gold)">ABRIR</span></div>`:''}
+
+  <div class="card">
+    <div class="row between" style="margin-bottom:6px"><h2 style="margin:0">📜 Misiones de hoy</h2><span class="small muted">${ms.filter(id=>d.mis&&d.mis[id]!==undefined).length}/${ms.length}</span></div>
+    ${ms.map(id=>{const ok=d.mis&&d.mis[id]!==undefined;return `<div class="mis ${ok?'ok':''}"><span class="mk">${ok?'✓':''}</span><span class="mt grow small">${MIS[id].t(d)}</span><span class="mx">+${MIS[id].xp}</span></div>`}).join('')}
+  </div>
+
+  <div class="card coach"><div class="bot">🤖</div><div class="grow"><b>Coach</b>${coach().map(l=>`<p class="small" style="margin-top:5px">${l}</p>`).join('')}
+    <button class="btn sm" style="margin-top:10px" onclick="go('coach')">💬 Preguntar al coach</button></div></div>
+
+  <div class="${editing?'editing':''}">
+  <div class="card">
+    <div class="row between" style="margin-bottom:4px"><h2 style="margin:0">✅ Hábitos</h2>
+      <button class="btn ghost sm" onclick="editing=!editing;render()">${editing?'Listo':'Editar'}</button></div>
+    <p class="small muted" style="margin-bottom:10px">✓ = completo · 🌱½ = versión mínima (media XP, mantiene la racha)</p>
+    ${G.map(h=>habitCard(h,d)).join('')||(off.length?'<p class="muted small">Hoy no te toca ningún hábito. ¡Disfruta el descanso! 💤</p>':'<p class="muted small">No tienes hábitos buenos. ¡Añade uno!</p>')}
+    ${off.length?`<details style="margin-top:8px"><summary class="small muted" style="cursor:pointer">💤 No tocan hoy (${off.length}) · puedes hacerlos como extra</summary><div style="margin-top:8px">${off.map(h=>habitCard(h,d)).join('')}</div></details>`:''}
+    <button class="btn ghost block sm" style="margin-top:6px" onclick="habitForm('good')">+ Añadir hábito</button>
+  </div>
+  <div class="card">
+    <h2>⚠️ Hábitos malos <span class="small muted">(márcalo si caíste: −XP)</span></h2>
+    ${B.map(h=>habitCard(h,d)).join('')||'<p class="muted small">Sin hábitos malos registrados.</p>'}
+    <p class="small muted" style="margin:4px 0 8px">3 hábitos malos en un día, o 3 días seguidos cayendo, activan la maldición 💀</p>
+    <button class="btn ghost block sm" onclick="habitForm('bad')">+ Añadir hábito malo</button>
+  </div>
+  </div>
+
+  <div class="card">
+    <h2>📅 Tus 66 días</h2>
+    <div class="grid66">${grid}</div>
+    <div class="row small muted" style="flex-wrap:wrap;gap:10px;margin-top:10px">
+      <span><span class="pill" style="background:var(--gold);color:#2a1b00">■</span> Perfecto</span>
+      <span><span class="pill" style="background:rgba(52,211,153,.55)">■</span> Cumplido ≥50%</span>
+      <span><span class="pill" style="background:rgba(124,92,255,.35)">■</span> Parcial</span>
+      <span><span class="pill" style="background:rgba(56,189,248,.45)">■</span> Escudo</span>
+      <span><span class="pill" style="background:rgba(148,163,184,.22)">■</span> Descanso</span>
+      <span>🏁 Hito con premio</span>
+    </div>
+  </div>`;
+}
+
+function viewStats(){
+  const now={}; SK.forEach(k=>now[k]=skillVal(k));
+  const weak=[...SK].sort((a,b)=>now[a]-now[b]).slice(0,3);
+  const total=Math.round(SK.reduce((a,k)=>a+now[k],0)/SK.length);
+  const has=r=>S.habits.some(h=>h.name===r.n||h.name===r.e||h.normal===r.n);
+  const recLine=(k,r,i)=>{const easy=easyFor(k);return `<div class="rec-h"><span>${r.ic} ${esc(easy?r.e:r.n)} <span style="color:var(--good)">+${r.xp}</span><br><span class="small muted">🌱 ${esc(r.m)}${easy?` · luego: ${esc(r.n)}`:''}</span></span>${has(r)?'<span class="small muted">✓ Añadido</span>':`<button class="btn sm" onclick="addRec('${k}','good',${i})">+ Añadir</button>`}</div>`};
+  return `
+  <div class="card">
+    <div class="row between"><h2 style="margin:0">🕸️ Tus habilidades</h2><span class="pill">Clase: ${charClass()}</span></div>
+    <p class="small muted" style="margin-top:4px">Línea discontinua = cómo empezaste. Área morada = ahora. Puntuación global: <b>${total}/100</b></p>
+    <div class="radar-box"><canvas id="radar"></canvas></div>
+    ${SK.map(k=>{const diff=now[k]-clamp(S.base[k],0,100);return `<div class="skill-row"><span>${SKILLS[k].e}</span>
+      <div><div class="row between small"><span>${SKILLS[k].n}</span><span class="muted">${diff>0?`<span style="color:var(--good)">▲${diff}</span>`:diff<0?`<span style="color:var(--bad)">▼${-diff}</span>`:''}</span></div>
+      <div class="bar"><i style="width:${now[k]}%;background:${SKILLS[k].c}"></i></div></div><b style="text-align:right">${now[k]}</b></div>`}).join('')}
+    <p class="small muted">Hábito completo +1 · versión mínima +0,5 · hábito malo −1,5.</p>
+  </div>
+  <div class="card">
+    <h2>🎯 Lo que tienes que mejorar</h2>
+    <p class="small muted" style="margin-bottom:10px">Hábitos ajustados a tu nivel. Empieza fácil: cuando completes un hábito 10 veces podrás subirlo de nivel.</p>
+    ${weak.map(k=>`<div class="rec" style="border-color:${SKILLS[k].c}">
+      <b>${SKILLS[k].e} ${SKILLS[k].n} · ${now[k]}/100</b>
+      <ul class="small muted" style="margin:6px 0 8px 18px">${RECS[k].tips.map(t=>`<li style="margin-bottom:3px">${t}</li>`).join('')}</ul>
+      ${RECS[k].good.map((r,i)=>recLine(k,r,i)).join('')}
+      ${RECS[k].bad.map((r,i)=>`<div class="rec-h"><span>${r.ic} Evitar: ${esc(r.n)} <span style="color:var(--bad)">−${r.xp}</span></span>${has(r)?'<span class="small muted">✓ Vigilando</span>':`<button class="btn ghost sm" onclick="addRec('${k}','bad',${i})">Vigilar</button>`}</div>`).join('')}
+    </div>`).join('')}
+  </div>
+  <div class="card">
+    <h2>📊 Recuentos semanales</h2>
+    ${S.weeks.length?[...S.weeks].map((w,i)=>({w,i})).reverse().map(({w,i})=>`<div class="rec-h"><span>Semana del ${parseKey(w.mon).toLocaleDateString('es-ES',{day:'numeric',month:'short'})} · ${w.pct}% · +${fmtGem(w.gems)} 💎</span><button class="btn ghost sm" onclick="weekModal(${i})">Ver</button></div>`).join(''):`<p class="small muted">Tu primer recuento llegará al terminar esta semana (el lunes). Llevas +${fmtGem(weekGemsSoFar())} 💎.</p>`}
+  </div>
+  <div class="card">
+    <h2>📋 Más recomendaciones</h2>
+    ${SK.filter(k=>!weak.includes(k)).map(k=>`<details style="margin-bottom:8px"><summary style="cursor:pointer;font-weight:600">${SKILLS[k].e} ${SKILLS[k].n} · ${now[k]}</summary>
+      <div class="rec" style="margin-top:8px;border-color:${SKILLS[k].c}">${RECS[k].good.map((r,i)=>recLine(k,r,i)).join('')}</div></details>`).join('')}
+  </div>`;
+}
+
+function viewRank(){
+  const ri=rankInfo(S.xp), players=league();
+  const pos=players.findIndex(p=>p.me)+1, above=players[pos-2], below=players[pos];
+  const nAch=ACH.filter(a=>S.ach[a.id]).length;
+  return `
+  <div class="card">
+    <h2>⚔️ Liga 66 Days</h2>
+    <p class="small muted" style="margin-bottom:10px">Rivales que empezaron el reto el mismo día que tú.
+    ${pos===1?'<b style="color:var(--gold)">¡Vas primero! 👑</b>':`Vas <b>#${pos}</b>. Para pasar a <b>${esc(above.name)}</b> te faltan <b style="color:var(--gold)">${fmt(above.xp-S.xp+1)} XP</b>.`}
+    ${below?` <b>${esc(below.name)}</b> está a ${fmt(S.xp-below.xp)} XP detrás de ti.`:''}</p>
+    ${players.map((p,i)=>`<div class="lb ${p.me?'me':''}"><span class="pos">${i<3?['🥇','🥈','🥉'][i]:i+1}</span><span class="dot" style="background:${p.color}"></span>
+      <span class="grow" style="font-weight:${p.me?800:500};overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.name)}${p.me?' (tú)':''}</span>
+      <span class="small muted">${RANKS[rankOf(p.xp)].n}</span><b style="min-width:62px;text-align:right">${fmt(p.xp)}</b></div>`).join('')}
+    <p class="small muted" style="margin-top:8px">Los rivales son simulados y avanzan cada día. Algunos días fallan… como todos.</p>
+  </div>
+  <div class="card">
+    <div class="row between" style="margin-bottom:10px"><h2 style="margin:0">🏅 Logros</h2><span class="small muted">${nAch}/${ACH.length}</span></div>
+    <div class="achs">${ACH.map(a=>`<div class="ach ${S.ach[a.id]?'got':'lock'}"><span class="ae">${a.e}</span><b>${a.n}</b><span class="muted">${a.d}</span><br><span style="color:var(--gold);font-weight:700">+${a.xp}</span></div>`).join('')}</div>
+  </div>
+  <div class="card">
+    <h2>🏆 Rangos</h2>
+    <div class="ladder">${RANKS.map((r,i)=>{const un=AV.accs.find(a=>a[2]===i&&i>0);return `<div class="lv ${i<=ri.i?'got':''} ${i===ri.i?'cur':''}" style="--c:${r.c}">
+      <span class="em">${r.i}</span><div class="grow"><b>${r.n}</b>${i===ri.i?` <span class="small" style="color:${r.c}">· ${ri.div||'MAX'} · Estás aquí</span>`:''}<div class="small muted">${fmt(r.min)} XP${un?` · desbloquea ${un[1]}`:''}</div></div>
+      ${i<=ri.i?'✅':'🔒'}</div>`}).join('')}</div>
+    <p class="small muted" style="margin-top:10px">Cada rango tiene 3 divisiones (III → II → I). Los hábitos malos y la maldición pueden hacerte <b>bajar</b>.</p>
+  </div>`;
+}
+
+function viewPerfil(){
+  const a=S.avatar, ri=rankInfo(S.xp), best=Math.min(RANKS.length-1,Math.max(S.best||0,ri.i)), p=S.profile;
+  const sw=(list,key)=>`<div class="opts">${list.map(c=>`<button class="sw ${a[key]===c?'on':''}" style="background:${c}" onclick="setAv('${key}','${c}')" aria-label="${c}"></button>`).join('')}</div>`;
+  return `
+  <div class="card" style="text-align:center">
+    ${avatarSVG(a,ri.r.c,'avatar-big')}
+    <h2 style="font-size:1.4rem;margin:6px 0 2px">${esc(p.name)}</h2>
+    <div class="muted small">${charClass()} · Nivel ${['principiante','intermedio','avanzado'][fitTier()]} · <span style="color:${ri.r.c};font-weight:700">${ri.r.i} ${ri.r.n} ${ri.div}</span></div>
+  </div>
+  <div class="card">
+    <h2>🎨 Personaliza tu personaje</h2>
+    <label class="small muted">Piel</label>${sw(AV.skins,'skin')}
+    <label class="small muted">Peinado</label>
+    <div class="opts">${AV.hairs.map(([k,l])=>`<button class="opt ${a.hair===k?'on':''}" onclick="setAv('hair','${k}')">${l}</button>`).join('')}</div>
+    <label class="small muted">Color de pelo</label>${sw(AV.hairColors,'hairColor')}
+    <label class="small muted">Ropa</label>${sw(AV.shirts,'shirt')}
+    <label class="small muted">Accesorio (se desbloquean subiendo de rango)</label>
+    <div class="opts">${AV.accs.map(([k,l,r,price])=>{
+      const lock=price?!S.owned[k]:r>best;
+      const act=price&&lock?`buy('${k}')`:lock?`toast('🔒 Se desbloquea en ${RANKS[r].n}','bad')`:`setAv('acc','${k}')`;
+      return `<button class="opt ${a.acc===k?'on':''} ${lock&&!price?'locked':''}" onclick="${act}">${lock?(price?`💎${price} `:'🔒 '):''}${l}</button>`}).join('')}</div>
+    <p class="small muted">El aura de tu personaje toma el color de tu rango. Los accesorios con 💎 se compran con gemas.</p>
+  </div>
+  <div class="card">
+    <div class="row between" style="margin-bottom:8px"><h2 style="margin:0">💎 Tienda de gemas</h2><b style="color:var(--accent-2)">${fmtGem(S.gems)} 💎</b></div>
+    <p class="small muted" style="margin-bottom:10px">Ganas 0,25 💎 por cada hábito completado (0,125 con la versión mínima). Se cobran al terminar cada semana, con tu recuento.</p>
+    <div class="shop">${SHOP.map(it=>`<button onclick="buy('${it.id}')"><b>${it.e} ${it.n}</b><span class="small" style="color:var(--accent-2)">${it.p} 💎</span></button>`).join('')}</div>
+  </div>
+  <div class="card">
+    <h2>📊 Tus datos</h2>
+    <div class="small muted" style="line-height:1.8">
+      Edad: <b>${p.age||'—'}</b> · Peso: <b>${p.weight||'—'} kg</b> · Altura: <b>${p.height||'—'} cm</b>
+      ${p.weight&&p.height?` · IMC: <b>${bmiOf(p).toFixed(1)}</b>`:''}<br>
+      Reto iniciado: <b>${parseKey(S.start).toLocaleDateString('es-ES')}</b> · Mejor rango: <b>${RANKS[best].n}</b><br>
+      Hábitos completados: <b>${S.stats.good}</b> · Días perfectos: <b>${S.stats.perfect}</b> · Maldiciones superadas: <b>${S.stats.redeemed}</b>
+    </div>
+    <div class="row" style="margin-top:12px;flex-wrap:wrap;gap:8px">
+      <button class="btn ghost sm" onclick="updWeight()">⚖️ Actualizar peso</button>
+      <button class="btn ghost sm" onclick="go('opciones')">⚙️ Opciones</button>
+    </div>
+  </div>`;
+}
+
+function viewOpciones(){
+  const r=S.rem, perm=('Notification' in window)?Notification.permission:'unsupported';
+  return `
+  <div class="card">
+    <h2>🔔 Recordatorios</h2>
+    <div class="row between"><span class="small">Recibir notificaciones</span><button class="switch ${r.on?'on':''}" onclick="toggleRem()" aria-label="Activar recordatorios"></button></div>
+    ${perm==='unsupported'?'<p class="small" style="color:var(--bad);margin-top:8px">Este navegador no admite notificaciones. Instala la app en la pantalla de inicio.</p>':perm==='denied'?'<p class="small" style="color:var(--bad);margin-top:8px">Has bloqueado las notificaciones. Actívalas en los ajustes del navegador para esta web.</p>':''}
+    <div style="margin-top:12px">${r.list.map((x,i)=>`<div class="remrow">
+      <div class="row between"><input type="time" value="${x.t}" onchange="S.rem.list[${i}].t=this.value;save()"><button class="btn ghost sm" onclick="S.rem.list.splice(${i},1);save();render()">🗑️</button></div>
+      <div class="dchips" style="margin-top:8px">${WD.map(d=>`<button class="dchip ${x.days.includes(d)?'on':''}" onclick="remDay(${i},${d})" aria-label="${WDL[d]}">${WDN[d]}</button>`).join('')}</div>
+    </div>`).join('')}</div>
+    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn ghost sm" onclick="S.rem.list.push({id:uid(),t:'13:00',days:[1,2,3,4,5]});save();render()">+ Añadir recordatorio</button><button class="btn ghost sm" onclick="testNotif()">🔔 Probar</button></div>
+    <p class="small muted" style="margin-top:10px">El aviso te dice cuántos hábitos te faltan ese día, si tienes el cofre sin abrir o una maldición pendiente.
+    Funciona mejor con la app <b>instalada</b>. Con la app cerrada, Android puede retrasar los avisos y en iPhone solo llegan si la abriste hace poco.</p>
+  </div>
+  <div class="card">
+    <h2>🔊 Sonido y vibración</h2>
+    <div class="row between"><span class="small">Efectos de sonido</span><button class="switch ${S.sound?'on':''}" onclick="S.sound=!S.sound;save();render();sfx('good')" aria-label="Sonido"></button></div>
+  </div>
+  ${saveCard()}
+  <div class="card"><h2>⚠️ Zona peligrosa</h2><button class="btn danger sm" onclick="resetAll()">↺ Reiniciar toda la partida</button></div>`;
+}
+function gemInfo(){
+  openModal(`<div class="center"><div class="bigemoji">💎</div><h2 style="margin:8px 0">Gemas</h2></div>
+  <p class="small muted" style="margin-bottom:8px">Cada hábito completado vale <b>0,25 💎</b> (la versión mínima, 0,125). Si haces 4 hábitos al día, ganas 1 💎 diaria.</p>
+  <p class="small muted" style="margin-bottom:8px">Se cobran al <b>terminar la semana</b> (de lunes a domingo), junto con tu <b>recuento semanal</b>.</p>
+  <p class="small" style="margin-bottom:14px">Esta semana llevas <b style="color:var(--accent-2)">${fmtGem(weekGemsSoFar())} 💎</b>. Tienes <b>${fmtGem(S.gems)} 💎</b> para gastar en la tienda (Personaje).</p>
+  <button class="btn block" onclick="closeModal()">Entendido</button>`);
+}
+
+function saveCard(){
+  const last=S.lastBackup?new Date(S.lastBackup).toLocaleDateString('es-ES'):null;
+  const old=!S.lastBackup || (Date.now()-S.lastBackup)>7*864e5;
+  return `<div class="card" id="guardar">
+    <h2>💾 Guardar mi progreso</h2>
+    <p class="small muted" style="margin-bottom:10px">Tu progreso se guarda <b>automáticamente</b> en este dispositivo cada vez que marcas algo.
+    Haz una copia de seguridad para no perderlo si cambias de móvil o borras el navegador.</p>
+    <p class="small" style="margin-bottom:12px;color:${old?'var(--gold)':'var(--good)'}">${last?`Última copia: <b>${last}</b>`:'Aún no has hecho ninguna copia'}${old?' · ¡Haz una ahora!':' ✓'}</p>
+    <div class="two">
+      <button class="btn sm" onclick="exportData()">⬇️ Descargar copia</button>
+      <button class="btn ghost sm" onclick="document.getElementById('imp').click()">📂 Restaurar archivo</button>
+      <button class="btn ghost sm" onclick="copyCode()">📋 Copiar código</button>
+      <button class="btn ghost sm" onclick="pasteCode()">🔑 Pegar código</button>
+    </div>
+    <input id="imp" type="file" accept="application/json,.json" class="hidden" onchange="importData(this)">
+    <p class="small muted" style="margin-top:10px">El <b>código de guardado</b> es un texto con toda tu partida: pégalo en tus notas o envíatelo por WhatsApp/email y úsalo en otro móvil con «Pegar código».</p>
+  </div>
+  <div class="card">
+    <h2>📲 Instalar como app</h2>
+    ${isStandalone()?'<p class="small" style="color:var(--good)">✓ Ya estás usando la app instalada.</p>':`
+    <p class="small muted" style="margin-bottom:10px">Instálala para abrirla desde un icono en tu pantalla de inicio, a pantalla completa y sin conexión.</p>
+    ${installEvt?'<button class="btn block" onclick="installApp()">📲 Instalar 66 Days</button>':`
+    <div class="small" style="line-height:1.7">
+      <b>iPhone (Safari):</b> pulsa <b>Compartir</b> ⬆️ → <b>Añadir a pantalla de inicio</b>.<br>
+      <b>Android (Chrome):</b> menú <b>⋮</b> → <b>Instalar aplicación</b> (o «Añadir a pantalla de inicio»).
+    </div>`}`}
+  </div>`;
+}
+
+function render(){
+  if(!S){ renderOnboarding(); return }
+  document.body.classList.toggle('cursed',!!S.curse);
+  const v={hoy:viewHoy,coach:viewCoach,stats:viewStats,rank:viewRank,perfil:viewPerfil,opciones:viewOpciones}[tab]();
+  document.getElementById('app').innerHTML = header()+`<main class="wrap">${v}</main>`+navbar();
+  if(tab==='stats') drawStatsRadar();
+  if(tab==='coach'){ const c=document.getElementById('chatEnd'); if(c) c.scrollIntoView() }
+  flush();
+}
+function drawStatsRadar(){
+  const now={}, init={}; SK.forEach(k=>{now[k]=skillVal(k);init[k]=clamp(S.base[k],0,100)});
+  requestAnimationFrame(()=>drawRadar(document.getElementById('radar'),now,init));
+}
+
+/* ---------------- Coach: chat ---------------- */
+let chatBusy=false;
+function mdLite(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>') }
+function viewCoach(){
+  if(!S.chat.length || S.chat[S.chat.length-1].day!==today() && !S.chat.some(m=>m.day===today())){
+    S.chat.push({r:'a',t:coach().map(l=>l.replace(/<[^>]+>/g,'')).join('\n\n')+'\n\n¿En qué te ayudo hoy? Pregúntame lo que quieras.',day:today()});
+    save();
+  }
+  const sug=['¿Qué me falta hoy?','¿Cómo voy?','Hoy no tengo ganas de nada','Hazme un plan para esta semana','¿Qué como antes de entrenar?'];
+  return `
+  <div class="card coach" style="margin-bottom:12px"><div class="bot">🤖</div><div><b>Tu coach</b>
+    <p class="small muted">Pregúntame sobre entreno, comida, sueño, motivación, tus hábitos, la maldición o las gemas. Conozco tus datos y tu progreso.</p></div></div>
+  <div class="chat">${S.chat.slice(-40).map(m=>`<div class="msg ${m.r}">${mdLite(m.t)}</div>`).join('')}${chatBusy?'<div class="msg a t">Escribiendo…</div>':''}<div id="chatEnd"></div></div>
+  <div class="sugg">${sug.map(q=>`<button onclick="sendChat(${JSON.stringify(q).replace(/"/g,'&quot;')})">${q}</button>`).join('')}</div>
+  <div class="chatbar"><textarea id="chatIn" placeholder="Escribe al coach…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea><button class="btn" onclick="sendChat()" aria-label="Enviar">➤</button></div>
+  ${S.chat.length>2?'<button class="btn ghost sm" onclick="S.chat=[];save();render()">🧹 Borrar conversación</button>':''}`;
+}
+async function sendChat(q){
+  if(chatBusy) return;
+  const el=document.getElementById('chatIn');
+  const text=(q||(el&&el.value)||'').trim(); if(!text) return;
+  S.chat.push({r:'u',t:text,day:today()}); chatBusy=true; save(); render();
+  await new Promise(r=>setTimeout(r,500+Math.random()*500)); // pequeña pausa para que parezca que piensa
+  const reply=offlineReply(text);
+  chatBusy=false;
+  S.chat.push({r:'a',t:reply,day:today()});
+  if(S.chat.length>60) S.chat=S.chat.slice(-60);
+  save(); if(tab==='coach') render();
+}
+/* Coach gratuito: responde con reglas usando tus datos (sin IA de pago ni conexión) */
+function offlineReply(raw){
+  const t=raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const w=weakest(), d=getDay(), G=goods(), name=S.profile.name||'crack';
+  const pend=G.filter(h=>d.done[h.id]===undefined), ri=rankInfo(S.xp), sk=streak();
+  const tip=k=>RECS[k].tips.map(x=>'• '+x).join('\n');
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const has=rx=>rx.test(t);
+  if(has(/^(hola|buenas|hey|ey|que tal)/)) return `¡Hola, ${name}! ${pend.length?`Hoy te quedan ${pend.length} hábito(s): ${pend.map(h=>h.name).join(', ')}.`:'Hoy ya lo tienes todo hecho. 🔥'} ¿En qué te ayudo?`;
+  if(has(/gracias|genial|guay|vale|ok\b/)) return pick(['¡A tope! 💪','Para eso estoy. ¡Sigue así!','Vamos, que hoy sumas XP. 🔥']);
+  if(has(/dolor|lesion|me duele|enferm|mareo|medic/)) return 'Si te duele algo o te encuentras mal, para y consulta a un profesional sanitario. Mientras, usa la **versión mínima** de tus hábitos o márcate un día de descanso: tu salud va antes que la racha.';
+  if(has(/suicid|morir|no quiero vivir|hacerme dano/)) return 'Siento que estés pasando por esto. No estás solo: habla ahora con alguien de confianza o llama al 024 (España, gratuito y 24 h) o al 112 si es urgente. 💜';
+  if(has(/que hago|que me falta|hoy/)) return pend.length?`Te faltan hoy:\n${pend.map(h=>`• ${h.icon||''} ${h.name} (mínimo: ${h.mini||'2 min'})`).join('\n')}\n\nEmpieza por el más fácil. Con ${Math.max(0,Math.ceil(G.length/2)-(G.length-pend.length))} más aseguras el día.`:(G.length?'¡Ya has hecho todo lo de hoy! Si te sobra energía, haz un hábito de los que no tocan hoy como extra.':'Hoy no te toca ningún hábito: día de descanso. 💤');
+  if(has(/como voy|progreso|resumen|estadistic/)) { const last=S.weeks[S.weeks.length-1]; return `Día ${dayIndex()} de 66 · ${ri.r.i} ${ri.r.n} ${ri.div} con ${fmt(S.xp)} XP.\nRacha: ${sk} días · 💎 ${fmtGem(S.gems)}.\nTu fuerte: ${SKILLS[[...SK].sort((a,b)=>skillVal(b)-skillVal(a))[0]].n} · A mejorar: ${SKILLS[w].n} (${skillVal(w)}/100).${last?`\nLa semana pasada cumpliste el ${last.pct}% de tus hábitos.`:''}`; }
+  if(has(/rango|subir|nivel|dios/)) return ri.next?`Estás en ${ri.r.n} ${ri.div}. Te faltan ${fmt(ri.toNext)} XP para ${ri.next.i} ${ri.next.n}. Lo más rápido: día perfecto (+50), cofre diario y las 3 misiones.`:'¡Ya eres Dios! 🌟 Ahora toca mantenerlo.';
+  if(has(/racha/)) return sk?`Llevas ${sk} días de racha (x${mult().toFixed(2)} XP). Con la mitad de tus hábitos el día cuenta. Tienes ${S.shields} 🛡️ por si fallas.`:'Aún no tienes racha. Hoy completa al menos la mitad de tus hábitos y empieza a contar.';
+  if(has(/dorm|sueno|cansad|insomn/)) return 'Para dormir mejor:\n'+tip('sueno');
+  if(has(/agua|hidrat/)) return 'Truco: un vaso de agua nada más despertar y otro antes de cada comida. Ya llevas casi 1 litro sin pensar. 💧';
+  if(has(/fumar|tabaco|vape|vaper|alcohol|beber/)) return 'Para dejarlo: identifica cuándo te apetece (café, estrés, amigos) y ten un plan B para ese momento (chicle, paseo de 5 min, agua). Añádelo como hábito malo para ver tu progreso. Si te cuesta mucho, un profesional puede ayudarte.';
+  if(has(/comer|comida|dieta|grasa|peso|adelgaz|proteina|antes de entrenar/)) return has(/antes de entrenar/)?'1-2 h antes: algo con hidratos y algo de proteína (tostada con huevo, plátano con yogur, arroz con pollo). Si entrenas nada más despertar, una pieza de fruta basta.':'Sobre alimentación:\n'+tip('nutricion');
+  if(has(/gym|muscul|fuerza|pesas|entren|flexion|sentadill/)) return 'Para ganar fuerza:\n'+tip('fuerza')+`\n\nTu nivel ahora: ${['principiante','intermedio','avanzado'][fitTier()]}.`;
+  if(has(/corr|cardio|resist|caminar|pasos/)) return 'Para tu resistencia:\n'+tip('resistencia');
+  if(has(/leer|libro|estudi|idioma|aprend/)) return 'Para tu intelecto:\n'+tip('intelecto');
+  if(has(/dinero|ahorr|gast|finanz/)) return 'Para tus finanzas:\n'+tip('finanzas');
+  if(has(/amig|social|solo|soledad|pareja|famil/)) return 'Para tu vida social:\n'+tip('social');
+  if(has(/estres|ansiedad|agobi|triste|nervios|mente|medit/)) return 'Para tu mente:\n'+tip('mente')+'\n\nSi lo pasas mal de verdad, habla con alguien de confianza o con un profesional.';
+  if(has(/ganas|motiva|pereza|no puedo|cuesta|vago|cansado de/)) return pick(['Normal tener días así. Haz solo la **versión mínima** (🌱½) de UN hábito: 2 minutos. Mantienes la racha y casi siempre acabas haciendo más.','La motivación llega después de empezar, no antes. Pon un temporizador de 2 minutos y haz lo mínimo. ⏱️','Piensa en tu yo del día 66. Cada check de hoy es XP para él. Uno solo ya cuenta. 🔥']);
+  if(has(/maldici/)) return S.curse?`Tu misión de redención:\n${S.curse.tasks.map(x=>(x.done?'✅ ':'⬜ ')+x.t).join('\n')}\nTe quedan ${hoursLeft()} h.`:'No tienes ninguna maldición. Llega si fallas 2 días seguidos, marcas 3 hábitos malos en un día o caes en ellos 3 días seguidos.';
+  if(has(/gema|tienda|comprar/)) return `Cada hábito completado vale 0,25 💎 (mínimo 0,125). Esta semana llevas ${fmtGem(weekGemsSoFar())} 💎 y se cobran el lunes con tu recuento. Tienes ${fmtGem(S.gems)} 💎 para la tienda (Personaje).`;
+  if(has(/cofre/)) return d.chest?'Ya abriste el cofre de hoy. Mañana hay otro, y con más racha, mejores premios.':'¡Tu cofre de hoy está sin abrir! Ve a Hoy y tócalo. 🎁';
+  if(has(/habito|anadir|nuevo|crear/)) return `Para ${SKILLS[w].n}, que es tu punto débil, te propongo: ${RECS[w].good.map(r=>`«${easyFor(w)?r.e:r.n}»`).join(', ')}. Añádelos desde Stats o con «+ Añadir hábito» en Hoy (puedes elegir los días).`;
+  if(has(/plan|semana|rutina/)) return `Plan para esta semana:\n• Prioriza ${SKILLS[w].e} ${SKILLS[w].n} (${skillVal(w)}/100).\n• Asegura cada día con la mitad de tus hábitos; los días malos, versión mínima.\n• Abre el cofre y haz las misiones: XP extra fácil.\n• El domingo revisa tu recuento y sube de nivel un hábito si ya lo dominas.`;
+  return `No sé responder a eso todavía 🤖. Puedo ayudarte con: qué te falta hoy, cómo vas, entreno, comida, sueño, motivación, estrés, dinero, la maldición o las gemas.\n\nConsejo para tu punto débil (${SKILLS[w].n}): ${RECS[w].tips[dayIndex()%RECS[w].tips.length]}`;
+}
+/* ---------------- Recordatorios (notificaciones) ---------------- */
+const CFG_CACHE='66days-cfg';
+function remText(){
+  const d=getDay(), G=goods(), done=G.filter(h=>d.done[h.id]!==undefined).length, left=G.length-done;
+  if(S.curse) return '💀 Tu misión de redención te espera. ¡Rompe la maldición!';
+  if(!G.length) return '💤 Hoy descansas. Abre la app para ver tu cofre.';
+  if(left<=0) return '✅ Todo hecho hoy. ¡Eres una máquina!';
+  return `Te ${left===1?'falta 1 hábito':`faltan ${left} hábitos`} hoy.${streak()?` ¡No pierdas tu racha de ${streak()} días! 🔥`:''}${!d.chest?' 🎁 Tu cofre te espera.':''}`;
+}
+async function syncRem(){
+  if(!S||!('caches' in window)) return;
+  try{
+    const c=await caches.open(CFG_CACHE);
+    const old=await c.match('cfg').then(r=>r?r.json():{}).catch(()=>({}));
+    await c.put('cfg',new Response(JSON.stringify({on:S.rem.on,list:S.rem.list,fired:old.fired||{},summary:{date:today(),text:remText(),name:S.profile.name}})));
+  }catch(e){}
+}
+async function notify(body,tag){
+  const opts={body,icon:'icons/icon-192.png',badge:'icons/icon-192.png',tag,data:{url:'./'}};
+  try{ const reg=await navigator.serviceWorker.getRegistration(); if(reg){ await reg.showNotification('66 Days',opts); return } }catch(e){}
+  try{ new Notification('66 Days',opts) }catch(e){}
+}
+async function checkReminders(){
+  if(!S||!S.rem.on||!('Notification' in window)||Notification.permission!=='granted') return;
+  const now=new Date(), wd=now.getDay(), mins=now.getHours()*60+now.getMinutes(), tk=today();
+  let cfg={fired:{}};
+  try{ const c=await caches.open(CFG_CACHE); cfg=await c.match('cfg').then(r=>r?r.json():{fired:{}}) }catch(e){}
+  cfg.fired=cfg.fired||{};
+  let changed=false;
+  for(const r of S.rem.list){
+    const [h,m]=r.t.split(':').map(Number), at=h*60+m;
+    if(!r.days.includes(wd) || mins<at || mins-at>180 || cfg.fired[r.id]===tk) continue;
+    cfg.fired[r.id]=tk; changed=true;
+    notify(remText(),'66days-'+r.id);
+  }
+  if(changed){ try{ const c=await caches.open(CFG_CACHE); await c.put('cfg',new Response(JSON.stringify({...cfg,on:S.rem.on,list:S.rem.list,summary:{date:tk,text:remText()}}))) }catch(e){} }
+}
+async function toggleRem(){
+  if(!S.rem.on){
+    if(!('Notification' in window)){ toast('Tu navegador no admite notificaciones','bad'); return }
+    const p=await Notification.requestPermission();
+    if(p!=='granted'){ toast('Necesito permiso para enviarte notificaciones','bad'); render(); return }
+    S.rem.on=true; toast('🔔 Recordatorios activados','good');
+    try{
+      const reg=await navigator.serviceWorker.ready;
+      if(reg.periodicSync){
+        const st=await navigator.permissions.query({name:'periodic-background-sync'}).catch(()=>({state:'denied'}));
+        if(st.state==='granted') await reg.periodicSync.register('reminders',{minInterval:60*60*1000});
+      }
+    }catch(e){}
+  } else { S.rem.on=false; toast('Recordatorios desactivados','') }
+  save(); render();
+}
+function remDay(i,d){ const x=S.rem.list[i]; const j=x.days.indexOf(d); if(j>=0){ if(x.days.length>1) x.days.splice(j,1) } else x.days.push(d); save(); render() }
+async function testNotif(){
+  if(!('Notification' in window)){ toast('Tu navegador no admite notificaciones','bad'); return }
+  if(Notification.permission!=='granted'){ const p=await Notification.requestPermission(); if(p!=='granted'){ toast('Sin permiso para notificaciones','bad'); return } }
+  notify(remText(),'66days-test'); toast('Notificación enviada','good');
+}
+setInterval(checkReminders,30000);
+
+/* ---------------- Acciones ---------------- */
+function setAv(k,v){ S.avatar[k]=v; save(); render() }
+function delHabit(id){
+  const h=S.habits.find(x=>x.id===id); if(!h) return;
+  askConfirm(`¿Borrar «${esc(h.name)}»?<br><span class="small muted">Se quita de tu lista. Lo ya ganado se mantiene (salvo lo de hoy).</span>`, ()=>doDelHabit(id), '🗑️ Borrar', true);
+}
+function doDelHabit(id){
+  const h=S.habits.find(x=>x.id===id); if(!h) return;
+  const d=getDay();
+  if(d.done[id]!==undefined){ addXp(-d.done[id],'undo'); delete d.done[id]; if(d.mini) delete d.mini[id] }
+  S.habits=S.habits.filter(x=>x.id!==id);
+  d.g=goods().length;
+  const st=dayStatus(today());
+  if(st.cls!=='perfect' && d.bonus){ addXp(-d.bonus,'undo'); d.bonus=0; S.stats.perfect-- }
+  evalMissions(); save(); render();
+}
+function addRec(skill,type,i){
+  const r=RECS[skill][type][i]; if(!r) return;
+  S.habits.push(makeHabit(skill,r,type,S.base,S.profile)); save(); render();
+  toast(type==='good'?'Hábito añadido a "Hoy" ✅':'Ahora vigilas este hábito ⚠️', type==='good'?'good':'bad');
+}
+let form=null; // estado del formulario de hábito
+function habitForm(type, id){
+  const h=id?S.habits.find(x=>x.id===id):null;
+  form={type,id:h?h.id:null,days:h&&h.days&&h.days.length?[...h.days]:[0,1,2,3,4,5,6],xpTouched:!!h,skillTouched:!!h,aiBusy:false};
+  openModal(`<h2>${h?'✏️ Editar hábito':type==='good'?'✅ Nuevo hábito':'⚠️ Nuevo hábito malo'}</h2>
+  <div class="field"><label>Nombre</label><input type="text" id="hfN" maxlength="50" value="${esc(h?h.name:'')}" placeholder="${type==='good'?'Ej: Correr 30 min':'Ej: Fumar'}" oninput="formNameChanged()"></div>
+  ${type==='good'?`<div class="field"><label>Versión mínima (para días difíciles)</label><input type="text" id="hfM" maxlength="50" value="${esc(h?h.mini||'':'')}" placeholder="Ej: Correr 5 min"></div>`:''}
+  <div class="two">
+    <div class="field"><label>Habilidad</label><select id="hfS" onchange="form.skillTouched=true;form.skillManual=true;formEstimate()">${SK.map(k=>`<option value="${k}" ${h&&h.skill===k?'selected':''}>${SKILLS[k].e} ${SKILLS[k].n}</option>`).join('')}</select></div>
+    <div class="field"><label>${type==='good'?'XP que da':'XP que quita'}</label><input type="number" id="hfX" min="1" max="100" value="${h?h.xp:15}" oninput="form.xpTouched=true"></div>
+  </div>
+  <div class="hint" id="hfHint">${h?'Si cambias el nombre, recalculo la XP. También puedes cambiarla a mano.':'Escribe el nombre y calculo la dificultad y la XP para ti.'}</div>
+  <button class="btn ghost sm" style="margin:8px 0 14px" onclick="formEstimate(true)">🤖 Calcular XP automáticamente</button>
+  ${type==='good'?`<div class="field"><label>¿Qué días?</label>
+    <div class="dchips" id="hfD">${WD.map(d=>`<button class="dchip ${form.days.includes(d)?'on':''}" data-d="${d}" onclick="formDay(${d})" aria-label="${WDL[d]}">${WDN[d]}</button>`).join('')}</div>
+    <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><button class="qd" onclick="formDays([0,1,2,3,4,5,6])">Todos</button><button class="qd" onclick="formDays([1,2,3,4,5])">Lunes a viernes</button><button class="qd" onclick="formDays([6,0])">Fin de semana</button><button class="qd" onclick="formDays([1,3,5])">L · X · V</button></div>
+  </div>`:''}
+  <div class="field"><label>Emoji (opcional)</label><input type="text" id="hfI" maxlength="4" value="${esc(h?h.icon||'':'')}" placeholder="🔥"></div>
+  <div class="row"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="saveHabit()">Guardar</button></div>
+  ${h?`<button class="btn danger block sm" style="margin-top:10px" onclick="delHabit('${h.id}')">🗑️ Borrar este hábito</button>`:''}`);
+  if(!h) setTimeout(()=>document.getElementById('hfN').focus(),50);
+}
+function formDay(d){ const i=form.days.indexOf(d); if(i>=0){ if(form.days.length>1) form.days.splice(i,1) } else form.days.push(d); formPaintDays() }
+function formDays(list){ form.days=[...list]; formPaintDays() }
+function formPaintDays(){ document.querySelectorAll('#hfD .dchip').forEach(b=>b.classList.toggle('on',form.days.includes(+b.dataset.d))) }
+
+/* Cálculo automático (gratis y sin conexión) de dificultad y XP, según el hábito y TU perfil.
+   Cada patrón: [expresión, habilidad, XP base, para hábitos malos?] */
+const HABIT_KB=[
+  // Fuerza
+  [/gym|gimnas|pesas|musculac|crossfit|calistenia|entren(ar|o|amiento)? (de )?(fuerza|piernas|pecho|espalda|brazos|tren)/,'fuerza',20],
+  [/entren|ejercicio|deporte|workout/,'fuerza',18],
+  [/flexion|sentadill|dominad|abdominal|plancha|burpee|fondos|zancad/,'fuerza',12],
+  [/escaler/,'fuerza',8],
+  // Resistencia
+  [/marat[oó]n|triatl/,'resistencia',35],
+  [/corr(er|o)|running|trot|footing|jogging/,'resistencia',20],
+  [/nadar|nataci|piscina/,'resistencia',20],
+  [/bici|ciclismo|spinning/,'resistencia',15],
+  [/hiit|comba|saltar|cardio|el[ií]ptica|boxeo|bailar|f[uú]tbol|baloncesto|p[aá]del|tenis/,'resistencia',15],
+  [/camin|pase(ar|o)|pasos|andar|senderismo|perro|mascota/,'resistencia',10],
+  [/yoga|estira|movilidad|pilates/,'resistencia',10],
+  // Nutrición
+  [/ayuno/,'nutricion',20],
+  [/(sin|cero|no) (az[uú]car|dulces|ultraprocesad|comida basura|harinas)/,'nutricion',20],
+  [/cocin|comida casera|meal ?prep|tupper/,'nutricion',15],
+  [/dieta|calor[ií]as|macros|contar lo que como/,'nutricion',15],
+  [/verdura|fruta|ensalada|vegetal/,'nutricion',10],
+  [/prote[ií]na|huevo|desayun/,'nutricion',8],
+  [/agua|hidrat/,'nutricion',8],
+  [/vitamina|suplement|creatina/,'nutricion',5],
+  // Sueño
+  [/madrug|levant(arme|arse) (a las|temprano|pronto)|despert(arme|ar) (a las|temprano|pronto)/,'sueno',15],
+  [/dormir|dorm|8 ?h(oras)? de sue[nñ]o|sue[nñ]o/,'sueno',15],
+  [/sin (m[oó]vil|pantallas?) antes de dormir|m[oó]vil fuera de la (cama|habitaci)/,'sueno',12],
+  [/acost|ir a la cama|a la cama/,'sueno',10],
+  [/siesta/,'sueno',5],
+  // Mente y disciplina
+  [/ducha fr[ií]a|ba[nñ]o de hielo/,'mente',15],
+  [/terapia|psic[oó]log/,'mente',15],
+  [/medit|mindfulness/,'mente',10],
+  [/foco|deep work|pomodoro|tarea dif[ií]cil|trabajo profundo/,'mente',15],
+  [/diario|journal|escribir|gratitud|agradec/,'mente',8],
+  [/respir/,'mente',5],
+  [/hacer la cama|ordenar|limpiar|recoger|organizar|planificar|agenda|lista de tareas/,'mente',6],
+  [/rezar|orar|reflexion/,'mente',8],
+  // Intelecto
+  [/estudi|oposici|examen|deberes|repasar/,'intelecto',20],
+  [/program|c[oó]digo|aprender a /,'intelecto',20],
+  [/curso|clase|formaci|tutorial/,'intelecto',18],
+  [/le(er|o)|lectura|libro|p[aá]ginas/,'intelecto',15],
+  [/idioma|ingl[eé]s|franc[eé]s|alem[aá]n|italiano|chino|japon[eé]s|duolingo/,'intelecto',12],
+  [/instrumento|guitarra|piano|dibujar|pintar|m[uú]sica/,'intelecto',12],
+  [/podcast|audiolibro|documental|noticias/,'intelecto',8],
+  // Social
+  [/voluntari/,'social',18],
+  [/quedar|ver a|salir con|cena con|comer con/,'social',12],
+  [/llamar|videollamada|hablar con/,'social',8],
+  [/amig|famil|pareja|padres|abuel|herman|novi[ao]/,'social',10],
+  [/ayudar|cumplido|favor|regalo|perdonar/,'social',8],
+  [/mensaje|escribir a/,'social',5],
+  // Finanzas
+  [/invertir|inversi|bolsa|fondo indexado/,'finanzas',12],
+  [/ahorr|hucha/,'finanzas',12],
+  [/presupuesto|registrar gastos|apuntar (los )?gastos|gastos|finanz/,'finanzas',8],
+  [/(sin|no) (gastar|comprar)|cero gastos/,'finanzas',15],
+  [/vender|trabajo extra|freelance|emprend/,'finanzas',18],
+];
+const BAD_KB=[
+  [/drogas?|porro|marihuana|coca[ií]na/,'mente',35],
+  [/fumar|tabaco|cigarr|vape|vapear|vaper|nicotina|shisha|cachimba/,'mente',30],
+  [/apuest|casino|tragaperras|gambling|loter/,'finanzas',30],
+  [/alcohol|beber|cerveza|vino|copas|borrach|cubata/,'nutricion',25],
+  [/porno/,'mente',25],
+  [/redes|tiktok|instagram|scroll|youtube|reels|twitter|m[oó]vil/,'intelecto',20],
+  [/comida basura|fast ?food|ultraprocesad|hamburgues|pizza|frituras/,'nutricion',20],
+  [/trasnoch|acostarme tarde|dormir tarde/,'sueno',20],
+  [/compra|amazon|gastar|caprich/,'finanzas',20],
+  [/dulce|az[uú]car|bolleri|chuch|golosin|chocolate|helado/,'nutricion',15],
+  [/videojueg|jugar a la|play|consola|fortnite/,'intelecto',15],
+  [/procrastin|dejar para ma[nñ]ana/,'mente',15],
+  [/discut|grit|insult|mentir|enfad/,'social',12],
+  [/serie|netflix|maratones?/,'intelecto',12],
+  [/refresco|cola|bebida energ|red bull|monster/,'nutricion',12],
+  [/picar|picoteo|entre horas/,'nutricion',10],
+  [/caf[eé]|cafe[ií]na/,'sueno',8],
+  [/u[nñ]as|quejarme|queja/,'mente',8],
+  [/sedentari|sentado|sof[aá]/,'resistencia',10],
+];
+function estimateHabit(name, chosenSkill, type, skillTouched){
+  const t=name.toLowerCase();
+  const kb=type==='bad'?BAD_KB:HABIT_KB;
+  const hit=kb.find(([rx])=>rx.test(t));
+  const why=[];
+  let sk=skillTouched?chosenSkill:(hit?hit[1]:chosenSkill);
+  let xp=hit?hit[2]:(type==='bad'?15:10);
+  if(hit) why.push(type==='bad'?'por lo que perjudica':'por lo que cuesta este tipo de hábito');
+  const num=rx=>{const m=t.match(rx);return m?parseFloat(m[1].replace(',','.')):0};
+  if(type==='good'){
+    // cantidad: duración, distancia, páginas, repeticiones, pasos
+    let min=num(/(\d+[.,]?\d*)\s*(min|m\b)/); const hrs=num(/(\d+[.,]?\d*)\s*(h\b|hora)/); if(hrs) min=Math.max(min,hrs*60);
+    if(min>=90){xp+=15;why.push(`${min} min`)} else if(min>=60){xp+=10;why.push('1 hora')} else if(min>=30){xp+=5;why.push(`${min} min`)} else if(min>0&&min<=10){xp-=5;why.push(`solo ${min} min`)}
+    const km=num(/(\d+[.,]?\d*)\s*km/); if(km>=21){xp+=20;why.push(`${km} km`)} else if(km>=10){xp+=12;why.push(`${km} km`)} else if(km>=5){xp+=6;why.push(`${km} km`)} else if(km>0) xp-=3;
+    const pag=num(/(\d+)\s*p[aá]g/); if(pag>=50){xp+=10;why.push(`${pag} páginas`)} else if(pag>=25){xp+=5;why.push(`${pag} páginas`)} else if(pag>0&&pag<=5) xp-=5;
+    const pas=/(\d+)[.,](\d{3})\s*pasos/.test(t)?num(/(\d+)[.,]\d{3}\s*pasos/)*1000:num(/(\d+)\s*pasos/);
+    if(pas>=15000){xp+=10;why.push(`${pas} pasos`)} else if(pas>=10000){xp+=5;why.push(`${pas} pasos`)}
+    const reps=num(/(\d+)\s*(flexi|sentadi|dominad|abdomi|burpee|fondos|zancad)/); if(reps>=100){xp+=10;why.push(`${reps} repeticiones`)} else if(reps>=50){xp+=5;why.push(`${reps} repeticiones`)} else if(reps>0&&reps<=10) xp-=3;
+    const lit=num(/(\d+[.,]?\d*)\s*(l\b|litro)/); if(lit>=3){xp+=5;why.push(`${lit} L`)}
+    if(/^(no |sin |dejar|evitar|cero |nada de)/.test(t) && !(hit&&/sin|no|cero/.test(String(hit[0])))){xp+=5;why.push('requiere fuerza de voluntad')}
+  }
+  // tu perfil: si es tu punto débil te costará más; si ya se te da bien, menos
+  if(hit||skillTouched){
+    const sv=skillVal(sk);
+    if(type==='good'){
+      if(sv<35){xp+=5;why.push(`${SKILLS[sk].n} es tu punto débil (${sv}/100)`)}
+      else if(sv>75){xp-=5;why.push(`ya se te da bien ${SKILLS[sk].n} (${sv}/100)`)}
+      const phys=sk==='fuerza'||sk==='resistencia';
+      if(phys && ((+S.profile.age||0)>=55 || bmiOf(S.profile)>=30)){xp+=5;why.push('adaptado a tu forma física')}
+    }
+  }
+  xp=Math.max(5,Math.min(40,Math.round(xp/5)*5));
+  const diff=type==='bad'?(xp<=10?'leve':xp<=20?'perjudicial':'muy perjudicial'):(xp<=10?'fácil':xp<=20?'media':xp<=30?'difícil':'muy difícil');
+  return {xp,skill:sk,diff,why,known:!!hit};
+}
+function formNameChanged(){
+  if(!form) return;
+  // al cambiar el nombre se vuelve a calcular todo (también al editar)
+  form.xpTouched=false; if(!form.skillManual) form.skillTouched=false;
+  formEstimate();
+}
+function formEstimate(force){
+  if(!form) return;
+  const n=document.getElementById('hfN').value.trim();
+  const hint=document.getElementById('hfHint');
+  if(!n){ if(force) toast('Escribe primero el nombre del hábito','bad'); return }
+  if(force){ form.xpTouched=false }
+  const e=estimateHabit(n,document.getElementById('hfS').value,form.type,form.skillTouched);
+  if(!form.skillTouched) document.getElementById('hfS').value=e.skill;
+  if(!form.xpTouched) document.getElementById('hfX').value=e.xp;
+  hint.innerHTML = e.known||form.skillTouched
+    ? `🤖 ${form.type==='bad'?'Gravedad':'Dificultad para ti'}: <b>${e.diff}</b> → <b>${form.type==='bad'?'−':''}${e.xp} XP</b>${e.why.length?` <span class="muted">(${esc(e.why.join(', '))})</span>`:''}. Puedes cambiarla.`
+    : `🤖 No reconozco este hábito: elige su <b>habilidad</b> y lo calculo, o pon tú la XP (ahora ${e.xp}).`;
+  if(force) toast(`XP calculada: ${e.xp}`,'good');
+}
+function saveHabit(){
+  const n=document.getElementById('hfN').value.trim(); if(!n){toast('Ponle un nombre','bad');return}
+  const xp=Math.max(1,Math.min(100,parseInt(document.getElementById('hfX').value)||15));
+  const mEl=document.getElementById('hfM');
+  const data={name:n,skill:document.getElementById('hfS').value,xp,icon:document.getElementById('hfI').value.trim()};
+  if(form.type==='good'){ data.mini=(mEl&&mEl.value.trim())||'Versión mínima (2 min)'; data.days=form.days.length===7?undefined:[...form.days] }
+  if(form.id){
+    const h=S.habits.find(x=>x.id===form.id);
+    if(h.name!==data.name && h.lvl){ delete h.lvl; delete h.normal }
+    Object.assign(h,data); toast('Hábito actualizado ✅','good');
+  } else S.habits.push({id:uid(),type:form.type,count:0,...data});
+  getDay().g=goods().length;
+  form=null; save(); closeModal(); render();
+}
+function updWeight(){
+  askInput('⚖️ Tu peso actual (kg):', S.profile.weight||'', w=>setWeight(w), 'text');
+}
+function setWeight(w){
+  const n=parseFloat(String(w).replace(',','.')); if(!(n>30&&n<300)){toast('Peso no válido','bad');return}
+  (S.profile.weights=S.profile.weights||[]).push({d:today(),w:n}); S.profile.weight=n; save(); render(); toast('Peso actualizado','good');
+}
+function exportData(){
+  const b=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(b); a.download='66-days-'+today()+'.json'; a.click();
+  markBackup(); toast('Copia descargada ✅','good');
+}
+function importData(inp){
+  const f=inp.files[0]; if(!f) return;
+  f.text().then(t=>{ try{ restore(JSON.parse(t)) }catch(e){ toast('Archivo no válido','bad') } });
+  inp.value='';
+}
+function resetAll(){
+  askConfirm('¿Seguro? Se borrará <b>todo tu progreso</b> y empezarás de cero.', doReset, 'Borrar todo', true);
+}
+function doReset(){
+  try{localStorage.removeItem(KEY)}catch(e){} S=null; ob.step=0; render();
+}
+
+/* ---------------- Guardado / app instalable ---------------- */
+let installEvt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); installEvt=e; if(S&&tab==='perfil') render() });
+window.addEventListener('appinstalled',()=>{ installEvt=null; toast('¡App instalada! 📲','gold'); if(S) render() });
+function isStandalone(){ return matchMedia('(display-mode: standalone)').matches || navigator.standalone===true }
+function installApp(){ if(!installEvt) return; installEvt.prompt(); installEvt.userChoice.finally(()=>{ installEvt=null; render() }) }
+function markBackup(){ S.lastBackup=Date.now(); save(); render() }
+function encodeSave(){ return 'D66:'+btoa(unescape(encodeURIComponent(JSON.stringify(S)))) }
+function decodeSave(t){ t=t.trim().replace(/^D66:/,''); return JSON.parse(decodeURIComponent(escape(atob(t)))) }
+function copyCode(){
+  S.lastBackup=Date.now(); save();
+  const code=encodeSave();
+  const done=()=>{ toast('Código copiado ✅ Guárdalo en tus notas','good'); render() };
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(code).then(done,()=>showCode(code));
+  else showCode(code);
+}
+function showCode(code){
+  openModal(`<h2>📋 Tu código de guardado</h2><p class="small muted" style="margin-bottom:8px">Mantén pulsado para copiarlo todo.</p>
+  <textarea readonly style="width:100%;height:160px;background:var(--bg-2);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:.7rem" onclick="this.select()">${code}</textarea>
+  <button class="btn block" style="margin-top:10px" onclick="closeModal();render()">Hecho</button>`);
+}
+function pasteCode(){
+  openModal(`<h2>🔑 Restaurar con código</h2><p class="small muted" style="margin-bottom:8px">Pega aquí tu código de guardado. <b>Se reemplazará la partida actual.</b></p>
+  <textarea id="codeIn" placeholder="D66:..." style="width:100%;height:140px;background:var(--bg-2);color:var(--text);border:1px solid var(--border);border-radius:12px;padding:10px;font-size:.75rem"></textarea>
+  <div class="row" style="margin-top:10px"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="applyCode()">Restaurar</button></div>`);
+}
+function applyCode(){
+  try{ const s=decodeSave(document.getElementById('codeIn').value); restore(s); closeModal() }
+  catch(e){ toast('Código no válido','bad') }
+}
+function restore(s){
+  if(!s||!s.habits||!s.base||!s.start) throw new Error('bad');
+  S=s; migrate(); save(); tab='hoy'; render(); toast('Partida restaurada ✅','good');
+}
+if(navigator.storage&&navigator.storage.persist){ navigator.storage.persist().catch(()=>{}) }
+if('serviceWorker' in navigator && location.protocol!=='file:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+
+/* Al volver a la app (p. ej. al día siguiente) se procesan los días y se refresca */
+let lastSeenDay=today();
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='visible' && S){ processDays(); if(today()!==lastSeenDay){ lastSeenDay=today(); tab='hoy' } render(); checkReminders() }
+});
+let rz;
+window.addEventListener('resize',()=>{ clearTimeout(rz); rz=setTimeout(()=>{ if(S&&tab==='stats') drawStatsRadar() },150) });
+
+migrate();
+processDays();
+render();
+setTimeout(checkReminders,2000);
+</script>
+</body>
+</html>
