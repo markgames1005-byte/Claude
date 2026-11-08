@@ -27,6 +27,22 @@ directamente en tu panel, y funciona sin conexión.
     También se puede hacer desde la pantalla de bienvenida.
 - La app avisa si llevas más de 7 días sin hacer una copia.
 
+## Novedades
+
+- **Días de la semana por hábito**: al crear o editar un hábito eliges qué días toca (L M X J V S D,
+  o atajos como «Lunes a viernes»). Los días sin hábitos programados cuentan como descanso y no rompen la racha.
+- **Gemas 💎**: cada hábito completado vale 0,25 💎 (versión mínima: 0,125). Se cobran al cerrar cada semana
+  (lunes a domingo). Se gastan en la tienda: escudos, cofres extra, más tiempo de redención y accesorios.
+- **Recuento semanal**: al empezar cada semana aparece un informe con hábitos cumplidos, XP, días,
+  hábitos malos, cambios en tus habilidades, hábito a hábito y comparación con la semana anterior.
+  Los informes se guardan en Stats.
+- **XP automática**: al escribir un hábito se calcula su dificultad para ti (según el hábito y tus
+  habilidades) y la XP. Con la IA activada, el botón «Analizar con IA» lo afina. Siempre se puede editar.
+- **Coach con IA**: pestaña Coach con chat libre. Usa Claude (modelo `claude-opus-5-5`) con la clave
+  de API del propio usuario, guardada solo en el dispositivo. Sin clave funciona en modo básico.
+- **Recordatorios**: en Opciones activas notificaciones y eliges horas y días. Con la app cerrada solo
+  funcionan de forma limitada (Android con la app instalada; en iPhone, casi solo con la app abierta).
+
 ## Qué incluye
 
 - **Cuestionario inicial** (edad, peso, altura, objetivos, hábitos actuales) y **gráfico de telaraña**
