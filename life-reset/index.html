@@ -1607,14 +1607,14 @@ function habitForm(type, id){
   const h=id?S.habits.find(x=>x.id===id):null;
   form={type,id:h?h.id:null,days:h&&h.days&&h.days.length?[...h.days]:[0,1,2,3,4,5,6],xpTouched:!!h,skillTouched:!!h,aiBusy:false};
   openModal(`<h2>${h?'✏️ Editar hábito':type==='good'?'✅ Nuevo hábito':'⚠️ Nuevo hábito malo'}</h2>
-  <div class="field"><label>Nombre</label><input type="text" id="hfN" maxlength="50" value="${esc(h?h.name:'')}" placeholder="${type==='good'?'Ej: Correr 30 min':'Ej: Fumar'}" oninput="formEstimate()"></div>
+  <div class="field"><label>Nombre</label><input type="text" id="hfN" maxlength="50" value="${esc(h?h.name:'')}" placeholder="${type==='good'?'Ej: Correr 30 min':'Ej: Fumar'}" oninput="formNameChanged()"></div>
   ${type==='good'?`<div class="field"><label>Versión mínima (para días difíciles)</label><input type="text" id="hfM" maxlength="50" value="${esc(h?h.mini||'':'')}" placeholder="Ej: Correr 5 min"></div>`:''}
   <div class="two">
-    <div class="field"><label>Habilidad</label><select id="hfS" onchange="form.skillTouched=true;formEstimate()">${SK.map(k=>`<option value="${k}" ${h&&h.skill===k?'selected':''}>${SKILLS[k].e} ${SKILLS[k].n}</option>`).join('')}</select></div>
+    <div class="field"><label>Habilidad</label><select id="hfS" onchange="form.skillTouched=true;form.skillManual=true;formEstimate()">${SK.map(k=>`<option value="${k}" ${h&&h.skill===k?'selected':''}>${SKILLS[k].e} ${SKILLS[k].n}</option>`).join('')}</select></div>
     <div class="field"><label>${type==='good'?'XP que da':'XP que quita'}</label><input type="number" id="hfX" min="1" max="100" value="${h?h.xp:15}" oninput="form.xpTouched=true"></div>
   </div>
-  <div class="hint" id="hfHint">${h?'Puedes cambiar la XP a mano.':'Escribe el nombre y calculo la dificultad y la XP para ti.'}</div>
-  <div style="height:12px"></div>
+  <div class="hint" id="hfHint">${h?'Si cambias el nombre, recalculo la XP. También puedes cambiarla a mano.':'Escribe el nombre y calculo la dificultad y la XP para ti.'}</div>
+  <button class="btn ghost sm" style="margin:8px 0 14px" onclick="formEstimate(true)">🤖 Calcular XP automáticamente</button>
   ${type==='good'?`<div class="field"><label>¿Qué días?</label>
     <div class="dchips" id="hfD">${WD.map(d=>`<button class="dchip ${form.days.includes(d)?'on':''}" data-d="${d}" onclick="formDay(${d})" aria-label="${WDL[d]}">${WDN[d]}</button>`).join('')}</div>
     <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><button class="qd" onclick="formDays([0,1,2,3,4,5,6])">Todos</button><button class="qd" onclick="formDays([1,2,3,4,5])">Lunes a viernes</button><button class="qd" onclick="formDays([6,0])">Fin de semana</button><button class="qd" onclick="formDays([1,3,5])">L · X · V</button></div>
@@ -1628,45 +1628,143 @@ function formDay(d){ const i=form.days.indexOf(d); if(i>=0){ if(form.days.length
 function formDays(list){ form.days=[...list]; formPaintDays() }
 function formPaintDays(){ document.querySelectorAll('#hfD .dchip').forEach(b=>b.classList.toggle('on',form.days.includes(+b.dataset.d))) }
 
-/* Estimación automática (sin conexión) de dificultad y XP, según el hábito y TU perfil */
-const SKILL_RX={
-  fuerza:/pesas|gym|gimnas|fuerza|flexi|sentadill|dominad|press|m[uú]scul|entren|abdominal|plancha/,
-  resistencia:/corr|running|bici|nadar|nataci|cardio|pasos|camin|hiit|comba|km|trot/,
-  nutricion:/comer|comida|verdura|fruta|agua|prote|dieta|az[uú]car|cocin|ayuno|calor|dulce|refresco|alcohol|cerveza/,
-  sueno:/dorm|sue[nñ]o|cama|acost|siesta|despert|madrug/,
-  mente:/medit|diario|respir|ducha fr|gratitud|ansiedad|estr[eé]s|foco|procrast|fumar|tabaco|vap|porno/,
-  intelecto:/leer|libro|p[aá]gina|estudi|curso|idioma|ingl[eé]s|aprend|program|redes|tiktok|instagram|series|videojueg|m[oó]vil/,
-  social:/amig|famil|llamar|pareja|quedar|social|ayudar|cumplido|discut/,
-  finanzas:/gast|ahorr|dinero|invert|finanz|presupuesto|compr|apuest/,
-};
-function estimateHabit(name, skill, type){
+/* Cálculo automático (gratis y sin conexión) de dificultad y XP, según el hábito y TU perfil.
+   Cada patrón: [expresión, habilidad, XP base, para hábitos malos?] */
+const HABIT_KB=[
+  // Fuerza
+  [/gym|gimnas|pesas|musculac|crossfit|calistenia|entren(ar|o|amiento)? (de )?(fuerza|piernas|pecho|espalda|brazos|tren)/,'fuerza',20],
+  [/entren|ejercicio|deporte|workout/,'fuerza',18],
+  [/flexion|sentadill|dominad|abdominal|plancha|burpee|fondos|zancad/,'fuerza',12],
+  [/escaler/,'fuerza',8],
+  // Resistencia
+  [/marat[oó]n|triatl/,'resistencia',35],
+  [/corr(er|o)|running|trot|footing|jogging/,'resistencia',20],
+  [/nadar|nataci|piscina/,'resistencia',20],
+  [/bici|ciclismo|spinning/,'resistencia',15],
+  [/hiit|comba|saltar|cardio|el[ií]ptica|boxeo|bailar|f[uú]tbol|baloncesto|p[aá]del|tenis/,'resistencia',15],
+  [/camin|pase(ar|o)|pasos|andar|senderismo|perro|mascota/,'resistencia',10],
+  [/yoga|estira|movilidad|pilates/,'resistencia',10],
+  // Nutrición
+  [/ayuno/,'nutricion',20],
+  [/(sin|cero|no) (az[uú]car|dulces|ultraprocesad|comida basura|harinas)/,'nutricion',20],
+  [/cocin|comida casera|meal ?prep|tupper/,'nutricion',15],
+  [/dieta|calor[ií]as|macros|contar lo que como/,'nutricion',15],
+  [/verdura|fruta|ensalada|vegetal/,'nutricion',10],
+  [/prote[ií]na|huevo|desayun/,'nutricion',8],
+  [/agua|hidrat/,'nutricion',8],
+  [/vitamina|suplement|creatina/,'nutricion',5],
+  // Sueño
+  [/madrug|levant(arme|arse) (a las|temprano|pronto)|despert(arme|ar) (a las|temprano|pronto)/,'sueno',15],
+  [/dormir|dorm|8 ?h(oras)? de sue[nñ]o|sue[nñ]o/,'sueno',15],
+  [/sin (m[oó]vil|pantallas?) antes de dormir|m[oó]vil fuera de la (cama|habitaci)/,'sueno',12],
+  [/acost|ir a la cama|a la cama/,'sueno',10],
+  [/siesta/,'sueno',5],
+  // Mente y disciplina
+  [/ducha fr[ií]a|ba[nñ]o de hielo/,'mente',15],
+  [/terapia|psic[oó]log/,'mente',15],
+  [/medit|mindfulness/,'mente',10],
+  [/foco|deep work|pomodoro|tarea dif[ií]cil|trabajo profundo/,'mente',15],
+  [/diario|journal|escribir|gratitud|agradec/,'mente',8],
+  [/respir/,'mente',5],
+  [/hacer la cama|ordenar|limpiar|recoger|organizar|planificar|agenda|lista de tareas/,'mente',6],
+  [/rezar|orar|reflexion/,'mente',8],
+  // Intelecto
+  [/estudi|oposici|examen|deberes|repasar/,'intelecto',20],
+  [/program|c[oó]digo|aprender a /,'intelecto',20],
+  [/curso|clase|formaci|tutorial/,'intelecto',18],
+  [/le(er|o)|lectura|libro|p[aá]ginas/,'intelecto',15],
+  [/idioma|ingl[eé]s|franc[eé]s|alem[aá]n|italiano|chino|japon[eé]s|duolingo/,'intelecto',12],
+  [/instrumento|guitarra|piano|dibujar|pintar|m[uú]sica/,'intelecto',12],
+  [/podcast|audiolibro|documental|noticias/,'intelecto',8],
+  // Social
+  [/voluntari/,'social',18],
+  [/quedar|ver a|salir con|cena con|comer con/,'social',12],
+  [/llamar|videollamada|hablar con/,'social',8],
+  [/amig|famil|pareja|padres|abuel|herman|novi[ao]/,'social',10],
+  [/ayudar|cumplido|favor|regalo|perdonar/,'social',8],
+  [/mensaje|escribir a/,'social',5],
+  // Finanzas
+  [/invertir|inversi|bolsa|fondo indexado/,'finanzas',12],
+  [/ahorr|hucha/,'finanzas',12],
+  [/presupuesto|registrar gastos|apuntar (los )?gastos|gastos|finanz/,'finanzas',8],
+  [/(sin|no) (gastar|comprar)|cero gastos/,'finanzas',15],
+  [/vender|trabajo extra|freelance|emprend/,'finanzas',18],
+];
+const BAD_KB=[
+  [/drogas?|porro|marihuana|coca[ií]na/,'mente',35],
+  [/fumar|tabaco|cigarr|vape|vapear|vaper|nicotina|shisha|cachimba/,'mente',30],
+  [/apuest|casino|tragaperras|gambling|loter/,'finanzas',30],
+  [/alcohol|beber|cerveza|vino|copas|borrach|cubata/,'nutricion',25],
+  [/porno/,'mente',25],
+  [/redes|tiktok|instagram|scroll|youtube|reels|twitter|m[oó]vil/,'intelecto',20],
+  [/comida basura|fast ?food|ultraprocesad|hamburgues|pizza|frituras/,'nutricion',20],
+  [/trasnoch|acostarme tarde|dormir tarde/,'sueno',20],
+  [/compra|amazon|gastar|caprich/,'finanzas',20],
+  [/dulce|az[uú]car|bolleri|chuch|golosin|chocolate|helado/,'nutricion',15],
+  [/videojueg|jugar a la|play|consola|fortnite/,'intelecto',15],
+  [/procrastin|dejar para ma[nñ]ana/,'mente',15],
+  [/discut|grit|insult|mentir|enfad/,'social',12],
+  [/serie|netflix|maratones?/,'intelecto',12],
+  [/refresco|cola|bebida energ|red bull|monster/,'nutricion',12],
+  [/picar|picoteo|entre horas/,'nutricion',10],
+  [/caf[eé]|cafe[ií]na/,'sueno',8],
+  [/u[nñ]as|quejarme|queja/,'mente',8],
+  [/sedentari|sentado|sof[aá]/,'resistencia',10],
+];
+function estimateHabit(name, chosenSkill, type, skillTouched){
   const t=name.toLowerCase();
-  let sk=skill; if(!form||!form.skillTouched){ const f=SK.find(k=>SKILL_RX[k].test(t)); if(f) sk=f }
-  let xp=10; const why=[];
-  const num=(rx)=>{const m=t.match(rx);return m?parseFloat(m[1].replace(',','.')):0};
-  let min=num(/(\d+[.,]?\d*)\s*(min|m\b)/); const hrs=num(/(\d+[.,]?\d*)\s*(h\b|hora)/); if(hrs) min=Math.max(min,hrs*60);
-  if(min>=60){xp+=15;why.push('más de 1 hora')} else if(min>=30){xp+=10;why.push(`${min} min`)} else if(min>=15){xp+=5;why.push(`${min} min`)}
-  const km=num(/(\d+[.,]?\d*)\s*km/); if(km>=10){xp+=20;why.push(`${km} km`)} else if(km>=5){xp+=12;why.push(`${km} km`)} else if(km){xp+=6}
-  const pag=num(/(\d+)\s*p[aá]g/); if(pag>=30){xp+=10;why.push(`${pag} páginas`)} else if(pag>=15) xp+=5;
-  const pas=num(/(\d+)[.,]?(\d{3})?\s*pasos/)*(/\d+[.,]\d{3}\s*pasos/.test(t)?1000:1); if(pas>=10000){xp+=10} else if(pas>=6000) xp+=5;
-  const reps=num(/(\d+)\s*(flexi|sentadi|dominad|abdomi|burpee)/); if(reps>=100){xp+=12;why.push(`${reps} repeticiones`)} else if(reps>=40) xp+=6;
-  if(/^(no |sin |dejar|evitar|cero |nada de)/.test(t)){xp+=5;why.push('requiere fuerza de voluntad')}
-  if(/madrug|ducha fr|ayuno|marat[oó]n|todos los d|cada d[ií]a/.test(t)){xp+=5}
-  const sv=skillVal(sk);
-  if(sv<35){xp+=5;why.push(`${SKILLS[sk].n} es tu punto débil (${sv}/100): te costará más`)}
-  else if(sv>75){xp-=5;why.push(`ya se te da bien ${SKILLS[sk].n} (${sv}/100)`)}
-  if(type==='bad'){ xp=Math.max(10,xp+5) }
+  const kb=type==='bad'?BAD_KB:HABIT_KB;
+  const hit=kb.find(([rx])=>rx.test(t));
+  const why=[];
+  let sk=skillTouched?chosenSkill:(hit?hit[1]:chosenSkill);
+  let xp=hit?hit[2]:(type==='bad'?15:10);
+  if(hit) why.push(type==='bad'?'por lo que perjudica':'por lo que cuesta este tipo de hábito');
+  const num=rx=>{const m=t.match(rx);return m?parseFloat(m[1].replace(',','.')):0};
+  if(type==='good'){
+    // cantidad: duración, distancia, páginas, repeticiones, pasos
+    let min=num(/(\d+[.,]?\d*)\s*(min|m\b)/); const hrs=num(/(\d+[.,]?\d*)\s*(h\b|hora)/); if(hrs) min=Math.max(min,hrs*60);
+    if(min>=90){xp+=15;why.push(`${min} min`)} else if(min>=60){xp+=10;why.push('1 hora')} else if(min>=30){xp+=5;why.push(`${min} min`)} else if(min>0&&min<=10){xp-=5;why.push(`solo ${min} min`)}
+    const km=num(/(\d+[.,]?\d*)\s*km/); if(km>=21){xp+=20;why.push(`${km} km`)} else if(km>=10){xp+=12;why.push(`${km} km`)} else if(km>=5){xp+=6;why.push(`${km} km`)} else if(km>0) xp-=3;
+    const pag=num(/(\d+)\s*p[aá]g/); if(pag>=50){xp+=10;why.push(`${pag} páginas`)} else if(pag>=25){xp+=5;why.push(`${pag} páginas`)} else if(pag>0&&pag<=5) xp-=5;
+    const pas=/(\d+)[.,](\d{3})\s*pasos/.test(t)?num(/(\d+)[.,]\d{3}\s*pasos/)*1000:num(/(\d+)\s*pasos/);
+    if(pas>=15000){xp+=10;why.push(`${pas} pasos`)} else if(pas>=10000){xp+=5;why.push(`${pas} pasos`)}
+    const reps=num(/(\d+)\s*(flexi|sentadi|dominad|abdomi|burpee|fondos|zancad)/); if(reps>=100){xp+=10;why.push(`${reps} repeticiones`)} else if(reps>=50){xp+=5;why.push(`${reps} repeticiones`)} else if(reps>0&&reps<=10) xp-=3;
+    const lit=num(/(\d+[.,]?\d*)\s*(l\b|litro)/); if(lit>=3){xp+=5;why.push(`${lit} L`)}
+    if(/^(no |sin |dejar|evitar|cero |nada de)/.test(t) && !(hit&&/sin|no|cero/.test(String(hit[0])))){xp+=5;why.push('requiere fuerza de voluntad')}
+  }
+  // tu perfil: si es tu punto débil te costará más; si ya se te da bien, menos
+  if(hit||skillTouched){
+    const sv=skillVal(sk);
+    if(type==='good'){
+      if(sv<35){xp+=5;why.push(`${SKILLS[sk].n} es tu punto débil (${sv}/100)`)}
+      else if(sv>75){xp-=5;why.push(`ya se te da bien ${SKILLS[sk].n} (${sv}/100)`)}
+      const phys=sk==='fuerza'||sk==='resistencia';
+      if(phys && ((+S.profile.age||0)>=55 || bmiOf(S.profile)>=30)){xp+=5;why.push('adaptado a tu forma física')}
+    }
+  }
   xp=Math.max(5,Math.min(40,Math.round(xp/5)*5));
-  const diff=xp<=10?'fácil':xp<=20?'media':xp<=30?'difícil':'muy difícil';
-  return {xp,skill:sk,diff,why};
+  const diff=type==='bad'?(xp<=10?'leve':xp<=20?'perjudicial':'muy perjudicial'):(xp<=10?'fácil':xp<=20?'media':xp<=30?'difícil':'muy difícil');
+  return {xp,skill:sk,diff,why,known:!!hit};
 }
-function formEstimate(){
+function formNameChanged(){
   if(!form) return;
-  const n=document.getElementById('hfN').value.trim(); if(!n) return;
-  const e=estimateHabit(n,document.getElementById('hfS').value,form.type);
+  // al cambiar el nombre se vuelve a calcular todo (también al editar)
+  form.xpTouched=false; if(!form.skillManual) form.skillTouched=false;
+  formEstimate();
+}
+function formEstimate(force){
+  if(!form) return;
+  const n=document.getElementById('hfN').value.trim();
+  const hint=document.getElementById('hfHint');
+  if(!n){ if(force) toast('Escribe primero el nombre del hábito','bad'); return }
+  if(force){ form.xpTouched=false }
+  const e=estimateHabit(n,document.getElementById('hfS').value,form.type,form.skillTouched);
   if(!form.skillTouched) document.getElementById('hfS').value=e.skill;
   if(!form.xpTouched) document.getElementById('hfX').value=e.xp;
-  document.getElementById('hfHint').innerHTML=`🧮 Dificultad para ti: <b>${e.diff}</b> → <b>${e.xp} XP</b>${e.why.length?` (${esc(e.why.join(', '))})`:''}. Puedes cambiarla.`;
+  hint.innerHTML = e.known||form.skillTouched
+    ? `🤖 ${form.type==='bad'?'Gravedad':'Dificultad para ti'}: <b>${e.diff}</b> → <b>${form.type==='bad'?'−':''}${e.xp} XP</b>${e.why.length?` <span class="muted">(${esc(e.why.join(', '))})</span>`:''}. Puedes cambiarla.`
+    : `🤖 No reconozco este hábito: elige su <b>habilidad</b> y lo calculo, o pon tú la XP (ahora ${e.xp}).`;
+  if(force) toast(`XP calculada: ${e.xp}`,'good');
 }
 function saveHabit(){
   const n=document.getElementById('hfN').value.trim(); if(!n){toast('Ponle un nombre','bad');return}

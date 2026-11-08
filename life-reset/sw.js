@@ -1,6 +1,6 @@
 // Service worker: abre la app sin conexión y envía los recordatorios.
 // Estrategia de red: red primero (para recibir actualizaciones) y caché como respaldo.
-const CACHE = '66days-v3';
+const CACHE = '66days-v4';
 const CFG_CACHE = '66days-cfg'; // configuración de recordatorios que escribe la app
 const ASSETS = [
   './',
