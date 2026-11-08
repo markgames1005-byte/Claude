@@ -37,9 +37,10 @@ directamente en tu panel, y funciona sin conexión.
   hábitos malos, cambios en tus habilidades, hábito a hábito y comparación con la semana anterior.
   Los informes se guardan en Stats.
 - **XP automática**: al escribir un hábito se calcula su dificultad para ti (según el hábito y tus
-  habilidades) y la XP. Con la IA activada, el botón «Analizar con IA» lo afina. Siempre se puede editar.
-- **Coach con IA**: pestaña Coach con chat libre. Usa Claude (modelo `claude-opus-5-5`) con la clave
-  de API del propio usuario, guardada solo en el dispositivo. Sin clave funciona en modo básico.
+  habilidades) y la XP. Siempre se puede editar.
+- **Coach**: pestaña con chat. Responde gratis y sin conexión con reglas que usan tus datos
+  (qué te falta hoy, cómo vas, entreno, comida, sueño, motivación, gemas, maldición...). No usa IA de pago.
+- **Editar y borrar hábitos**: en Hoy → Editar, con ✏️ o 🗑️, o con «Borrar este hábito» dentro del editor.
 - **Recordatorios**: en Opciones activas notificaciones y eliges horas y días. Con la app cerrada solo
   funcionan de forma limitada (Android con la app instalada; en iPhone, casi solo con la app abierta).
 
@@ -78,6 +79,8 @@ directamente en tu panel, y funciona sin conexión.
 - **Personaje personalizable** con accesorios que se desbloquean por rango.
 
 ## Nota
+
+La app no usa ningún servicio de pago.
 
 El coach funciona con reglas, no con una IA real, y los rivales son simulados. Para tener un
 coach con IA o competir con amigos reales haría falta un servidor (y, para la IA, una clave de API).

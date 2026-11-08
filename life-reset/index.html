@@ -399,9 +399,6 @@ const SHOP=[
   {id:'time',  e:'⏳',n:'+24 h de redención',p:4},
 ];
 
-/* IA: Claude, llamado desde el navegador con la clave del propio usuario */
-const AI_MODEL='claude-opus-5-5';
-const SDK_URLS=['https://cdn.jsdelivr.net/npm/@anthropic-ai/sdk@1.3.0/+esm','https://esm.sh/@anthropic-ai/sdk@1.3.0'];
 
 /* ---------------- Estado ---------------- */
 const KEY='lifereset66.v1';
@@ -447,7 +444,7 @@ function migrate(){
   S.stats=Object.assign({good:0,chests:0,perfect:0,mini:0,lvlup:0,skills:{},redeemed:0,missions:0},S.stats||{});
   S.ach=S.ach||{}; S.shields=S.shields||0;
   S.gems=S.gems||0; S.weeks=S.weeks||[]; S.owned=S.owned||{}; S.chat=S.chat||[];
-  S.ai=S.ai||{key:''};
+  delete S.ai; // la IA de pago se ha quitado: se borra cualquier clave guardada
   S.rem=S.rem||{on:false,list:[{id:'r1',t:'09:00',days:[0,1,2,3,4,5,6]},{id:'r2',t:'21:00',days:[0,1,2,3,4,5,6]}]};
   if(!S.lastWeek) S.lastWeek=addDays(mondayOf(S.start),-7);
   if(S.sound===undefined) S.sound=true;
@@ -903,7 +900,9 @@ function buy(id){
   if(S.gems<it.p){ toast(`Te faltan ${fmtGem(it.p-S.gems)} 💎`,'bad'); return }
   if(id==='time' && !S.curse){ toast('No tienes ninguna maldición activa','bad'); return }
   if(id==='shield' && S.shields>=5){ toast('Máximo 5 escudos','bad'); return }
-  if(!confirm(`¿Comprar ${it.n} por ${it.p} 💎?`)) return;
+  askConfirm(`¿Comprar ${it.e} ${it.n} por ${it.p} 💎?`, ()=>doBuy(id,it), 'Comprar');
+}
+function doBuy(id,it){
   S.gems=Math.round((S.gems-it.p)*1000)/1000;
   if(id==='shield') S.shields++;
   else if(id==='time') S.curse.deadline+=24*3600e3;
@@ -957,6 +956,20 @@ function toast(msg,cls){
   box.appendChild(t);
   while(box.children.length>3) box.firstChild.remove();
   setTimeout(()=>t.remove(),2400);
+}
+/* Ventanas propias de confirmar / preguntar: confirm() y prompt() del navegador
+   pueden estar bloqueados (vistas previas, algunas apps) y devolver "no" sin mostrarse. */
+let askCb=null;
+function askConfirm(msg, onYes, yes='Sí', danger=false){
+  askCb=onYes;
+  openModal(`<p style="font-size:1.05rem;font-weight:700;margin-bottom:16px">${msg}</p>
+  <div class="row"><button class="btn ghost grow" onclick="closeModal()">Cancelar</button><button class="btn grow ${danger?'danger':''}" onclick="const f=askCb;askCb=null;closeModal();f&&f()">${yes}</button></div>`);
+}
+function askInput(msg, value, onOk, type='text'){
+  askCb=onOk;
+  openModal(`<div class="field"><label style="font-size:1rem;color:var(--text)">${msg}</label><input id="askIn" type="${type}" value="${esc(value)}" style="width:100%;padding:12px 14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border);outline:none"></div>
+  <div class="row"><button class="btn ghost grow" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="const v=document.getElementById('askIn').value,f=askCb;askCb=null;closeModal();f&&f(v)">Aceptar</button></div>`);
+  setTimeout(()=>{const i=document.getElementById('askIn'); if(i) i.focus()},50);
 }
 function openModal(html){ document.getElementById('sheet').innerHTML=html; document.getElementById('modal').classList.add('show') }
 function closeModal(){ document.getElementById('modal').classList.remove('show'); flush() }
@@ -1126,7 +1139,7 @@ function obFinish(){
   S={
     v:2, profile:p, base:b, delta:{}, start:today(), lastProcessed:addDays(today(),-1), xp:0, best:0, habits, days:{},
     avatar:{skin:AV.skins[1],hair:d.sex==='m'?'largo':'corto',hairColor:AV.hairColors[1],shirt:AV.shirts[0],acc:'none'},
-    seed:Math.floor(Math.random()*1e9), shields:1, sound:true, ach:{}, gems:0, weeks:[], owned:{}, chat:[], ai:{key:''},
+    seed:Math.floor(Math.random()*1e9), shields:1, sound:true, ach:{}, gems:0, weeks:[], owned:{}, chat:[],
     rem:{on:false,list:[{id:'r1',t:'09:00',days:[0,1,2,3,4,5,6]},{id:'r2',t:'21:00',days:[0,1,2,3,4,5,6]}]},
     lastWeek:addDays(mondayOf(today()),-7),
     stats:{good:0,chests:0,perfect:0,mini:0,lvlup:0,skills:{},redeemed:0,missions:0}
@@ -1387,13 +1400,6 @@ function viewOpciones(){
     Funciona mejor con la app <b>instalada</b>. Con la app cerrada, Android puede retrasar los avisos y en iPhone solo llegan si la abriste hace poco.</p>
   </div>
   <div class="card">
-    <h2>🤖 IA del coach (Claude)</h2>
-    <p class="small muted" style="margin-bottom:10px">Con la IA activada puedes hablar con el coach de cualquier tema y calcular la XP de los hábitos nuevos según tu perfil. Necesitas tu propia clave de API de Anthropic (console.anthropic.com). Cada mensaje cuesta céntimos y se cobra en tu cuenta.</p>
-    <div class="field"><label>Clave de API</label><input type="password" id="aiKey" value="${esc(S.ai.key)}" placeholder="sk-ant-..." autocomplete="off" style="width:100%;padding:12px 14px;border-radius:12px;background:var(--bg-2);border:1px solid var(--border);outline:none"></div>
-    <div class="row" style="gap:8px;flex-wrap:wrap"><button class="btn sm" onclick="saveKey()">Guardar y probar</button>${S.ai.key?'<button class="btn ghost sm" onclick="S.ai.key=\'\';save();render();toast(\'IA desactivada\',\'\')">Quitar clave</button>':''}</div>
-    <p class="small muted" style="margin-top:10px">🔒 La clave solo se guarda en este dispositivo y solo se envía a la API de Anthropic. No la compartas: con ella se puede usar tu cuenta.</p>
-  </div>
-  <div class="card">
     <h2>🔊 Sonido y vibración</h2>
     <div class="row between"><span class="small">Efectos de sonido</span><button class="switch ${S.sound?'on':''}" onclick="S.sound=!S.sound;save();render();sfx('good')" aria-label="Sonido"></button></div>
   </div>
@@ -1451,67 +1457,6 @@ function drawStatsRadar(){
   requestAnimationFrame(()=>drawRadar(document.getElementById('radar'),now,init));
 }
 
-/* ---------------- IA (Claude) ---------------- */
-let sdkMod=null;
-async function aiClient(){
-  if(!S.ai||!S.ai.key) throw new Error('nokey');
-  if(!sdkMod){
-    for(const u of SDK_URLS){ try{ sdkMod=await import(u); break }catch(e){} }
-    if(!sdkMod) throw new Error('nosdk');
-  }
-  const Anthropic=sdkMod.default||sdkMod.Anthropic;
-  return new Anthropic({apiKey:S.ai.key, dangerouslyAllowBrowser:true});
-}
-async function askClaude({system, messages, schema, maxTokens=2000}){
-  const client=await aiClient();
-  const res=await client.beta.messages.create({
-    model:AI_MODEL, max_tokens:maxTokens, system, messages,
-    output_config: schema?{effort:'low',format:{type:'json_schema',schema}}:{effort:'low'},
-    betas:['server-side-fallback-2026-07-01'], fallbacks:'default',
-  });
-  if(res.stop_reason==='refusal') throw new Error('refusal');
-  const text=res.content.filter(b=>b.type==='text').map(b=>b.text).join('').trim();
-  return schema?JSON.parse(text):text;
-}
-function aiErr(e){
-  const st=e&&e.status;
-  if(e&&e.message==='nokey') return 'La IA no está activada. Añade tu clave en Opciones → IA.';
-  if(e&&e.message==='nosdk') return 'No se pudo cargar la IA. Revisa tu conexión a internet.';
-  if(e&&e.message==='refusal') return 'La IA no ha querido responder a eso. Prueba a preguntarlo de otra forma.';
-  if(st===401) return 'La clave de API no es válida. Revísala en Opciones → IA.';
-  if(st===403) return 'Tu clave no tiene permiso para usar este modelo.';
-  if(st===429) return 'Demasiadas peticiones o sin saldo. Espera un poco o revisa tu cuenta de Anthropic.';
-  if(st>=500) return 'La IA está saturada ahora mismo. Inténtalo en un rato.';
-  if(e instanceof SyntaxError) return 'La IA respondió algo raro. Inténtalo otra vez.';
-  return 'Sin conexión con la IA. Comprueba tu internet.';
-}
-function playerContext(){
-  const p=S.profile, ri=rankInfo(S.xp), d=getDay();
-  const hab=S.habits.map(h=>`- ${h.type==='good'?'Bueno':'Malo'}: "${h.name}" (${SKILLS[h.skill].n}, ${h.xp} XP${h.type==='good'?`, ${daysLabel(h.days)}, hecho ${h.count||0} veces`:''})${d.done[h.id]!==undefined?' [marcado hoy]':''}`).join('\n');
-  const w=S.weeks[S.weeks.length-1];
-  return `Jugador: ${p.name}, ${p.age||'?'} años, ${p.sex==='m'?'mujer':p.sex==='h'?'hombre':'otro'}, ${p.weight||'?'} kg, ${p.height||'?'} cm${p.weight&&p.height?`, IMC ${bmiOf(p).toFixed(1)}`:''}.
-Objetivos: ${(p.goals||[]).map(g=>SKILLS[g].n).join(', ')||'no indicados'}. Nivel físico: ${['principiante','intermedio','avanzado'][fitTier()]}.
-Reto: día ${dayIndex()} de 66. Rango ${ri.r.n} ${ri.div} con ${S.xp} XP. Racha ${streak()} días. Escudos ${S.shields}. Gemas ${fmtGem(S.gems)}.${S.curse?` MALDICIÓN ACTIVA (tareas: ${S.curse.tasks.map(t=>t.t+(t.done?' ✓':'')).join('; ')}).`:''}
-Habilidades (0-100): ${SK.map(k=>`${SKILLS[k].n} ${skillVal(k)}`).join(', ')}.
-Hoy (${WDL[new Date().getDay()]}): ${dayStatus(today()).g}/${goods().length} hábitos hechos.
-Hábitos:
-${hab}${w?`\nÚltima semana: ${w.pct}% de hábitos, ${w.xp} XP, ${w.bad} hábitos malos.`:''}`;
-}
-async function aiHabit(name,type,days){
-  const system=`Eres el motor de dificultad de una app de hábitos gamificada ("66 Days to Live Your Life"). Estimas lo difícil que será un hábito PARA ESTA PERSONA en concreto y le asignas XP.
-Escala de XP por cada vez que se cumple: 5-10 fácil, 15-20 media, 25-30 difícil, 35-40 muy difícil. Ten en cuenta su perfil, sus habilidades y cuántos días a la semana lo hará.
-Para un hábito malo, la XP es lo que se resta si cae en él (más XP cuanto más dañino).
-"mini" es una versión mínima de 2 minutos del hábito para días malos (vacía si es un hábito malo). "reason" es una frase corta en español dirigida al usuario (tú).
-
-${playerContext()}`;
-  const schema={type:'object',additionalProperties:false,required:['xp','skill','difficulty','mini','reason'],properties:{
-    xp:{type:'integer'}, skill:{type:'string',enum:SK}, difficulty:{type:'string',enum:['fácil','media','difícil','muy difícil']},
-    mini:{type:'string'}, reason:{type:'string'}}};
-  const r=await askClaude({system,schema,maxTokens:2000,messages:[{role:'user',content:`Hábito ${type==='good'?'bueno':'malo'}: "${name}". Días: ${daysLabel(days)}.`}]});
-  r.xp=Math.max(5,Math.min(50,Math.round(r.xp)));
-  return r;
-}
-
 /* ---------------- Coach: chat ---------------- */
 let chatBusy=false;
 function mdLite(t){ return esc(t).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>') }
@@ -1520,11 +1465,10 @@ function viewCoach(){
     S.chat.push({r:'a',t:coach().map(l=>l.replace(/<[^>]+>/g,'')).join('\n\n')+'\n\n¿En qué te ayudo hoy? Pregúntame lo que quieras.',day:today()});
     save();
   }
-  const hasAI=!!S.ai.key;
-  const sug=['¿Cómo mejoro mi punto débil?','Hoy no tengo ganas de nada','Hazme un plan para esta semana','¿Qué como antes de entrenar?'];
+  const sug=['¿Qué me falta hoy?','¿Cómo voy?','Hoy no tengo ganas de nada','Hazme un plan para esta semana','¿Qué como antes de entrenar?'];
   return `
   <div class="card coach" style="margin-bottom:12px"><div class="bot">🤖</div><div><b>Tu coach</b>
-    <p class="small muted">${hasAI?'IA activada: pregúntame lo que quieras, conozco tu perfil y tus hábitos.':'Modo básico. Para hablar de cualquier tema, activa la IA en <a href="#" onclick="go(\'opciones\');return false" style="color:var(--accent-2)">Opciones</a>.'}</p></div></div>
+    <p class="small muted">Pregúntame sobre entreno, comida, sueño, motivación, tus hábitos, la maldición o las gemas. Conozco tus datos y tu progreso.</p></div></div>
   <div class="chat">${S.chat.slice(-40).map(m=>`<div class="msg ${m.r}">${mdLite(m.t)}</div>`).join('')}${chatBusy?'<div class="msg a t">Escribiendo…</div>':''}<div id="chatEnd"></div></div>
   <div class="sugg">${sug.map(q=>`<button onclick="sendChat(${JSON.stringify(q).replace(/"/g,'&quot;')})">${q}</button>`).join('')}</div>
   <div class="chatbar"><textarea id="chatIn" placeholder="Escribe al coach…" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea><button class="btn" onclick="sendChat()" aria-label="Enviar">➤</button></div>
@@ -1535,48 +1479,47 @@ async function sendChat(q){
   const el=document.getElementById('chatIn');
   const text=(q||(el&&el.value)||'').trim(); if(!text) return;
   S.chat.push({r:'u',t:text,day:today()}); chatBusy=true; save(); render();
-  let reply;
-  if(S.ai.key){
-    try{
-      const hist=S.chat.slice(-20);
-      const firstU=hist.findIndex(m=>m.r==='u');
-      const msgs=[]; hist.slice(firstU).forEach(m=>{ const role=m.r==='u'?'user':'assistant'; if(msgs.length&&msgs[msgs.length-1].role===role) msgs[msgs.length-1].content+='\n\n'+m.t; else msgs.push({role,content:m.t}) });
-      reply=await askClaude({maxTokens:4000,messages:msgs,system:`Eres el coach de "66 Days to Live Your Life", una app que convierte la vida en un videojuego: hábitos con XP, rangos de Madera a Dios, rachas, gemas, cofres y maldiciones.
-Hablas en español, de tú, cercano, motivador y directo. Respuestas breves (2-6 frases) salvo que te pidan un plan o más detalle. Puedes hablar de cualquier tema que el usuario quiera.
-Usa los datos del jugador para personalizar los consejos y propón pasos concretos y alcanzables (la versión mínima de un hábito vale). No hagas diagnósticos médicos: ante dolor, lesiones, trastornos alimentarios o salud mental seria, recomienda un profesional.
-
-${playerContext()}`});
-    }catch(e){ reply='⚠️ '+aiErr(e) }
-  } else reply=offlineReply(text);
+  await new Promise(r=>setTimeout(r,500+Math.random()*500)); // pequeña pausa para que parezca que piensa
+  const reply=offlineReply(text);
   chatBusy=false;
   S.chat.push({r:'a',t:reply,day:today()});
   if(S.chat.length>60) S.chat=S.chat.slice(-60);
   save(); if(tab==='coach') render();
 }
-function offlineReply(t){
-  t=t.toLowerCase(); const w=weakest();
+/* Coach gratuito: responde con reglas usando tus datos (sin IA de pago ni conexión) */
+function offlineReply(raw){
+  const t=raw.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+  const w=weakest(), d=getDay(), G=goods(), name=S.profile.name||'crack';
+  const pend=G.filter(h=>d.done[h.id]===undefined), ri=rankInfo(S.xp), sk=streak();
   const tip=k=>RECS[k].tips.map(x=>'• '+x).join('\n');
-  if(/dorm|sue[nñ]o|cansad/.test(t)) return 'Para dormir mejor:\n'+tip('sueno');
-  if(/com|dieta|grasa|peso|adelgaz/.test(t)) return 'Sobre alimentación:\n'+tip('nutricion');
-  if(/gym|m[uú]scul|fuerza|entren/.test(t)) return 'Para ganar fuerza:\n'+tip('fuerza');
-  if(/corr|cardio|resist/.test(t)) return 'Para tu resistencia:\n'+tip('resistencia');
-  if(/estr[eé]s|ansiedad|agobi|triste/.test(t)) return 'Para tu mente:\n'+tip('mente')+'\n\nSi lo pasas mal de verdad, habla con alguien de confianza o con un profesional.';
-  if(/ganas|motiva|pereza|no puedo|cuesta/.test(t)) return 'Normal tener días así. Truco: haz solo la **versión mínima** (🌱½) de UN hábito. 2 minutos. Mantienes la racha y casi siempre acabas haciendo más.';
-  if(/maldici/.test(t)) return S.curse?`Tu misión de redención:\n${S.curse.tasks.map(x=>(x.done?'✅ ':'⬜ ')+x.t).join('\n')}\nTe quedan ${hoursLeft()} h.`:'No tienes ninguna maldición. Caes en una si fallas 2 días seguidos o marcas muchos hábitos malos.';
-  if(/gema/.test(t)) return `Cada hábito completado vale 0,25 💎. Esta semana llevas ${fmtGem(weekGemsSoFar())} 💎 y se cobran el lunes con tu recuento. Tienes ${fmtGem(S.gems)} 💎.`;
-  if(/plan|semana/.test(t)) return `Plan sencillo para esta semana:\n• Prioriza ${SKILLS[w].e} ${SKILLS[w].n}, tu punto débil (${skillVal(w)}/100).\n• Asegura cada día con la mitad de tus hábitos.\n• Abre el cofre y cumple las misiones para sumar XP extra.`;
-  return `En modo básico solo sé dar consejos sencillos. Activa la IA en Opciones para hablar de cualquier tema.\n\nTu punto débil ahora es ${SKILLS[w].e} ${SKILLS[w].n} (${skillVal(w)}/100). Consejo: ${RECS[w].tips[0]}`;
+  const pick=a=>a[Math.floor(Math.random()*a.length)];
+  const has=rx=>rx.test(t);
+  if(has(/^(hola|buenas|hey|ey|que tal)/)) return `¡Hola, ${name}! ${pend.length?`Hoy te quedan ${pend.length} hábito(s): ${pend.map(h=>h.name).join(', ')}.`:'Hoy ya lo tienes todo hecho. 🔥'} ¿En qué te ayudo?`;
+  if(has(/gracias|genial|guay|vale|ok\b/)) return pick(['¡A tope! 💪','Para eso estoy. ¡Sigue así!','Vamos, que hoy sumas XP. 🔥']);
+  if(has(/dolor|lesion|me duele|enferm|mareo|medic/)) return 'Si te duele algo o te encuentras mal, para y consulta a un profesional sanitario. Mientras, usa la **versión mínima** de tus hábitos o márcate un día de descanso: tu salud va antes que la racha.';
+  if(has(/suicid|morir|no quiero vivir|hacerme dano/)) return 'Siento que estés pasando por esto. No estás solo: habla ahora con alguien de confianza o llama al 024 (España, gratuito y 24 h) o al 112 si es urgente. 💜';
+  if(has(/que hago|que me falta|hoy/)) return pend.length?`Te faltan hoy:\n${pend.map(h=>`• ${h.icon||''} ${h.name} (mínimo: ${h.mini||'2 min'})`).join('\n')}\n\nEmpieza por el más fácil. Con ${Math.max(0,Math.ceil(G.length/2)-(G.length-pend.length))} más aseguras el día.`:(G.length?'¡Ya has hecho todo lo de hoy! Si te sobra energía, haz un hábito de los que no tocan hoy como extra.':'Hoy no te toca ningún hábito: día de descanso. 💤');
+  if(has(/como voy|progreso|resumen|estadistic/)) { const last=S.weeks[S.weeks.length-1]; return `Día ${dayIndex()} de 66 · ${ri.r.i} ${ri.r.n} ${ri.div} con ${fmt(S.xp)} XP.\nRacha: ${sk} días · 💎 ${fmtGem(S.gems)}.\nTu fuerte: ${SKILLS[[...SK].sort((a,b)=>skillVal(b)-skillVal(a))[0]].n} · A mejorar: ${SKILLS[w].n} (${skillVal(w)}/100).${last?`\nLa semana pasada cumpliste el ${last.pct}% de tus hábitos.`:''}`; }
+  if(has(/rango|subir|nivel|dios/)) return ri.next?`Estás en ${ri.r.n} ${ri.div}. Te faltan ${fmt(ri.toNext)} XP para ${ri.next.i} ${ri.next.n}. Lo más rápido: día perfecto (+50), cofre diario y las 3 misiones.`:'¡Ya eres Dios! 🌟 Ahora toca mantenerlo.';
+  if(has(/racha/)) return sk?`Llevas ${sk} días de racha (x${mult().toFixed(2)} XP). Con la mitad de tus hábitos el día cuenta. Tienes ${S.shields} 🛡️ por si fallas.`:'Aún no tienes racha. Hoy completa al menos la mitad de tus hábitos y empieza a contar.';
+  if(has(/dorm|sueno|cansad|insomn/)) return 'Para dormir mejor:\n'+tip('sueno');
+  if(has(/agua|hidrat/)) return 'Truco: un vaso de agua nada más despertar y otro antes de cada comida. Ya llevas casi 1 litro sin pensar. 💧';
+  if(has(/fumar|tabaco|vape|vaper|alcohol|beber/)) return 'Para dejarlo: identifica cuándo te apetece (café, estrés, amigos) y ten un plan B para ese momento (chicle, paseo de 5 min, agua). Añádelo como hábito malo para ver tu progreso. Si te cuesta mucho, un profesional puede ayudarte.';
+  if(has(/comer|comida|dieta|grasa|peso|adelgaz|proteina|antes de entrenar/)) return has(/antes de entrenar/)?'1-2 h antes: algo con hidratos y algo de proteína (tostada con huevo, plátano con yogur, arroz con pollo). Si entrenas nada más despertar, una pieza de fruta basta.':'Sobre alimentación:\n'+tip('nutricion');
+  if(has(/gym|muscul|fuerza|pesas|entren|flexion|sentadill/)) return 'Para ganar fuerza:\n'+tip('fuerza')+`\n\nTu nivel ahora: ${['principiante','intermedio','avanzado'][fitTier()]}.`;
+  if(has(/corr|cardio|resist|caminar|pasos/)) return 'Para tu resistencia:\n'+tip('resistencia');
+  if(has(/leer|libro|estudi|idioma|aprend/)) return 'Para tu intelecto:\n'+tip('intelecto');
+  if(has(/dinero|ahorr|gast|finanz/)) return 'Para tus finanzas:\n'+tip('finanzas');
+  if(has(/amig|social|solo|soledad|pareja|famil/)) return 'Para tu vida social:\n'+tip('social');
+  if(has(/estres|ansiedad|agobi|triste|nervios|mente|medit/)) return 'Para tu mente:\n'+tip('mente')+'\n\nSi lo pasas mal de verdad, habla con alguien de confianza o con un profesional.';
+  if(has(/ganas|motiva|pereza|no puedo|cuesta|vago|cansado de/)) return pick(['Normal tener días así. Haz solo la **versión mínima** (🌱½) de UN hábito: 2 minutos. Mantienes la racha y casi siempre acabas haciendo más.','La motivación llega después de empezar, no antes. Pon un temporizador de 2 minutos y haz lo mínimo. ⏱️','Piensa en tu yo del día 66. Cada check de hoy es XP para él. Uno solo ya cuenta. 🔥']);
+  if(has(/maldici/)) return S.curse?`Tu misión de redención:\n${S.curse.tasks.map(x=>(x.done?'✅ ':'⬜ ')+x.t).join('\n')}\nTe quedan ${hoursLeft()} h.`:'No tienes ninguna maldición. Llega si fallas 2 días seguidos, marcas 3 hábitos malos en un día o caes en ellos 3 días seguidos.';
+  if(has(/gema|tienda|comprar/)) return `Cada hábito completado vale 0,25 💎 (mínimo 0,125). Esta semana llevas ${fmtGem(weekGemsSoFar())} 💎 y se cobran el lunes con tu recuento. Tienes ${fmtGem(S.gems)} 💎 para la tienda (Personaje).`;
+  if(has(/cofre/)) return d.chest?'Ya abriste el cofre de hoy. Mañana hay otro, y con más racha, mejores premios.':'¡Tu cofre de hoy está sin abrir! Ve a Hoy y tócalo. 🎁';
+  if(has(/habito|anadir|nuevo|crear/)) return `Para ${SKILLS[w].n}, que es tu punto débil, te propongo: ${RECS[w].good.map(r=>`«${easyFor(w)?r.e:r.n}»`).join(', ')}. Añádelos desde Stats o con «+ Añadir hábito» en Hoy (puedes elegir los días).`;
+  if(has(/plan|semana|rutina/)) return `Plan para esta semana:\n• Prioriza ${SKILLS[w].e} ${SKILLS[w].n} (${skillVal(w)}/100).\n• Asegura cada día con la mitad de tus hábitos; los días malos, versión mínima.\n• Abre el cofre y haz las misiones: XP extra fácil.\n• El domingo revisa tu recuento y sube de nivel un hábito si ya lo dominas.`;
+  return `No sé responder a eso todavía 🤖. Puedo ayudarte con: qué te falta hoy, cómo vas, entreno, comida, sueño, motivación, estrés, dinero, la maldición o las gemas.\n\nConsejo para tu punto débil (${SKILLS[w].n}): ${RECS[w].tips[dayIndex()%RECS[w].tips.length]}`;
 }
-async function saveKey(){
-  const k=document.getElementById('aiKey').value.trim();
-  S.ai.key=k; save();
-  if(!k){ render(); return }
-  toast('Probando la clave…','');
-  try{ await askClaude({maxTokens:200,messages:[{role:'user',content:'Responde solo: OK'}]}); toast('✅ IA activada','good') }
-  catch(e){ toast(aiErr(e),'bad') }
-  render();
-}
-
 /* ---------------- Recordatorios (notificaciones) ---------------- */
 const CFG_CACHE='66days-cfg';
 function remText(){
@@ -1642,7 +1585,10 @@ setInterval(checkReminders,30000);
 function setAv(k,v){ S.avatar[k]=v; save(); render() }
 function delHabit(id){
   const h=S.habits.find(x=>x.id===id); if(!h) return;
-  if(!confirm(`¿Borrar "${h.name}"?`)) return;
+  askConfirm(`¿Borrar «${esc(h.name)}»?<br><span class="small muted">Se quita de tu lista. Lo ya ganado se mantiene (salvo lo de hoy).</span>`, ()=>doDelHabit(id), '🗑️ Borrar', true);
+}
+function doDelHabit(id){
+  const h=S.habits.find(x=>x.id===id); if(!h) return;
   const d=getDay();
   if(d.done[id]!==undefined){ addXp(-d.done[id],'undo'); delete d.done[id]; if(d.mini) delete d.mini[id] }
   S.habits=S.habits.filter(x=>x.id!==id);
@@ -1660,7 +1606,6 @@ let form=null; // estado del formulario de hábito
 function habitForm(type, id){
   const h=id?S.habits.find(x=>x.id===id):null;
   form={type,id:h?h.id:null,days:h&&h.days&&h.days.length?[...h.days]:[0,1,2,3,4,5,6],xpTouched:!!h,skillTouched:!!h,aiBusy:false};
-  const hasAI=!!(S.ai&&S.ai.key);
   openModal(`<h2>${h?'✏️ Editar hábito':type==='good'?'✅ Nuevo hábito':'⚠️ Nuevo hábito malo'}</h2>
   <div class="field"><label>Nombre</label><input type="text" id="hfN" maxlength="50" value="${esc(h?h.name:'')}" placeholder="${type==='good'?'Ej: Correr 30 min':'Ej: Fumar'}" oninput="formEstimate()"></div>
   ${type==='good'?`<div class="field"><label>Versión mínima (para días difíciles)</label><input type="text" id="hfM" maxlength="50" value="${esc(h?h.mini||'':'')}" placeholder="Ej: Correr 5 min"></div>`:''}
@@ -1669,13 +1614,14 @@ function habitForm(type, id){
     <div class="field"><label>${type==='good'?'XP que da':'XP que quita'}</label><input type="number" id="hfX" min="1" max="100" value="${h?h.xp:15}" oninput="form.xpTouched=true"></div>
   </div>
   <div class="hint" id="hfHint">${h?'Puedes cambiar la XP a mano.':'Escribe el nombre y calculo la dificultad y la XP para ti.'}</div>
-  <button class="btn ghost sm" style="margin:8px 0 14px" onclick="formAI()">✨ ${hasAI?'Analizar con IA':'Analizar con IA (actívala en Opciones)'}</button>
+  <div style="height:12px"></div>
   ${type==='good'?`<div class="field"><label>¿Qué días?</label>
     <div class="dchips" id="hfD">${WD.map(d=>`<button class="dchip ${form.days.includes(d)?'on':''}" data-d="${d}" onclick="formDay(${d})" aria-label="${WDL[d]}">${WDN[d]}</button>`).join('')}</div>
     <div class="row" style="gap:6px;margin-top:8px;flex-wrap:wrap"><button class="qd" onclick="formDays([0,1,2,3,4,5,6])">Todos</button><button class="qd" onclick="formDays([1,2,3,4,5])">Lunes a viernes</button><button class="qd" onclick="formDays([6,0])">Fin de semana</button><button class="qd" onclick="formDays([1,3,5])">L · X · V</button></div>
   </div>`:''}
   <div class="field"><label>Emoji (opcional)</label><input type="text" id="hfI" maxlength="4" value="${esc(h?h.icon||'':'')}" placeholder="🔥"></div>
-  <div class="row"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="saveHabit()">Guardar</button></div>`);
+  <div class="row"><button class="btn ghost" onclick="closeModal()">Cancelar</button><button class="btn grow" onclick="saveHabit()">Guardar</button></div>
+  ${h?`<button class="btn danger block sm" style="margin-top:10px" onclick="delHabit('${h.id}')">🗑️ Borrar este hábito</button>`:''}`);
   if(!h) setTimeout(()=>document.getElementById('hfN').focus(),50);
 }
 function formDay(d){ const i=form.days.indexOf(d); if(i>=0){ if(form.days.length>1) form.days.splice(i,1) } else form.days.push(d); formPaintDays() }
@@ -1722,22 +1668,6 @@ function formEstimate(){
   if(!form.xpTouched) document.getElementById('hfX').value=e.xp;
   document.getElementById('hfHint').innerHTML=`🧮 Dificultad para ti: <b>${e.diff}</b> → <b>${e.xp} XP</b>${e.why.length?` (${esc(e.why.join(', '))})`:''}. Puedes cambiarla.`;
 }
-async function formAI(){
-  const n=document.getElementById('hfN').value.trim();
-  if(!n){ toast('Escribe primero el nombre del hábito','bad'); return }
-  if(!S.ai||!S.ai.key){ toast('Activa la IA en Opciones → IA','bad'); return }
-  if(form.aiBusy) return; form.aiBusy=true;
-  const hint=document.getElementById('hfHint'); hint.innerHTML='✨ La IA está analizando el hábito para tu perfil…';
-  try{
-    const r=await aiHabit(n,form.type,form.days);
-    if(!document.getElementById('hfN')) return;
-    document.getElementById('hfX').value=r.xp; form.xpTouched=true;
-    if(SK.includes(r.skill)){ document.getElementById('hfS').value=r.skill; form.skillTouched=true }
-    const m=document.getElementById('hfM'); if(m&&!m.value.trim()&&r.mini) m.value=r.mini;
-    hint.innerHTML=`✨ IA: dificultad <b>${esc(r.difficulty)}</b> → <b>${r.xp} XP</b>. ${esc(r.reason)} <span class="muted">Puedes cambiarla.</span>`;
-  }catch(e){ hint.textContent='⚠️ '+aiErr(e) }
-  finally{ form.aiBusy=false }
-}
 function saveHabit(){
   const n=document.getElementById('hfN').value.trim(); if(!n){toast('Ponle un nombre','bad');return}
   const xp=Math.max(1,Math.min(100,parseInt(document.getElementById('hfX').value)||15));
@@ -1753,7 +1683,9 @@ function saveHabit(){
   form=null; save(); closeModal(); render();
 }
 function updWeight(){
-  const w=prompt('Tu peso actual (kg):',S.profile.weight||''); if(w===null) return;
+  askInput('⚖️ Tu peso actual (kg):', S.profile.weight||'', w=>setWeight(w), 'text');
+}
+function setWeight(w){
   const n=parseFloat(String(w).replace(',','.')); if(!(n>30&&n<300)){toast('Peso no válido','bad');return}
   (S.profile.weights=S.profile.weights||[]).push({d:today(),w:n}); S.profile.weight=n; save(); render(); toast('Peso actualizado','good');
 }
@@ -1768,7 +1700,9 @@ function importData(inp){
   inp.value='';
 }
 function resetAll(){
-  if(!confirm('¿Seguro? Se borrará todo tu progreso y empezarás de cero.')) return;
+  askConfirm('¿Seguro? Se borrará <b>todo tu progreso</b> y empezarás de cero.', doReset, 'Borrar todo', true);
+}
+function doReset(){
   try{localStorage.removeItem(KEY)}catch(e){} S=null; ob.step=0; render();
 }
 
