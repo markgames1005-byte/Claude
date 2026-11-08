@@ -29,32 +29,37 @@ directamente en tu panel, y funciona sin conexión.
 
 ## Qué incluye
 
-- **Cuestionario inicial**: nombre, edad, sexo, peso, altura, objetivos y hábitos actuales
-  (sueño, entreno, alimentación, estrés, móvil, lectura, vida social, dinero).
-- **Gráfico de telaraña** con 8 habilidades: Fuerza, Resistencia, Nutrición, Sueño, Mente,
-  Intelecto, Social y Finanzas. Muestra cómo empezaste y cómo estás ahora.
-- **Recomendaciones** para tus 3 habilidades más débiles, con consejos y hábitos que puedes añadir con un toque.
-- **Hábitos buenos (+XP)** y **hábitos malos (−XP)**. Cada hábito sube o baja su habilidad.
-- **Racha**: multiplicador de XP hasta x1,5. **Día perfecto** (todos los buenos y ningún malo): +50 XP.
-- **9 rangos** con 3 divisiones cada uno (III → II → I). Puedes bajar de rango.
+- **Cuestionario inicial** (edad, peso, altura, objetivos, hábitos actuales) y **gráfico de telaraña**
+  con 8 habilidades: Fuerza, Resistencia, Nutrición, Sueño, Mente, Intelecto, Social y Finanzas.
+- **Hábitos adaptados a tu perfil**: cada hábito tiene versión normal, fácil y mínima. Si una habilidad
+  está baja (o por edad/IMC en las físicas) empiezas con la fácil. Tras completarlo 10 veces puedes
+  **subirlo de nivel** (+30 % XP). Se empieza con solo 4 hábitos buenos y 2 malos.
+- **Versión mínima («nunca cero»)**: botón 🌱½ para los días difíciles; da media XP y mantiene la racha.
+- **Recompensas diarias**: cofre diario con premio variable (XP, jackpot o escudo de racha),
+  3 misiones diarias fáciles, día perfecto (+50 XP), hitos en los días 7, 14, 21, 33, 50 y 66, y 17 logros.
+- **Racha**: un día cuenta si completas al menos la mitad de tus hábitos. Multiplicador hasta x1,5.
+  Los **escudos** 🛡️ protegen la racha si fallas un día.
+- **Castigo — la maldición 💀**: se activa si fallas 2 días seguidos, marcas 3 hábitos malos en un día
+  o caes en hábitos malos 3 días seguidos. Pierdes XP, tus hábitos dan la mitad de XP y tienes 48 h para
+  una **misión de redención adaptada a tu nivel físico, edad e IMC** y a tu habilidad más débil.
+  Si la completas, recuperas la mitad de lo perdido; si no, pierdes más y el plazo se reinicia.
+  Cada día sin ningún hábito también resta 15 XP.
+- **9 rangos** con 3 divisiones (III → II → I), con sonido, vibración y confeti al subir:
 
   | Rango | XP |
   |---|---|
   | 🪵 Madera | 0 |
-  | 🥉 Bronce | 500 |
-  | 🥈 Plata | 1.200 |
-  | 🥇 Oro | 2.200 |
-  | 💠 Platino | 3.500 |
-  | ♦️ Rubí | 5.000 |
-  | 🏆 Campeón | 7.000 |
-  | 👑 Gran Campeón | 9.500 |
-  | 🌟 Dios | 13.500 |
+  | 🥉 Bronce | 150 |
+  | 🥈 Plata | 400 |
+  | 🥇 Oro | 800 |
+  | 💠 Platino | 1.400 |
+  | ♦️ Rubí | 2.200 |
+  | 🏆 Campeón | 3.200 |
+  | 👑 Gran Campeón | 4.500 |
+  | 🌟 Dios | 6.500 |
 
-- **Liga** contra 11 rivales simulados que avanzan cada día.
-- **Personaje personalizable**: piel, peinado, color de pelo, ropa y accesorios que se
-  desbloquean al subir de rango (cinta, gorra, cascos, halo, corona). El aura toma el color de tu rango.
-- **Calendario de 66 días** con el resultado de cada día.
-- **Coach**: mensajes según tu progreso del día, tu racha y tu habilidad más débil.
+- **Liga** contra 11 rivales simulados.
+- **Personaje personalizable** con accesorios que se desbloquean por rango.
 
 ## Nota
 

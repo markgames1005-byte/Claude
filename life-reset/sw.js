@@ -1,6 +1,6 @@
 // Service worker: permite abrir la app sin conexión.
 // Estrategia: red primero (para recibir actualizaciones) y caché como respaldo.
-const CACHE = '66days-v1';
+const CACHE = '66days-v2';
 const ASSETS = [
   './',
   './index.html',
