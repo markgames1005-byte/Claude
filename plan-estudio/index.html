@@ -213,14 +213,14 @@ const PLAN = {
  "2026-11-10":[["17:10","17:40","soc","Fichas de fechas y personajes del tema 1"],["20:00","21:00","soc","Esquema del tema 2"],["21:30","22:30","nat","Lee el primer tema, subraya y apunta los conceptos clave"]],
  "2026-11-11":[["10:00","11:30","soc","Esquema del tema 3 y fichas de fechas"],["11:45","12:45","mat","Repasa la teoría y haz ejercicios tipo examen"],["16:00","17:00","soc","Mapas y línea del tiempo"],["17:15","18:15","cat","Ejercicios de ortografía y gramática"],["18:30","19:15","nat","Resumen del primer tema"]],
  "2026-11-12":[["17:10","17:40","soc","Fichas de fechas y conceptos"],["20:00","21:00","cat","Redacción o comprensión lectora"],["21:30","22:30","soc","Esquema del último tema"]],
- "2026-11-13":[["17:05","17:25","soc","Fichas"],["20:15","21:00","nat","Resumen del segundo tema"],["21:30","22:15","soc","Explica en voz alta los temas 1 y 2, sin mirar"]],
- "2026-11-14":[["10:00","11:30","soc","Simulacro: responde preguntas de examen sin mirar"],["11:45","12:45","cat","Repaso de teoría y ejercicios"],["17:00","18:00","nat","Esquemas y dibujos de los procesos"],["18:15","19:00","mat","Ejercicios variados de todo el temario"]],
+ "2026-11-13":[],
+ "2026-11-14":[["10:00","10:45","soc","Explica en voz alta los temas 1 y 2, sin mirar"],["10:45","12:00","soc","Simulacro: responde preguntas de examen sin mirar"],["12:15","13:15","cat","Repaso de teoría y ejercicios"],["17:00","18:00","nat","Resumen del segundo tema, con esquemas y dibujos"],["18:15","19:00","mat","Ejercicios variados de todo el temario"]],
  "2026-11-15":[["10:00","11:30","soc","Corrige el simulacro y repasa lo que fallaste"],["11:45","12:45","soc","Escribe 2 preguntas largas como en el examen"],["17:00","18:00","cat","Ejercicios del libro o de exámenes anteriores"],["18:15","19:00","nat","Repasa los resúmenes de los temas 1 y 2"]],
  "2026-11-16":[["17:05","17:25","soc","Fichas"],["20:15","21:00","soc","Repaso tema por tema: céntrate en tus puntos débiles"],["21:30","22:30","soc","Preguntas largas en voz alta"]],
  "2026-11-17":[["17:10","17:40","soc","Fichas, por última vez"],["20:00","21:00","soc","Repaso final de todos los esquemas"],["21:30","22:15","soc","Repaso exprés y prepara el material. A dormir a tu hora"]],
  "2026-11-18":[["20:15","21:00","cat","Repaso de la teoría"],["21:30","22:30","cat","Ejercicios de todo lo que entra"]],
  "2026-11-19":[["17:10","17:40","cat","Vocabulario y ortografía"],["20:00","21:00","cat","Simulacro corto"],["21:30","22:15","cat","Repaso final"]],
- "2026-11-20":[["20:15","21:00","nat","Repaso suave del primer tema. Después, descanso"]],
+ "2026-11-20":[],
  "2026-11-21":[["10:00","11:30","nat","Esquemas completos de todos los temas"],["11:45","12:45","mat","Ejercicios tipo examen"],["17:00","18:00","nat","Preguntas de examen sin mirar"],["18:15","19:00","cas","Teoría de lo que entra y ejercicios"]],
  "2026-11-22":[["10:00","11:30","nat","Simulacro y corrige los fallos"],["11:45","12:30","cas","Ejercicios de gramática y análisis"],["17:00","18:00","mat","Ejercicios de todo el temario"],["18:15","19:00","nat","Repaso final de esquemas"]],
  "2026-11-23":[["17:05","17:25","cas","Repasa la teoría"],["20:15","21:00","cas","Ejercicios y repaso final"],["21:30","22:30","mat","Rehaz los ejercicios que fallaste"]],
@@ -258,7 +258,8 @@ function fixedFor(d){
 function noteFor(d){
   if (FREE.includes(iso(d))) return "Día libre: sin cole ni entreno";
   const w = d.getDay();
-  if (w === 1 || w === 3 || w === 5) return "Entreno · vuelves 20:00";
+  if (w === 5) return "Entreno · viernes sin estudio";
+  if (w === 1 || w === 3) return "Entreno · vuelves 20:00";
   if (w === 2 || w === 4) return "Inglés · vuelves 19:45";
   return "Fin de semana";
 }
@@ -363,7 +364,7 @@ function renderPlan(){
       const cls = ds === t ? " is-today" : ds < t ? " is-past" : "";
       const flag = ex && (!filter || ex[1] === filter) ? `<span class="examflag" style="--c:var(--${ex[1]})">Examen de ${S[ex[1]].n}</span>` : "";
       const body = items.length ? items.map(({b,i}) => `<div class="blk"><span class="t">${b[0]}–${b[1]}</span>${taskHTML(ds,i,b)}</div>`).join("")
-        : (ds === "2026-11-26" ? `<span class="free">Último examen. ¡Lo has conseguido!</span>` : `<span class="free">Descanso</span>`);
+        : (ds === "2026-11-26" ? `<span class="free">Último examen. ¡Lo has conseguido!</span>` : `<span class="free">${parse(ds).getDay()===5 ? "Viernes libre: sin estudio" : "Descanso"}</span>`);
       return `<div class="day${cls}" id="d-${ds}"><div><div class="dname">${longDate(d)}</div><div class="dnote">${noteFor(d)}</div></div><div class="blocks">${flag}${body}</div></div>`;
     }).join("");
     return daysHTML ? `<div class="week"><h3>${label[wi] || "Semana"}</h3>${daysHTML}</div>` : "";
