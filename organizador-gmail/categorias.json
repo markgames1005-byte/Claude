@@ -1,0 +1,21 @@
+{
+  "_ayuda": "Puedes añadir o quitar palabras. No hace falta poner tildes ni mayúsculas. Una palabra encaja con todas las que empiezan igual (\"farmac\" -> farmacia, farmacéutica...). En 'remitentes' pon trozos de direcciones de correo, por ejemplo el dominio de tu universidad (\"@ub.edu\").",
+  "categorias": {
+    "Universidad": {
+      "palabras": ["universidad", "universitat", "facultad", "campus", "examen", "examenes", "asignatura", "matricula", "profesor", "profesora", "tutoria", "practicas", "creditos", "ects", "grado", "master", "tfg", "tfm", "moodle", "aula virtual", "campus virtual", "secretaria academica", "calificacion", "notas", "convocatoria", "beca", "erasmus", "clase", "horario de clases", "entrega", "seminario", "catedra", "decanato", "rectorado", "biblioteca"],
+      "remitentes": [".edu", "campus", "moodle"]
+    },
+    "Farmacia": {
+      "palabras": ["farmac", "medicament", "receta", "dosis", "principio activo", "posologia", "laboratorio", "botica", "parafarmacia", "galenic", "colegio de farmaceuticos", "cofares", "hefame", "bidafarma", "vademecum", "aemps", "dispensacion", "atencion farmaceutica", "quimica", "toxicolog", "biofarmac", "fitoterapia", "excipiente", "comprimido", "jarabe", "pomada"],
+      "remitentes": ["farma", "cofares", "hefame", "bidafarma", "aemps"]
+    },
+    "Psicología": {
+      "palabras": ["psicolog", "psicoterap", "terapia", "terapeuta", "salud mental", "ansiedad", "depresion", "emocion", "conducta", "cognitiv", "neuropsicolog", "psiquiatr", "mindfulness", "autoestima", "trastorno", "dsm", "colegio oficial de psicologos", "counseling", "psique", "apego", "estres"],
+      "remitentes": ["psico", "cop.es", "copc"]
+    },
+    "Spam": {
+      "palabras": ["oferta", "descuento", "gratis", "ganador", "has ganado", "premio", "promocion", "rebajas", "black friday", "cupon", "unsubscribe", "darse de baja", "darte de baja", "cancelar suscripcion", "newsletter", "ultima oportunidad", "solo hoy", "haz clic", "click aqui", "compra ahora", "envio gratis", "lottery", "winner", "free", "viagra", "casino", "bitcoin", "criptomoneda", "prestamo", "credito rapido", "% de descuento"],
+      "remitentes": ["no-reply@marketing", "promo", "newsletter", "noreply@mailer", "ofertas"]
+    }
+  }
+}
