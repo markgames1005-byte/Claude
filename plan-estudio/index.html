@@ -125,6 +125,11 @@ h2{font-size:1.35rem; font-weight:800}
 .day .blk .t{font-family:var(--f-mono); font-size:.82rem; color:var(--muted); padding-top:2px; font-variant-numeric:tabular-nums}
 .examflag{display:inline-flex; align-items:center; gap:6px; background:var(--c); color:#fff; font-weight:700; border-radius:8px; padding:4px 10px; font-size:.9rem; align-self:flex-start}
 .free{color:var(--muted); font-style:italic; font-size:.92rem}
+.temario{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px}
+@media (max-width:820px){ .temario{grid-template-columns:1fr} }
+.temario>div{border-left:4px solid var(--c); padding-left:12px; min-width:0}
+.temario h3{font-size:1rem; color:var(--c); margin-bottom:6px}
+.temario ul{margin:0; padding-left:18px; font-size:.9rem; display:flex; flex-direction:column; gap:4px}
 footer{font-size:.8rem; color:var(--muted); text-align:center}
 @media (prefers-reduced-motion: reduce){ *{transition:none!important; scroll-behavior:auto!important} }
 </style>
@@ -142,6 +147,33 @@ footer{font-size:.8rem; color:var(--muted); text-align:center}
   <section aria-labelledby="h-exams">
     <h2 id="h-exams" class="eyebrow" style="font-family:var(--f-mono);font-size:.72rem;margin-bottom:10px">Exámenes y progreso</h2>
     <div class="exams" id="exams"></div>
+  </section>
+
+  <section class="sheet" aria-labelledby="h-temario">
+    <h2 id="h-temario" style="margin-bottom:12px">Qué entra en cada examen</h2>
+    <div class="temario">
+      <div style="--c:var(--nat)"><h3>Naturales · 23 nov</h3><ul>
+        <li>Factores de conversión</li>
+        <li>Tema 2, cambios de estado: los tres estados (sólido, líquido, gas) y sus propiedades</li>
+        <li>Tipos de cambio de estado y gráficas temperatura-tiempo: fusión, solidificación, punto de ebullición, condensación</li>
+        <li>Modelo cinético-corpuscular</li>
+        <li>Efectos del calor sobre la densidad</li>
+        <li><b>Dossier:</b> portada (Física i Química, tu nombre, no el del profe, curso y evaluación), índice, ejercicios, problemas y fotocopias. Sin hojas en blanco ni apuntes</li>
+      </ul></div>
+      <div style="--c:var(--cas)"><h3>Castellano · 24 nov</h3><ul>
+        <li>Textos: la correspondencia</li>
+        <li>Lengua: categorías gramaticales</li>
+        <li>Dossier: S.1, S.2, S.3, S.4 y S.5</li>
+        <li><b>Objetivo:</b> mejorar el 6</li>
+      </ul></div>
+      <div style="--c:var(--eng)"><h3>Inglés · 26 nov</h3><ul>
+        <li>Present simple y present continuous (SB p. 147)</li>
+        <li>Verbos que no se suelen usar en present continuous (SB p. 148)</li>
+        <li>Past simple del verbo to be y de los verbos regulares: afirmativa, negativa, preguntas y short answers</li>
+        <li>Vocabulario (SB p. 140): adjetivos de personalidad y accidentes geográficos</li>
+        <li><b>Esta vez no hay dossier</b></li>
+      </ul></div>
+    </div>
   </section>
 
   <section class="today-grid">
@@ -214,18 +246,18 @@ const PLAN = {
  "2026-11-11":[["10:00","11:30","soc","Esquema del tema 3 y fichas de fechas"],["11:45","12:45","mat","Repasa la teoría y haz ejercicios tipo examen"],["16:00","17:00","soc","Mapas y línea del tiempo"],["17:15","18:15","cat","Ejercicios de ortografía y gramática"],["18:30","19:15","nat","Resumen del primer tema"]],
  "2026-11-12":[["17:10","17:40","soc","Fichas de fechas y conceptos"],["20:00","21:00","cat","Redacción o comprensión lectora"],["21:30","22:30","soc","Esquema del último tema"]],
  "2026-11-13":[],
- "2026-11-14":[["10:00","10:45","soc","Explica en voz alta los temas 1 y 2, sin mirar"],["10:45","12:00","soc","Simulacro: responde preguntas de examen sin mirar"],["12:15","13:15","cat","Repaso de teoría y ejercicios"],["17:00","18:00","nat","Resumen del segundo tema, con esquemas y dibujos"],["18:15","19:00","mat","Ejercicios variados de todo el temario"]],
- "2026-11-15":[["10:00","11:30","soc","Corrige el simulacro y repasa lo que fallaste"],["11:45","12:45","soc","Escribe 2 preguntas largas como en el examen"],["17:00","18:00","cat","Ejercicios del libro o de exámenes anteriores"],["18:15","19:00","nat","Repasa los resúmenes de los temas 1 y 2"]],
+ "2026-11-14":[["10:00", "10:45", "soc", "Explica en voz alta los temas 1 y 2, sin mirar"], ["10:45", "12:00", "soc", "Simulacro: responde preguntas de examen sin mirar"], ["12:15", "13:00", "cas", "Categorías gramaticales: tabla con sustantivo, adjetivo, determinante, pronombre, verbo, adverbio, preposición y conjunción, con 2 ejemplos de cada"], ["17:00", "18:00", "nat", "Tema 2: los tres estados de la materia (sólido, líquido, gas) y las propiedades de cada uno. Haz un esquema"], ["18:15", "19:00", "mat", "Ejercicios variados de todo el temario"]],
+ "2026-11-15":[["10:00", "11:30", "soc", "Corrige el simulacro y repasa lo que fallaste"], ["11:45", "12:45", "soc", "Escribe 2 preguntas largas como en el examen"], ["17:00", "17:45", "cat", "Teoría y ejercicios de lo que entra"], ["18:00", "18:45", "cas", "La correspondencia: tipos de carta y sus partes (lugar y fecha, saludo, cuerpo, despedida, firma). Escribe una carta corta"]],
  "2026-11-16":[["17:05","17:25","soc","Fichas"],["20:15","21:00","soc","Repaso tema por tema: céntrate en tus puntos débiles"],["21:30","22:30","soc","Preguntas largas en voz alta"]],
  "2026-11-17":[["17:10","17:40","soc","Fichas, por última vez"],["20:00","21:00","soc","Repaso final de todos los esquemas"],["21:30","22:15","soc","Repaso exprés y prepara el material. A dormir a tu hora"]],
- "2026-11-18":[["20:15","21:00","cat","Repaso de la teoría"],["21:30","22:30","cat","Ejercicios de todo lo que entra"]],
+ "2026-11-18":[["20:15", "21:00", "cas", "Dossier S.1 y S.2: repasa la teoría y rehaz los ejercicios"], ["21:30", "22:30", "cat", "Repaso de teoría y ejercicios de todo lo que entra"]],
  "2026-11-19":[["17:10","17:40","cat","Vocabulario y ortografía"],["20:00","21:00","cat","Simulacro corto"],["21:30","22:15","cat","Repaso final"]],
  "2026-11-20":[],
- "2026-11-21":[["10:00","11:30","nat","Esquemas completos de todos los temas"],["11:45","12:45","mat","Ejercicios tipo examen"],["17:00","18:00","nat","Preguntas de examen sin mirar"],["18:15","19:00","cas","Teoría de lo que entra y ejercicios"]],
- "2026-11-22":[["10:00","11:30","nat","Simulacro y corrige los fallos"],["11:45","12:30","cas","Ejercicios de gramática y análisis"],["17:00","18:00","mat","Ejercicios de todo el temario"],["18:15","19:00","nat","Repaso final de esquemas"]],
- "2026-11-23":[["17:05","17:25","cas","Repasa la teoría"],["20:15","21:00","cas","Ejercicios y repaso final"],["21:30","22:30","mat","Rehaz los ejercicios que fallaste"]],
+ "2026-11-21":[["10:00", "11:30", "nat", "Cambios de estado: fusión, solidificación, vaporización, ebullición y condensación. Dibuja la gráfica temperatura-tiempo y marca cada tramo"], ["11:45", "12:45", "cas", "Dossier S.3, S.4 y S.5: repasa la teoría y rehaz los ejercicios"], ["16:00", "17:00", "nat", "Modelo cinético-corpuscular y efectos del calor sobre la densidad"], ["17:15", "18:00", "nat", "Factores de conversión: haz 10 ejercicios"], ["18:15", "19:00", "mat", "Ejercicios tipo examen"]],
+ "2026-11-22":[["10:00", "11:00", "nat", "Dossier: portada (Física i Química, tu nombre, curso y evaluación; no el del profe), índice y ejercicios, problemas y fotocopias en orden. Sin hojas en blanco ni apuntes"], ["11:15", "12:30", "nat", "Simulacro sin mirar: todo el tema 2 y factores de conversión. Corrige los fallos"], ["12:45", "13:30", "cas", "Categorías gramaticales: analiza 3 frases palabra por palabra"], ["17:00", "18:00", "mat", "Ejercicios de todo el temario"], ["18:15", "19:00", "nat", "Repaso final de esquemas y gráficas. Deja el dossier en la mochila"]],
+ "2026-11-23":[["17:05", "17:25", "cas", "Repasa tu tabla de categorías gramaticales"], ["20:15", "21:00", "cas", "Escribe una carta con todas sus partes y revisa la ortografía"], ["21:30", "22:30", "cas", "Dossier S.1 a S.5: repaso final de lo que fallaste"]],
  "2026-11-24":[["17:10","17:40","mat","Fórmulas y pasos clave de cada tipo de problema"],["20:00","21:00","mat","Simulacro de examen con tiempo"],["21:30","22:15","mat","Corrige y repasa los fallos"]],
- "2026-11-25":[["17:05","17:25","eng","Verbos irregulares y vocabulario"],["20:15","21:00","eng","Gramática que entra y ejercicios"],["21:30","22:00","eng","Repaso rápido"]],
+ "2026-11-25":[["17:05", "17:25", "eng", "Past simple: was/were y verbos regulares (-ed)"], ["20:15", "21:00", "eng", "Present simple vs present continuous (SB p. 147) y verbos que no se usan en continuo (SB p. 148): ejercicios"], ["21:30", "22:15", "eng", "Past simple: negativas, preguntas y short answers. Vocabulario SB p. 140: adjetivos de personalidad y accidentes geográficos"]],
  "2026-11-26":[]
 };
 const DAYS = ["domingo","lunes","martes","miércoles","jueves","viernes","sábado"];
